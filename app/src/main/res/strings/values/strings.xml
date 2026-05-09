@@ -139,6 +139,10 @@
     <string name="widgets">Widgets</string>
     <string name="widget_one">widget</string>
     <string name="widget_many">widgets</string>
+    <string name="move_up">Move up</string>
+    <string name="move_down">Move down</string>
+    <string name="move_left">Move left</string>
+    <string name="move_right">Move right</string>
 
     <!-- Media -->
     <string name="unknown_artist">Unknown Artist</string>

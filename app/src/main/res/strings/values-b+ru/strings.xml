@@ -103,6 +103,10 @@
     <string name="widgets">Виджеты</string>
     <string name="widget_one">виджет</string>
     <string name="widget_many">виджетов</string>
+    <string name="move_up">Переместить вверх</string>
+    <string name="move_down">Переместить вниз</string>
+    <string name="move_left">Переместить влево</string>
+    <string name="move_right">Переместить вправо</string>
 
     <string name="unknown_artist">Неизвестный исполнитель</string>
 

@@ -168,7 +168,7 @@ public class WidgetGrid extends GridLayout {
         map.add(cell, widget.size);
     }
 
-    private void reorder() {
+    public void reorder() {
         map.clear();
 
         PriorityQueue<WidgetContainer> containers = new PriorityQueue<>();
@@ -191,13 +191,15 @@ public class WidgetGrid extends GridLayout {
     }
 
     public int allocatePosition() {
-        View view = getChildAt(getChildCount() - 1);
+        int max = -1;
 
-        if (view != null) {
-            return ((WidgetContainer) view).getPosition() + 1;
+        for (int index = 0; index < getChildCount(); index++) {
+            int pos = ((WidgetContainer) getChildAt(index)).getPosition();
+            if (pos > max) {
+                max = pos;
+            }
         }
-
-        return 0;
+        return max + 1;
     }
 
     public int computeCellSize() {

@@ -30,7 +30,7 @@ import com.stario.launcher.sheet.widgets.WidgetSize;
 import com.stario.launcher.ui.Measurements;
 
 @SuppressLint("ViewConstructor")
-class WidgetContainer extends RelativeLayout implements Comparable<WidgetContainer> {
+public class WidgetContainer extends RelativeLayout implements Comparable<WidgetContainer> {
     private final AppWidgetHostView host;
     private final Widget widget;
     private WidgetMap.Cell origin; // top-left
@@ -85,12 +85,24 @@ class WidgetContainer extends RelativeLayout implements Comparable<WidgetContain
         }
     }
 
-    WidgetSize getSize() {
+    public WidgetSize getSize() {
         return widget.size;
     }
 
-    int getPosition() {
+    public int getPosition() {
         return widget.position;
+    }
+
+    public Widget getWidget() {
+        return widget;
+    }
+
+    public int getOriginRow() {
+        return origin.row;
+    }
+
+    public int getOriginColumn() {
+        return origin.column;
     }
 
     void updateOrigin(WidgetMap.Cell origin) {

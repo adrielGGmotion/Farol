@@ -67,7 +67,7 @@ public class WidgetMap {
     }
 
 
-    private boolean checkFreeSpace(Cell origin, WidgetSize size) {
+    boolean checkFreeSpace(Cell origin, WidgetSize size) {
         if (origin.column + size.width > columns) {
             return false;
         }

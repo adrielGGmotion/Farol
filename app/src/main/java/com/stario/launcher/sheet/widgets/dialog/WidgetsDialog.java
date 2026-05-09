@@ -55,10 +55,14 @@ import com.stario.launcher.ui.Measurements;
 import com.stario.launcher.ui.common.FadingEdgeLayout;
 import com.stario.launcher.ui.popup.PopupMenu;
 import com.stario.launcher.ui.utils.animation.Animation;
+import com.stario.launcher.ui.widgets.WidgetContainer;
 import com.stario.launcher.ui.widgets.WidgetGrid;
 import com.stario.launcher.ui.widgets.WidgetHost;
 import com.stario.launcher.ui.widgets.WidgetScroller;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class WidgetsDialog extends SheetDialogFragment {
@@ -311,10 +315,8 @@ public class WidgetsDialog extends SheetDialogFragment {
     }
 
     private void completeWidgetSetup(Widget widget, AppWidgetHostView host) {
-        String serialized = widget.serialize();
-
         widgetStore.edit()
-                .putString(String.valueOf(widget.id), serialized)
+                .putString(String.valueOf(widget.id), widget.serialize())
                 .apply();
 
         grid.attach(host, widget);
@@ -361,6 +363,24 @@ public class WidgetsDialog extends SheetDialogFragment {
                 );
             }
 
+            if (widget.size == WidgetSize.SMALL) {
+                menu.add(new PopupMenu.Item(resources.getString(R.string.move_left),
+                        AppCompatResources.getDrawable(activity, R.drawable.ic_move_left),
+                        view -> moveWidgetLeftRight(widget, +1)));
+
+                menu.add(new PopupMenu.Item(resources.getString(R.string.move_right),
+                        AppCompatResources.getDrawable(activity, R.drawable.ic_move_right),
+                        view -> moveWidgetLeftRight(widget, -1)));
+            }
+
+            menu.add(new PopupMenu.Item(resources.getString(R.string.move_up),
+                    AppCompatResources.getDrawable(activity, R.drawable.ic_move_up),
+                    view -> moveWidgetUpDown(widget, +1)));
+
+            menu.add(new PopupMenu.Item(resources.getString(R.string.move_down),
+                    AppCompatResources.getDrawable(activity, R.drawable.ic_move_down),
+                    view -> moveWidgetUpDown(widget, -1)));
+
             menu.setOnDismissListener(() -> host.animate().scaleY(1)
                     .scaleX(1)
                     .alpha(1)
@@ -372,6 +392,150 @@ public class WidgetsDialog extends SheetDialogFragment {
         });
 
         return host;
+    }
+
+    private void moveWidgetLeftRight(Widget widget, int direction) {
+        if (widget.size != WidgetSize.SMALL) return;
+
+        List<WidgetContainer> list = new ArrayList<>();
+        for (int i = 0; i < grid.getChildCount(); i++) {
+            list.add((WidgetContainer) grid.getChildAt(i));
+        }
+        list.sort(Comparator.comparingInt(WidgetContainer::getPosition));
+
+        int targetIndex = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getWidget().id == widget.id) {
+                targetIndex = i;
+                break;
+            }
+        }
+        if (targetIndex == -1) return;
+
+        WidgetContainer wc = list.get(targetIndex);
+        int swapIndex = targetIndex + direction;
+
+        if (swapIndex >= 0 && swapIndex < list.size()) {
+            WidgetContainer swapWc = list.get(swapIndex);
+            if (swapWc.getSize() == WidgetSize.SMALL && swapWc.getOriginRow() == wc.getOriginRow()) {
+                Widget swapWidget = swapWc.getWidget();
+                int tempPos = widget.position;
+                widget.position = swapWidget.position;
+                swapWidget.position = tempPos;
+
+                widgetStore.edit()
+                        .putString(String.valueOf(widget.id), widget.serialize())
+                        .putString(String.valueOf(swapWidget.id), swapWidget.serialize())
+                        .apply();
+
+                grid.reorder();
+            }
+        }
+    }
+
+    private void moveWidgetUpDown(Widget widget, int direction) {
+        List<WidgetContainer> list = new ArrayList<>();
+        for (int i = 0; i < grid.getChildCount(); i++) {
+            list.add((WidgetContainer) grid.getChildAt(i));
+        }
+        list.sort(Comparator.comparingInt(WidgetContainer::getPosition));
+
+        int targetIndex = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getWidget().id == widget.id) {
+                targetIndex = i;
+                break;
+            }
+        }
+        if (targetIndex == -1) return;
+
+        int chunkStart = targetIndex;
+        int chunkEnd = targetIndex;
+
+        WidgetContainer wc = list.get(targetIndex);
+        if (wc.getSize() == WidgetSize.SMALL) {
+            int row = wc.getOriginRow();
+            while (chunkStart > 0) {
+                WidgetContainer prev = list.get(chunkStart - 1);
+                if (prev.getSize() == WidgetSize.SMALL && prev.getOriginRow() == row) {
+                    chunkStart--;
+                } else {
+                    break;
+                }
+            }
+            while (chunkEnd < list.size() - 1) {
+                WidgetContainer next = list.get(chunkEnd + 1);
+                if (next.getSize() == WidgetSize.SMALL && next.getOriginRow() == row) {
+                    chunkEnd++;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        int swapStart = -1;
+        int swapEnd = -1;
+
+        if (direction == -1) { // UP
+            if (chunkStart == 0) return;
+            swapEnd = chunkStart - 1;
+            swapStart = swapEnd;
+            WidgetContainer prevWc = list.get(swapEnd);
+            if (prevWc.getSize() == WidgetSize.SMALL) {
+                int row = prevWc.getOriginRow();
+                while (swapStart > 0) {
+                    WidgetContainer p = list.get(swapStart - 1);
+                    if (p.getSize() == WidgetSize.SMALL && p.getOriginRow() == row) {
+                        swapStart--;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        } else { // DOWN
+            if (chunkEnd == list.size() - 1) return;
+            swapStart = chunkEnd + 1;
+            swapEnd = swapStart;
+            WidgetContainer nextWc = list.get(swapStart);
+            if (nextWc.getSize() == WidgetSize.SMALL) {
+                int row = nextWc.getOriginRow();
+                while (swapEnd < list.size() - 1) {
+                    WidgetContainer n = list.get(swapEnd + 1);
+                    if (n.getSize() == WidgetSize.SMALL && n.getOriginRow() == row) {
+                        swapEnd++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+
+        int rangeStart = Math.min(chunkStart, swapStart);
+        int rangeEnd = Math.max(chunkEnd, swapEnd);
+
+        List<Integer> positions = new ArrayList<>();
+        for (int i = rangeStart; i <= rangeEnd; i++) {
+            positions.add(list.get(i).getPosition());
+        }
+
+        List<WidgetContainer> newOrder = new ArrayList<>();
+        if (direction == -1) {
+            for (int i = chunkStart; i <= chunkEnd; i++) newOrder.add(list.get(i));
+            for (int i = swapStart; i <= swapEnd; i++) newOrder.add(list.get(i));
+        } else {
+            for (int i = swapStart; i <= swapEnd; i++) newOrder.add(list.get(i));
+            for (int i = chunkStart; i <= chunkEnd; i++) newOrder.add(list.get(i));
+        }
+
+        SharedPreferences.Editor editor = widgetStore.edit();
+        for (int i = 0; i < newOrder.size(); i++) {
+            Widget w = newOrder.get(i).getWidget();
+            w.position = positions.get(i);
+            editor.putString(String.valueOf(w.id), w.serialize());
+        }
+        editor.apply();
+
+        grid.reorder();
     }
 
     private void deleteWidget(AppWidgetHostView host) {
