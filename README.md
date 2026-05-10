@@ -7,6 +7,19 @@
 [![Latest release](https://img.shields.io/github/downloads/albu-razvan/Stario/total?label=Download&logo=android&logoColor=white)](https://github.com/albu-razvan/Stario/releases/latest)
 [![Discord](https://img.shields.io/discord/1110537583726964820?label=Discord&logo=discord&logoColor=white)](https://discord.gg/WuVapMt9gY)
 
+## Deprecation Notice
+
+> [!WARNING]
+> Stario began as a personal project inspired by Android’s flexibility and openness.
+>
+> Unfortunately, the Android ecosystem has changed significantly in recent years. New platform restrictions, OEM limitations, tighter system integrations, and evolving Play ecosystem policies have made it increasingly difficult for independent developers to provide fully integrated experience across devices.
+>
+> The September 2026 changes (read more at [Keep Android Open](https://keepandroidopen.org/)) are, to me, a clear signal of the direction Android is heading. While these changes may not impact Stario directly, they’ve collectively removed much of the motivation I had to continue pushing the project forward.
+>
+> The project will remain open source for anyone interested in continuing development, or preserving the spirit of Android customization that inspired projects like this one in the first place.
+>
+> Thank you to everyone who contributed, tested builds, submitted issues, translated the app, or used Stario over the years.
+
 ## Overview
 
 Inspired by the minimalist phone concept, Stario aims to keep functionality and productivity at
