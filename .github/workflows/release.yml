@@ -1,0 +1,111 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag to release (e.g. v2.16)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Make scripts executable
+        run: chmod +x gradlew build.sh
+
+      - name: Determine requested version
+        id: requested
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          VERSION="$REF_NAME"
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="$INPUT_VERSION"
+          fi
+          echo "version=${VERSION#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Read built version from Gradle
+        id: built
+        run: |
+          VERSION=$(./gradlew -q :app:getVersionName)
+          if [ -z "$VERSION" ]; then
+            echo "::error::Could not determine app version name from Gradle"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Validate version matches requested tag
+        env:
+          REQUESTED: ${{ steps.requested.outputs.version }}
+          BUILT: ${{ steps.built.outputs.version }}
+        run: |
+          if [ "$REQUESTED" != "$BUILT" ]; then
+            echo "::error::Requested version '$REQUESTED' does not match the version built by Gradle ('$BUILT')."
+            echo "::error::Update the versionName in app/build.gradle, or push/dispatch with the matching tag."
+            exit 1
+          fi
+
+      - name: Prepare keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::Missing required secret KEYSTORE_B64"
+            exit 1
+          fi
+          mkdir -p keystore
+          echo "$KEYSTORE_B64" | base64 -d > keystore/keystore.jks
+          test -s keystore/keystore.jks
+
+      - name: Build signed artifacts
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_PASSWORD" ] || [ -z "$KEY_ALIAS" ] || [ -z "$KEY_PASSWORD" ]; then
+            echo "::error::Missing required secrets (KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD)"
+            exit 1
+          fi
+          ./build.sh -K keystore/keystore.jks -P "$KEYSTORE_PASSWORD" -a "$KEY_ALIAS" -p "$KEY_PASSWORD"
+
+      - name: Create Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.built.outputs.version }}
+        run: |
+          shopt -s nullglob
+          ASSETS=(build/v"$VERSION"/*)
+          if [ ${#ASSETS[@]} -eq 0 ]; then
+            echo "::error::No artifacts found under build/v$VERSION/. The build produced no output."
+            exit 1
+          fi
+          gh release create "v$VERSION" "${ASSETS[@]}" --draft --generate-notes
