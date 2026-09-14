@@ -17,7 +17,26 @@
 
 package com.stario.launcher.preferences
 
-class Entry private constructor(private val name: String) {
+enum class Entry(private val name: String) {
+    CATEGORY_APPLICATION_MAP("CATEGORY_APPLICATION_MAP"),
+    GRID_TEMPLATE_MANAGER("GRID_TEMPLATE_MANAGER"),
+    APPLICATION_LABELS("APPLICATION_LABELS"),
+    PINNED_CATEGORY("PINNED_CATEGORY"),
+    CATEGORY_NAMES("CATEGORY_NAMES"),
+    CATEGORY_MAP("CATEGORY_MAP"),
+    HIDDEN_APPS("HIDDEN_APPS"),
+    CATEGORIES("CATEGORIES"),
+    BRIEFING("BRIEFING"),
+    WEATHER("WEATHER"),
+    WIDGETS("WIDGETS"),
+    SEARCH("SEARCH"),
+    STARIO("STARIO"),
+    DRAWER("DRAWER"),
+    SHEET("SHEET"),
+    THEME("THEME"),
+    ICONS("ICONS"),
+    CLOCK("CLOCK");
+
     private val serialized = "com.stario.$name"
 
     override fun toString(): String = serialized
@@ -25,47 +44,9 @@ class Entry private constructor(private val name: String) {
     fun toSubPreference(name: String): String = "$this.$name"
 
     companion object {
-        val CATEGORY_APPLICATION_MAP = Entry("CATEGORY_APPLICATION_MAP")
-        val GRID_TEMPLATE_MANAGER = Entry("GRID_TEMPLATE_MANAGER")
-        val APPLICATION_LABELS = Entry("APPLICATION_LABELS")
-        val PINNED_CATEGORY = Entry("PINNED_CATEGORY")
-        val CATEGORY_NAMES = Entry("CATEGORY_NAMES")
-        val CATEGORY_MAP = Entry("CATEGORY_MAP")
-        val HIDDEN_APPS = Entry("HIDDEN_APPS")
-        val CATEGORIES = Entry("CATEGORIES")
-        val BRIEFING = Entry("BRIEFING")
-        val WEATHER = Entry("WEATHER")
-        val WIDGETS = Entry("WIDGETS")
-        val SEARCH = Entry("SEARCH")
-        val STARIO = Entry("STARIO")
-        val DRAWER = Entry("DRAWER")
-        val SHEET = Entry("SHEET")
-        val THEME = Entry("THEME")
-        val ICONS = Entry("ICONS")
-        val CLOCK = Entry("CLOCK")
-
         @JvmStatic
         fun isValid(serialized: String?): Boolean {
-            return !serialized.isNullOrEmpty() && listOf(
-                CATEGORY_APPLICATION_MAP,
-                GRID_TEMPLATE_MANAGER,
-                APPLICATION_LABELS,
-                PINNED_CATEGORY,
-                CATEGORY_NAMES,
-                CATEGORY_MAP,
-                HIDDEN_APPS,
-                CATEGORIES,
-                BRIEFING,
-                WEATHER,
-                WIDGETS,
-                SEARCH,
-                STARIO,
-                DRAWER,
-                SHEET,
-                THEME,
-                ICONS,
-                CLOCK,
-            ).any { serialized.startsWith(it.serialized) }
+            return !serialized.isNullOrEmpty() && values().any { serialized.startsWith(it.serialized) }
         }
     }
 }
