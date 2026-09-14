@@ -21,11 +21,11 @@ import com.google.gson.annotations.SerializedName
 import com.stario.launcher.utils.Utils
 
 class Widget(
-    @SerializedName("size")
+    @field:SerializedName("size")
     @JvmField var size: WidgetSize?,
-    @SerializedName("id")
+    @field:SerializedName("id")
     @JvmField val id: Int,
-    @SerializedName("position")
+    @field:SerializedName("position")
     @JvmField var position: Int,
 ) : Comparable<Widget> {
     constructor(id: Int, position: Int, size: WidgetSize) : this(size, id, position)
