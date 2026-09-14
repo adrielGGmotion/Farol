@@ -17,7 +17,7 @@
 
 package com.stario.launcher.preferences
 
-enum class Entry(private val name: String) {
+enum class Entry(private val serializedName: String) {
     CATEGORY_APPLICATION_MAP("CATEGORY_APPLICATION_MAP"),
     GRID_TEMPLATE_MANAGER("GRID_TEMPLATE_MANAGER"),
     APPLICATION_LABELS("APPLICATION_LABELS"),
@@ -37,7 +37,7 @@ enum class Entry(private val name: String) {
     ICONS("ICONS"),
     CLOCK("CLOCK");
 
-    private val serialized = "com.stario.$name"
+    private val serialized = "com.stario.$serializedName"
 
     override fun toString(): String = serialized
 
