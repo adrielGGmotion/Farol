@@ -15,14 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.apps.interfaces;
+package com.stario.launcher.apps.interfaces
 
-import android.os.UserHandle;
+import com.stario.launcher.apps.LauncherApplication
 
-public interface LauncherProfileListener {
-    default void onInserted(UserHandle handle) {
-    }
-
-    default void onRemoved(UserHandle handle) {
-    }
+interface LauncherApplicationListener {
+    fun onInserted(application: LauncherApplication) {}
+    fun onShowed(application: LauncherApplication) {}
+    fun onPrepareRemoval() {}
+    fun onRemoved(application: LauncherApplication) {}
+    fun onPrepareHiding() {}
+    fun onHidden(application: LauncherApplication) {}
+    fun onUpdated(application: LauncherApplication) {}
 }
