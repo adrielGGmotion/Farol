@@ -71,7 +71,7 @@ class SharedElementTransition(private val targets: List<View>) : TransitionSet()
         })
         addTransition(changeTransform)
 
-        pathMotion = SharedElementMotion()
+        setPathMotion(SharedElementMotion())
         interpolator = PathInterpolator(0.3f, 0.9f, 0.3f, 0.95f)
         duration = Animation.LONG.getDuration().toLong()
     }
