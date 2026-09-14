@@ -15,10 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.sheet.drawer.search;
+package com.stario.launcher.sheet.widgets
 
-public interface Searchable {
-    void update(String query);
-
-    boolean submit();
+enum class WidgetSize(
+    @JvmField val width: Int,
+    @JvmField val height: Int,
+) {
+    SMALL(1, 1),
+    MEDIUM(2, 1),
+    LARGE(2, 2),
+    XLARGE(2, 3),
 }

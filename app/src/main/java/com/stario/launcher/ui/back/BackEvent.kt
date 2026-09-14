@@ -15,10 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.ui.back;
+package com.stario.launcher.ui.back
 
-public enum BackEventType {
-    BACK_PROGRESS,
-    BACK_COMPLETED,
-    BACK_CANCELLED
+class BackEvent(
+    @JvmField val type: BackEventType,
+    @JvmField val progress: Float,
+    @JvmField val origin: Class<*>,
+) {
+    constructor(type: BackEventType, origin: Class<*>) : this(type, 0f, origin)
 }

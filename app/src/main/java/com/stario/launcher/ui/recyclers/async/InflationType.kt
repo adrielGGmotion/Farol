@@ -15,10 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.exceptions;
+package com.stario.launcher.ui.recyclers.async
 
-public class Unauthorized extends Exception {
-    public Unauthorized() {
-        super("You are not authorized to access this resource.");
-    }
+enum class InflationType {
+    ASYNC,
+    SYNCED,
 }

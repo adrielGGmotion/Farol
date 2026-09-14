@@ -15,20 +15,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.ui.recyclers.overscroll;
+package com.stario.launcher.sheet.drawer.search
 
-import android.graphics.Canvas;
-
-import androidx.annotation.NonNull;
-
-public interface OverScroll {
-    boolean tryCaptureOverScroll(@NonNull OverScrollEffect<?> effect);
-
-    void releaseOverScroll(@NonNull OverScrollEffect<?> effect);
-
-    void addOverScrollContract(@NonNull OverScrollContract contract);
-
-    interface OverScrollContract {
-        boolean prepare(Canvas canvas);
-    }
+interface Searchable {
+    fun update(query: String)
+    fun submit(): Boolean
 }

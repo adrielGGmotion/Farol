@@ -15,19 +15,18 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.sheet.widgets;
+package com.stario.launcher.ui.utils.animation
 
-public enum WidgetSize {
-    SMALL(1, 1),
-    MEDIUM(2, 1),
-    LARGE(2, 2),
-    XLARGE(2, 3);
+enum class Animation(private val duration: Int) {
+    NONE(0),
+    BRIEF(50),
+    SHORT(125),
+    MEDIUM(200),
+    LONG(350),
+    EXTENDED(575),
+    SUSTAINED(875),
 
-    public final int width;
-    public final int height;
+    ;
 
-    WidgetSize(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
+    fun getDuration(): Int = duration
 }

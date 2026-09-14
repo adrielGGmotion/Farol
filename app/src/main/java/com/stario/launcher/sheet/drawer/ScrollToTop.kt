@@ -15,8 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.sheet.drawer;
+package com.stario.launcher.sheet.drawer
 
-public interface ScrollToTop {
-    void scrollToTop();
+interface ScrollToTop {
+    fun scrollToTop()
 }

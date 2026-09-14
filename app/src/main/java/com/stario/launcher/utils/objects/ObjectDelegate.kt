@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Răzvan Albu
+ * Copyright (C) 2025 Răzvan Albu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,21 +15,30 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.ui.back;
+package com.stario.launcher.utils.objects
 
-public class BackEvent {
-    public final BackEventType type;
-    public final float progress;
-    public final Class<?> origin;
+class ObjectDelegate<T> {
+    private val action: ObjectDelegateAction<T>
+    private var value: T?
 
-
-    public BackEvent(BackEventType type, float progress, Class<?> origin) {
-        this.type = type;
-        this.origin = origin;
-        this.progress = progress;
+    constructor(action: ObjectDelegateAction<T>) {
+        this.value = null
+        this.action = action
     }
 
-    public BackEvent(BackEventType type, Class<?> origin) {
-        this(type, 0f, origin);
+    constructor(value: T?, action: ObjectDelegateAction<T>) {
+        this.value = value
+        this.action = action
+    }
+
+    fun getValue(): T? = value
+
+    fun setValue(value: T?) {
+        this.value = value
+        action.onSet(value)
+    }
+
+    fun interface ObjectDelegateAction<T> {
+        fun onSet(value: T?)
     }
 }

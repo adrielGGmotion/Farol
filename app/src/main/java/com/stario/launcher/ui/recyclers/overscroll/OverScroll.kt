@@ -15,9 +15,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.ui.recyclers.async;
+package com.stario.launcher.ui.recyclers.overscroll
 
-public enum InflationType {
-    ASYNC,
-    SYNCED
+import android.graphics.Canvas
+
+interface OverScroll {
+    fun tryCaptureOverScroll(effect: OverScrollEffect<*>): Boolean
+    fun releaseOverScroll(effect: OverScrollEffect<*>)
+    fun addOverScrollContract(contract: OverScrollContract)
+
+    interface OverScrollContract {
+        fun prepare(canvas: Canvas): Boolean
+    }
 }

@@ -15,24 +15,22 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.ui.utils.animation;
+package com.stario.launcher.sheet.drawer.search.recyclers
 
-public enum Animation {
-    NONE(0),
-    BRIEF(50),
-    SHORT(125),
-    MEDIUM(200),
-    LONG(350),
-    EXTENDED(575),
-    SUSTAINED(875);
+import android.view.View
+import com.stario.launcher.sheet.drawer.search.SearchLayoutTransition
 
-    private final int duration;
-
-    Animation(int duration) {
-        this.duration = duration;
+class OnSearchRecyclerVisibilityChangeListener(
+    private val transition: SearchLayoutTransition,
+) : OnVisibilityChangeListener {
+    override fun onPreChange(view: View, visibility: Int) {
+        if (view.visibility != visibility) {
+            transition.setAnimate(false)
+            transition.cancel()
+        }
     }
 
-    public int getDuration() {
-        return duration;
+    override fun onChange(view: View, visibility: Int) {
+        transition.setAnimate(true)
     }
 }
