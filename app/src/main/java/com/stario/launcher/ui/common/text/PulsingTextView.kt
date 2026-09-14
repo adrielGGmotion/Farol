@@ -81,11 +81,11 @@ class PulsingTextView @JvmOverloads constructor(
 
     private fun calculateGradients() {
         val colors = ArrayList<Int>()
-        val fadeLength = Measurements.dpToPx(FADE_LENGTH)
+        val fadeLength = Measurements.dpToPx(FADE_LENGTH.toFloat())
         var measuredWidth = width
         while (measuredWidth > -fadeLength) {
             colors.add(Color.BLACK)
-            colors.add(Color.argb(0.5f, 0, 0, 0))
+            colors.add(Color.argb(0.5f, 0f, 0f, 0f))
             measuredWidth -= fadeLength
         }
 

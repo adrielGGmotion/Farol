@@ -69,7 +69,7 @@ class ClosingAnimationView @JvmOverloads constructor(
                 x,
                 y,
                 radius * value,
-                Color.argb(1f - value, 0, 0, 0),
+                Color.argb(1f - value, 0f, 0f, 0f),
                 Color.BLACK,
                 android.graphics.Shader.TileMode.CLAMP,
             )

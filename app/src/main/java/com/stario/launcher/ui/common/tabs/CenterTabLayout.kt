@@ -28,7 +28,7 @@ import com.ogaclejapan.smarttablayout.SmartTabLayout
 import com.stario.launcher.R
 import com.stario.launcher.ui.utils.UiUtils
 
-class CenterTabLayout @JvmOverloads constructor(
+open class CenterTabLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0,

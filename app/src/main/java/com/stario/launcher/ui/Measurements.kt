@@ -223,19 +223,19 @@ object Measurements {
     fun getDefaultPadding(): Int = defaultPadding
 
     @JvmStatic
-    fun getNavHeight(): Int = NAV_HEIGHT.getObject()
+    fun getNavHeight(): Int = NAV_HEIGHT.getObject()!!
 
     @JvmStatic
-    fun getSysUIHeight(): Int = SYS_UI_HEIGHT.getObject()
+    fun getSysUIHeight(): Int = SYS_UI_HEIGHT.getObject()!!
 
     @JvmStatic
-    fun getWindowAnimationScale(): Float = WINDOW_ANIMATION_SCALE.getObject()
+    fun getWindowAnimationScale(): Float = WINDOW_ANIMATION_SCALE.getObject()!!
 
     @JvmStatic
-    fun getTransitionAnimationScale(): Float = TRANSITION_ANIMATION_SCALE.getObject()
+    fun getTransitionAnimationScale(): Float = TRANSITION_ANIMATION_SCALE.getObject()!!
 
     @JvmStatic
-    fun getAnimatorDurationScale(): Float = ANIMATOR_DURATION_SCALE.getObject()
+    fun getAnimatorDurationScale(): Float = ANIMATOR_DURATION_SCALE.getObject()!!
 
     @JvmStatic
     fun addStatusBarListener(listener: ObservableObject.OnSet<Int>?) {

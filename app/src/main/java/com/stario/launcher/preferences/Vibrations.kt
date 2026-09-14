@@ -34,7 +34,6 @@ class Vibrations private constructor(stario: Stario) {
     }
 
     companion object {
-        @JvmField
         const val PREFERENCE_ENTRY = "com.stario.VIBRATIONS"
 
         private var instance: Vibrations? = null
