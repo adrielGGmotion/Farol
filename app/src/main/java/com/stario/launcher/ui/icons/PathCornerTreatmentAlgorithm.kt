@@ -15,20 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.hidden;
+package com.stario.launcher.ui.icons
 
-import android.animation.LayoutTransition;
-import android.view.ViewGroup;
+enum class PathCornerTreatmentAlgorithm {
+    REGULAR,
+    SQUIRCLE;
 
-import dev.rikka.tools.refine.RefineAs;
+    companion object {
+        const val PATH_ALGORITHM_ENTRY = "com.stario.PATH_ALGORITHM"
+        @JvmField
+        val DEFAULT_PATH_ALGORITHM_ENTRY: Int = REGULAR.ordinal
 
-@RefineAs(LayoutTransition.class)
-public class LayoutTransitionHidden {
-    public void layoutChange(ViewGroup parent) {
-        throw new RuntimeException("Stub!");
-    }
-
-    public void cancel() {
-        throw new RuntimeException("Stub!");
+        @JvmStatic
+        fun fromIdentifier(identifier: Int): PathCornerTreatmentAlgorithm =
+            if (identifier == 1) SQUIRCLE else REGULAR
     }
 }

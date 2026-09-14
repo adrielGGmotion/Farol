@@ -15,25 +15,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.hidden;
+package com.stario.launcher.ui.recyclers
 
-import android.app.WallpaperManager;
-import android.content.Context;
-import android.os.IBinder;
+import android.content.Context
+import com.google.android.material.divider.MaterialDividerItemDecoration
+import com.stario.launcher.ui.Measurements
 
-import dev.rikka.tools.refine.RefineAs;
-
-@RefineAs(WallpaperManager.class)
-public class WallpaperManagerHidden {
-    public static WallpaperManagerHidden getInstance(Context context) {
-        throw new RuntimeException("Stub!");
+class DividerItemDecorator @JvmOverloads constructor(
+    context: Context,
+    orientation: Int,
+    thickness: Int = Measurements.dpToPx(THICKNESS.toFloat())
+) : MaterialDividerItemDecoration(context, orientation) {
+    init {
+        setDividerColor(0)
+        setDividerThickness(thickness)
+        isLastItemDecorated = false
     }
 
-    public void setWallpaperZoomOut(IBinder windowToken, float zoom) {
-        throw new RuntimeException("Stub!");
-    }
-
-    public void setWallpaperOffsets(IBinder windowToken, float xOffset, float yOffset) {
-        throw new RuntimeException("Stub!");
+    companion object {
+        private const val THICKNESS = 2
     }
 }

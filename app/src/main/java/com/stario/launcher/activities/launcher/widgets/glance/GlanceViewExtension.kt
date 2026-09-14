@@ -15,8 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.activities.launcher.widgets.glance;
+package com.stario.launcher.activities.launcher.widgets.glance
 
-public interface GlanceExtension {
-    void update();
+import android.view.View
+import android.widget.LinearLayout
+import com.stario.launcher.themes.ThemedActivity
+
+interface GlanceViewExtension : GlanceExtension {
+    fun inflate(activity: ThemedActivity, container: LinearLayout): View
+
+    fun getClickListener(): View.OnClickListener? = null
 }

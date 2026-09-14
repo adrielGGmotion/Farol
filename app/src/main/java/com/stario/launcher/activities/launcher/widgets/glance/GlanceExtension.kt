@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Răzvan Albu
+ * Copyright (C) 2026 Răzvan Albu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,13 +15,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.sheet.drawer.search;
+package com.stario.launcher.activities.launcher.widgets.glance
 
-import com.stario.launcher.sheet.drawer.DrawerPage;
-import com.stario.launcher.ui.Measurements;
-
-public abstract class ListDrawerPage extends DrawerPage {
-    protected int getColumnCount(int width) {
-        return Math.min(6, width / Measurements.dpToPx(90));
-    }
+interface GlanceExtension {
+    fun update()
 }

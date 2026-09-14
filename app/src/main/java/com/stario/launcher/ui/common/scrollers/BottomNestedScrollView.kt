@@ -23,7 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.PreEventNestedScrollView
 
-class BottomNestedScrollView @JvmOverloads constructor(
+open class BottomNestedScrollView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,

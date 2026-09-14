@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Răzvan Albu
+ * Copyright (C) 2025 Răzvan Albu
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,18 +15,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.activities.launcher.widgets.glance;
+package com.stario.launcher.sheet.drawer.search
 
-import android.view.View;
-import android.widget.LinearLayout;
+import com.stario.launcher.sheet.drawer.DrawerPage
+import com.stario.launcher.ui.Measurements
 
-import com.stario.launcher.themes.ThemedActivity;
-
-public interface GlanceViewExtension extends GlanceExtension {
-
-    View inflate(ThemedActivity activity, LinearLayout container);
-
-    default View.OnClickListener getClickListener() {
-        return null;
-    }
+abstract class ListDrawerPage : DrawerPage() {
+    protected fun getColumnCount(width: Int): Int =
+        minOf(6, width / Measurements.dpToPx(90f))
 }

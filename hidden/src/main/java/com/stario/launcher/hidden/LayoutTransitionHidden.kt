@@ -15,28 +15,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.stario.launcher.sheet.drawer.search.recyclers;
+package com.stario.launcher.hidden
 
-import com.stario.launcher.ui.recyclers.RecyclerItemAnimator;
-import com.stario.launcher.ui.utils.animation.Animation;
+import android.animation.LayoutTransition
+import android.view.ViewGroup
+import dev.rikka.tools.refine.RefineAs
 
-public class SearchRecyclerItemAnimator extends RecyclerItemAnimator {
-    public SearchRecyclerItemAnimator(Animation animation) {
-        super(RecyclerItemAnimator.DISAPPEARANCE | RecyclerItemAnimator.APPEARANCE, animation);
+@RefineAs(LayoutTransition::class)
+class LayoutTransitionHidden {
+    fun layoutChange(parent: ViewGroup) {
+        throw RuntimeException("Stub!")
     }
 
-    @Override
-    public float getRemovedAlpha() {
-        return 1f;
-    }
-
-    @Override
-    public float getRemovedScaleX() {
-        return 1f;
-    }
-
-    @Override
-    public float getRemovedScaleY() {
-        return 1f;
+    fun cancel() {
+        throw RuntimeException("Stub!")
     }
 }
