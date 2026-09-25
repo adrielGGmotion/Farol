@@ -18,4 +18,5 @@
 
 <resources>
     <color name="light">#F7F7F7</color>
+    <color name="farol_icon_background">#301713</color>
 </resources>

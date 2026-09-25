@@ -1,31 +1,19 @@
-<!--
-  ~ Copyright (C) 2025 Răzvan Albu
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>
-  -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="17"
-    android:viewportHeight="15">
-  <group android:scaleX="0.3361111"
-      android:scaleY="0.29656863"
-      android:translateX="5.6430554"
-      android:translateY="5.2757354">
-    <path
-        android:pathData="M9.5,11.4C9.5,9.5 8.3,7.5 5,7.5L3.8,7.5A1,1 0,0 1,3.7 0L10.5,0C8.5,0.5 7.5,1.9 7.5,3.6C7.5,5.5 8.7,7.5 12,7.5L13.2,7.5A1,1 0,0 1,13.3 15L6.5,15C8.5,14.5 9.5,13.1 9.5,11.4M0,11.5A1,1 0,0 0,7 11.5A1,1 0,0 0,0 11.5M17,3.5A1,1 0,0 0,10 3.5A1,1 0,0 0,17 3.5"
-        android:fillColor="#FFFFFF"/>
-  </group>
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+    <group android:scaleX="0.68" android:scaleY="0.68"
+        android:translateX="163.84" android:translateY="163.84">
+        <path
+            android:fillColor="#C95432"
+            android:pathData="M323,298 L397,284 Q423,279 426,306 L467,773 Q470,812 431,812 H282 Q246,812 251,776 L290,340 Q293,304 323,298 Z" />
+        <path
+            android:fillColor="#F19A63"
+            android:pathData="M485,272 L759,211 Q799,202 805,240 L765,420 Q758,452 725,445 L496,402 Q470,397 469,370 L466,307 Q465,278 485,272 Z" />
+        <path
+            android:fillColor="#F19A63"
+            android:pathData="M500,451 L731,518 Q758,526 751,553 L717,687 Q708,722 679,702 L497,582 Q481,571 480,551 L476,481 Q475,449 500,451 Z" />
+    </group>
 </vector>
