@@ -278,7 +278,9 @@ open class AdaptiveIconView : View {
             paused = binding.isPaused(getContext())
             applyBadge = binding.shouldApplyManagedBadge()
 
-            binding.register(getContext())
+            if (isAttachedToWindow()) {
+                binding.register(getContext())
+            }
         } else {
             setIcon(null)
         }
@@ -431,6 +433,8 @@ open class AdaptiveIconView : View {
         @JvmField
         val filter: IntentFilter = filterValue
 
+        private var registered = false
+
         internal fun isPaused(context: Context): Boolean {
             return !Utils.isProfileAvailable(context, handle)
         }
@@ -440,16 +444,22 @@ open class AdaptiveIconView : View {
         }
 
         internal fun register(context: Context) {
-            ContextCompat.registerReceiver(
-                context.applicationContext,
-                receiver,
-                filter,
-                ContextCompat.RECEIVER_NOT_EXPORTED
-            )
+            if (!registered) {
+                ContextCompat.registerReceiver(
+                    context.applicationContext,
+                    receiver,
+                    filter,
+                    ContextCompat.RECEIVER_NOT_EXPORTED
+                )
+                registered = true
+            }
         }
 
         internal fun unregister(context: Context) {
-            context.applicationContext.unregisterReceiver(receiver)
+            if (registered) {
+                context.applicationContext.unregisterReceiver(receiver)
+                registered = false
+            }
         }
     }
 
