@@ -34,6 +34,7 @@ import com.stario.launcher.ui.recyclers.async.InflationType
 import com.stario.launcher.ui.utils.UiUtils
 import java.util.UUID
 import java.util.function.Supplier
+import androidx.core.content.edit
 
 open class PinnedAppsAdapter(
     private val activity: ThemedActivity,
@@ -109,10 +110,10 @@ open class PinnedAppsAdapter(
     }
 
     private fun resetSharedPreferences() {
-        settings.edit()
-            .remove(PinnedCategory.PINNED_CATEGORY)
-            .remove(PinnedCategory.PINNED_CATEGORY_VISIBLE)
-            .apply()
+        settings.edit {
+                remove(PinnedCategory.PINNED_CATEGORY)
+                .remove(PinnedCategory.PINNED_CATEGORY_VISIBLE)
+            }
     }
 
     inner open class PinnedGroupViewHolder(viewType: Int) : ApplicationViewHolder(viewType) {
@@ -150,13 +151,13 @@ open class PinnedAppsAdapter(
         }
     }
 
-    override fun onBind(viewHolder: ApplicationViewHolder, index: Int) {
-        super.onBind(viewHolder, index)
+    override fun onBind(holder: ApplicationViewHolder, position: Int) {
+        super.onBind(holder, position)
 
-        if (viewHolder is PinnedGroupViewHolder) {
-            viewHolder.setIcon(null)
-            viewHolder.group?.layoutManager = GridLayoutManager(activity, 2)
-            viewHolder.group?.adapter = PinnedAppsGroupAdapter(activity, category, itemCount - 1)
+        if (holder is PinnedGroupViewHolder) {
+            holder.setIcon(null)
+            holder.group?.layoutManager = GridLayoutManager(activity, 2)
+            holder.group?.adapter = PinnedAppsGroupAdapter(activity, category, itemCount - 1)
         }
     }
 

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<issues format="6" by="lint 8.13.0">
+    <issue id="OldTargetApi" message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details.">
+        <location file="build.gradle" line="19" column="9" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.compose.animation:animation-core than 1.9.4 is available: 1.12.1">
+        <location file="build.gradle" line="131" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="Upgrade `androidx.compose.foundation` for keyboard and mouse support">
+        <location file="build.gradle" line="132" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.compose.runtime:runtime than 1.9.4 is available: 1.12.1">
+        <location file="build.gradle" line="133" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.compose.ui:ui-graphics than 1.9.4 is available: 1.12.1">
+        <location file="build.gradle" line="134" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.compose.ui:ui-unit than 1.9.4 is available: 1.12.1">
+        <location file="build.gradle" line="135" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.compose.ui:ui than 1.9.4 is available: 1.12.1">
+        <location file="build.gradle" line="136" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.core:core-ktx than 1.17.0 is available: 1.19.1">
+        <location file="build.gradle" line="139" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.lifecycle:lifecycle-common than 2.9.4 is available: 2.11.0">
+        <location file="build.gradle" line="146" column="20" />
+    </issue>
+    <issue id="GradleDependency" message="A newer version of androidx.lifecycle:lifecycle-process than 2.9.4 is available: 2.11.0">
+        <location file="build.gradle" line="147" column="20" />
+    </issue>
+    <issue id="NewerVersionAvailable" message="A newer version of org.jetbrains.kotlin.plugin.compose than 2.2.21 is available: 2.4.20">
+        <location file="build.gradle" line="6" column="54" />
+    </issue>
+    <issue id="NewerVersionAvailable" message="A newer version of com.prof18.rssparser:rssparser-android-debug than 6.1.1 is available: 6.1.2">
+        <location file="build.gradle" line="183" column="25" />
+    </issue>
+    <issue id="NewerVersionAvailable" message="A newer version of com.prof18.rssparser:rssparser than 6.1.1 is available: 6.1.8">
+        <location file="build.gradle" line="184" column="20" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.notification_dots` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="55" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.components` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="130" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.license` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="138" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.main_dependencies` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="140" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.all_dependencies` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="141" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.briefing_configurator` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="189" column="13" />
+    </issue>
+    <issue id="UnusedResources" message="The resource `R.string.search_on` appears to be unused">
+        <location file="src/main/res/strings/values/strings.xml" line="204" column="13" />
+    </issue>
+</issues>

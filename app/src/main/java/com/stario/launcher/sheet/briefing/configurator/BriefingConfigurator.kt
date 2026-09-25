@@ -55,6 +55,8 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 import carbon.view.SimpleTextWatcher
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 
 open class BriefingConfigurator(activity: ThemedActivity) : ActionDialog(activity) {
     private val list = BriefingFeedList.from(activity)
@@ -71,8 +73,8 @@ open class BriefingConfigurator(activity: ThemedActivity) : ActionDialog(activit
     private lateinit var title: TextView
     private lateinit var query: EditText
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        contentView = inflater.inflate(R.layout.briefing_configurator, null) as ViewGroup
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        contentView = inflater.inflate(R.layout.briefing_configurator, parent, false) as ViewGroup
 
         query = contentView.findViewById(R.id.query)
         preview = contentView.findViewById(R.id.preview)
@@ -80,7 +82,7 @@ open class BriefingConfigurator(activity: ThemedActivity) : ActionDialog(activit
         limit = contentView.findViewById(R.id.limit)
 
         query.addTextChangedListener(object : SimpleTextWatcher() {
-            override fun onTextChanged(sequence: CharSequence, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 debounceRunnable?.let { UiUtils.removeUICallback(it) }
 
                 val currentSearchTask = currentSearchTask
@@ -88,7 +90,7 @@ open class BriefingConfigurator(activity: ThemedActivity) : ActionDialog(activit
                     currentSearchTask.cancel(true)
                 }
 
-                val text = sequence.toString()
+                val text = charSequence.toString()
 
                 if (text.isEmpty()) {
                     showStatus(null, false)

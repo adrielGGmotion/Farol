@@ -37,6 +37,7 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
 import com.stario.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
 import com.stario.launcher.ui.utils.animation.Animation
+import androidx.core.view.size
 
 open class HideApplicationsDialog : DialogFragment() {
     private var hideListener: OnHideListener? = null
@@ -53,8 +54,8 @@ open class HideApplicationsDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : ActionDialog(themedActivity) {
-            override fun inflateContent(inflater: LayoutInflater): View {
-                val root = inflater.inflate(R.layout.pop_up_hide, null)
+            override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+                val root = inflater.inflate(R.layout.pop_up_hide, parent, false)
 
                 val pager = root.findViewById<ViewPager>(R.id.pager)
                 val adapter = HideApplicationsPagerAdapter(

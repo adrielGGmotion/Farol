@@ -195,6 +195,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="24dp"
                         android:layout_height="12dp"
                         android:scaleType="centerCrop"

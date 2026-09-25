@@ -43,6 +43,7 @@ import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.stario.launcher.R
 import com.stario.launcher.ui.Measurements
 import com.stario.launcher.ui.utils.animation.Animation
+import androidx.core.view.isVisible
 
 open class UiUtils {
     companion object {
@@ -50,12 +51,15 @@ open class UiUtils {
 
         @JvmStatic
         fun enforceLightSystemUI(window: Window) {
-            val decor = window.decorView
+            setLightSystemBars(window, false)
+        }
 
-            var flags = decor.systemUiVisibility
-            flags = flags and (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
-                View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR).inv()
-            decor.systemUiVisibility = flags
+        @JvmStatic
+        fun setLightSystemBars(window: Window, enabled: Boolean) {
+            WindowCompat.getInsetsController(window, window.decorView).apply {
+                isAppearanceLightStatusBars = enabled
+                isAppearanceLightNavigationBars = enabled
+            }
         }
 
         @JvmStatic
@@ -78,6 +82,7 @@ open class UiUtils {
         }
 
         @JvmStatic
+        @Suppress("DEPRECATION")
         fun makeSysUITransparent(window: Window) {
             window.statusBarColor = Color.TRANSPARENT
             window.navigationBarColor = Color.TRANSPARENT

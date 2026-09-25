@@ -27,6 +27,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.view.isNotEmpty
 
 // Modification of https://stackoverflow.com/a/52373765
 open class ClickableSpanTextView : AppCompatTextView, View.OnTouchListener {

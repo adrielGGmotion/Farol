@@ -37,12 +37,13 @@ open class Widget(
         return other is Widget && other.id == id
     }
 
-    override fun compareTo(widget: Widget): Int {
-        return position - widget.position
+    override fun compareTo(other: Widget): Int {
+        return position - other.position
     }
 
     companion object {
         @JvmStatic
+        @Suppress("SENSELESS_COMPARISON")
         fun deserialize(data: String?): Widget? {
             return try {
                 val holder: Widget? = Utils.getGsonInstance().fromJson(data, Widget::class.java)

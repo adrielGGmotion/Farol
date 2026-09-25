@@ -26,6 +26,7 @@ import com.stario.launcher.sheet.briefing.dialog.BriefingDialog
 import com.stario.launcher.sheet.drawer.dialog.ApplicationsDialog
 import com.stario.launcher.sheet.widgets.dialog.WidgetsDialog
 import com.stario.launcher.themes.ThemedActivity
+import androidx.core.content.edit
 
 @Suppress("UNCHECKED_CAST")
 enum class SheetType(private val stringType: String, private val axesValue: Int) {
@@ -74,19 +75,19 @@ enum class SheetType(private val stringType: String, private val axesValue: Int)
                                 list.add(Pair(type, clazz as Class<out SheetDialogFragment>))
                             } else {
                                 Log.e(TAG, "getSheets: $obj does not map to a valid ${SheetType::class.java.name} serial String.")
-                                preferences.edit().remove(string).apply()
+                                preferences.edit {remove(string)}
                             }
                         } else {
                             Log.e(TAG, "getSheets: $string can only map to a ${SheetType::class.java.name} serial String.")
-                            preferences.edit().remove(string).apply()
+                            preferences.edit {remove(string)}
                         }
                     } else {
                         Log.e(TAG, "getSheets: $string does not extend ${SheetDialogFragment::class.java.name}")
-                        preferences.edit().remove(string).apply()
+                        preferences.edit {remove(string)}
                     }
                 } catch (exception: ClassNotFoundException) {
                     Log.e(TAG, "getSheets: Could not get class $string")
-                    preferences.edit().remove(string).apply()
+                    preferences.edit {remove(string)}
                 }
             }
 
@@ -130,25 +131,25 @@ enum class SheetType(private val stringType: String, private val axesValue: Int)
 
             if (clazz == ApplicationsDialog::class.java) {
                 if (writeToPreferences) {
-                    preferences.edit()
-                        .putString(ApplicationsDialog::class.java.name, BOTTOM_SHEET.toString())
-                        .apply()
+                    preferences.edit {
+                            putString(ApplicationsDialog::class.java.name, BOTTOM_SHEET.toString())
+                        }
                 }
 
                 type = BOTTOM_SHEET
             } else if (clazz == BriefingDialog::class.java) {
                 if (writeToPreferences) {
-                    preferences.edit()
-                        .putString(BriefingDialog::class.java.name, LEFT_SHEET.toString())
-                        .apply()
+                    preferences.edit {
+                            putString(BriefingDialog::class.java.name, LEFT_SHEET.toString())
+                        }
                 }
 
                 type = LEFT_SHEET
             } else if (clazz == WidgetsDialog::class.java) {
                 if (writeToPreferences) {
-                    preferences.edit()
-                        .putString(WidgetsDialog::class.java.name, RIGHT_SHEET.toString())
-                        .apply()
+                    preferences.edit {
+                            putString(WidgetsDialog::class.java.name, RIGHT_SHEET.toString())
+                        }
                 }
 
                 type = RIGHT_SHEET

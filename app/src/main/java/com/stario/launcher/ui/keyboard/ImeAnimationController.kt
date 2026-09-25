@@ -31,6 +31,7 @@ import androidx.dynamicanimation.animation.FloatValueHolder
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import com.stario.launcher.utils.Utils
+import androidx.core.view.isVisible
 
 private const val SCROLL_THRESHOLD = 0.15f
 
@@ -61,7 +62,7 @@ open class ImeAnimationController {
             val cancellationSignal = CancellationSignal()
             this.cancellationSignal = cancellationSignal
 
-            //noinspection deprecation
+            @Suppress("DEPRECATION")
             val windowInsetsController = ViewCompat.getWindowInsetsController(view)
 
             if (windowInsetsController != null) {

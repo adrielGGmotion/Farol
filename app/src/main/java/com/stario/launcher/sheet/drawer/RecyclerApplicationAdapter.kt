@@ -51,6 +51,7 @@ import com.stario.launcher.ui.recyclers.async.InflationType
 import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.utils.Utils
 import java.util.function.Supplier
+import androidx.core.view.isNotEmpty
 
 abstract class RecyclerApplicationAdapter : AsyncRecyclerAdapter<RecyclerApplicationAdapter.ApplicationViewHolder> {
     companion object {
@@ -139,7 +140,7 @@ abstract class RecyclerApplicationAdapter : AsyncRecyclerAdapter<RecyclerApplica
             val launcherApps = activity.getSystemService(Context.LAUNCHER_APPS_SERVICE) as LauncherApps
             val menu = PopupMenu(activity)
             if (Utils.isProfileAvailable(activity, application.getProfile())) {
-                menu.addShortcuts(launcherApps, getShortcutForApplication(launcherApps, application) as java.util.List<ShortcutInfo?>)
+                menu.addShortcuts(launcherApps, getShortcutForApplication(launcherApps, application))
             }
             val resources = activity.resources
             menu.add(PopupMenu.Item(resources.getString(R.string.app_info),

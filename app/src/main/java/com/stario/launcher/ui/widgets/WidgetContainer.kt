@@ -25,6 +25,7 @@ import android.widget.RelativeLayout
 import com.stario.launcher.sheet.widgets.Widget
 import com.stario.launcher.sheet.widgets.WidgetSize
 import com.stario.launcher.ui.Measurements
+import androidx.core.view.size
 
 @SuppressLint("ViewConstructor")
 open class WidgetContainer internal constructor(
@@ -67,6 +68,7 @@ open class WidgetContainer internal constructor(
         val hostHeight = params.height - paddingTop - paddingBottom
 
         if (measuredWidth > 0 && measuredHeight > 0) {
+            @Suppress("DEPRECATION")
             hostValue.updateAppWidgetSize(
                 null,
                 (hostWidth / Measurements.getDensity()).toInt(),
@@ -94,5 +96,5 @@ open class WidgetContainer internal constructor(
         }
     }
 
-    override fun compareTo(container: WidgetContainer): Int = widgetValue.compareTo(container.widgetValue)
+    override fun compareTo(other: WidgetContainer): Int = widgetValue.compareTo(other.widgetValue)
 }

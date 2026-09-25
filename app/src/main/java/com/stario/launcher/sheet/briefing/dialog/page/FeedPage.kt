@@ -47,6 +47,7 @@ import com.stario.launcher.ui.utils.UiUtils
 import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.utils.Utils
 import java.util.concurrent.Future
+import androidx.core.view.size
 
 open class FeedPage : Fragment {
     private var swipeRefreshLayout: CustomSwipeRefreshLayout? = null

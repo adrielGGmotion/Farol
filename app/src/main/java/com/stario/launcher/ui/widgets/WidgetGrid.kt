@@ -34,6 +34,8 @@ import com.stario.launcher.ui.utils.LayoutSizeObserver
 import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.utils.objects.ObservableObject
 import java.util.PriorityQueue
+import androidx.core.view.isEmpty
+import androidx.core.view.size
 
 open class WidgetGrid : GridLayout {
     private var onDispatchDrawReorderRunnable: Runnable? = null

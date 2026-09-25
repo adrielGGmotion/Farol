@@ -22,7 +22,7 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.UserHandle
 import android.os.UserManager
@@ -51,6 +51,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
+import androidx.core.view.isEmpty
 
 open class Utils {
     companion object {
@@ -204,9 +205,10 @@ open class Utils {
         fun isNetworkAvailable(context: Context): Boolean {
             val connectivityManager =
                 context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-            val activeNetworkInfo: NetworkInfo? = connectivityManager?.getActiveNetworkInfo()
+            val network = connectivityManager?.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
 
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected()
+            return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         }
 
         @JvmStatic

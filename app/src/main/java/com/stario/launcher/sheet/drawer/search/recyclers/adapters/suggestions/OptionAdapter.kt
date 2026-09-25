@@ -39,6 +39,10 @@ import com.stario.launcher.apps.interfaces.LauncherApplicationListener
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.utils.UiUtils
 import com.stario.launcher.utils.Utils
+import androidx.core.net.toUri
+import androidx.core.view.isNotEmpty
+import androidx.core.view.isVisible
+import androidx.core.view.size
 
 open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearchAdapter(activity, false) {
     companion object {
@@ -58,7 +62,7 @@ open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearc
         Utils.submitTask(Runnable {
             for (uri in PREDEFINED_URIS) {
                 val resolvers = packageManager.queryIntentActivities(
-                    Intent(Intent.ACTION_VIEW, Uri.parse(uri)), PackageManager.MATCH_ALL)
+                    Intent(Intent.ACTION_VIEW, uri.toUri()), PackageManager.MATCH_ALL)
                 for (info in resolvers) {
                     val application = applicationManager.get(info.activityInfo.packageName)
                     if (application != LauncherApplication.FALLBACK_APP) {
@@ -149,7 +153,7 @@ open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearc
 
     override fun submit(): Boolean {
         val recycler = recyclerView ?: return false
-        if (recycler.layoutManager != null && recycler.visibility == View.VISIBLE) {
+        if (recycler.layoutManager != null && recycler.isVisible) {
             val view = recycler.layoutManager?.findViewByPosition(0)
             if (view != null) {
                 view.callOnClick()
@@ -161,7 +165,7 @@ open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearc
 
     override fun onBindViewHolder(viewHolder: ViewHolder, index: Int) {
         val entry = options[index]
-        viewHolder.label.text = activity.resources.getString(R.string.search_on) + " " + entry.application.getLabel()
+        viewHolder.label.text = activity.getString(R.string.search_on_app, entry.application.getLabel())
         viewHolder.icon.setApplication(entry.application)
         viewHolder.itemView.setOnClickListener {
             val options = ActivityOptions.makeScaleUpAnimation(viewHolder.icon, 0, 0,
@@ -172,7 +176,7 @@ open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearc
             val intent = entry.getIntent()
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             val uri = intent.data
-            if (uri != null) intent.data = Uri.parse(uri.toString() + query)
+            if (uri != null) intent.data = (uri.toString() + query).toUri()
             else intent.putExtra(SearchManager.QUERY, query)
             try {
                 activity.startActivity(intent, options.toBundle())
@@ -203,7 +207,7 @@ open class OptionAdapter(private val activity: ThemedActivity) : SuggestionSearc
             application, Intent().setComponent(ComponentName(info.packageName, info.name)).setAction(filter))
         constructor(application: LauncherApplication, uri: String) : this(
             application, Intent().setPackage(application.getInfo().packageName)
-                .setAction(Intent.ACTION_VIEW).setData(Uri.parse(uri)))
+                .setAction(Intent.ACTION_VIEW).setData(uri.toUri()))
 
         fun getIntent(): Intent = Intent(referenceIntent)
         override fun hashCode(): Int = application.getInfo().hashCode()

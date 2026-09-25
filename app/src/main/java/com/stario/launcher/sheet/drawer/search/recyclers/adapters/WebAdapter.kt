@@ -57,6 +57,9 @@ import java.util.concurrent.Callable
 import java.util.concurrent.CompletableFuture
 import java.util.regex.Pattern
 import java.util.stream.Collectors
+import androidx.core.net.toUri
+import androidx.core.view.isNotEmpty
+import androidx.core.view.size
 
 open class WebAdapter(private val activity: ThemedActivity) : AbstractSearchListAdapter<WebAdapter.ViewHolder>() {
     companion object {
@@ -200,7 +203,7 @@ open class WebAdapter(private val activity: ThemedActivity) : AbstractSearchList
             if (Utils.isMinimumSDK(Build.VERSION_CODES.TIRAMISU)) {
                 options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON)
             }
-            activity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(entry.url)), options.toBundle())
+            activity.startActivity(Intent(Intent.ACTION_VIEW, entry.url.toUri()), options.toBundle())
         }
     }
 

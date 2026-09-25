@@ -24,6 +24,8 @@ import com.stario.launcher.preferences.Entry
 import com.stario.launcher.themes.ThemedActivity
 import org.json.JSONArray
 import java.util.ArrayList
+import androidx.core.content.edit
+import androidx.core.view.size
 
 open class BriefingFeedList private constructor(activity: ThemedActivity) {
     private val listeners: MutableList<FeedListener> = ArrayList()
@@ -60,9 +62,9 @@ open class BriefingFeedList private constructor(activity: ThemedActivity) {
         } catch (exception: Exception) {
             Log.e("BriefingFeedList", "Error loading feeds.", exception)
 
-            state.edit()
-                .remove(FEEDS_KEY)
-                .apply()
+            state.edit {
+                    remove(FEEDS_KEY)
+                }
         }
     }
 
@@ -124,9 +126,9 @@ open class BriefingFeedList private constructor(activity: ThemedActivity) {
             serials.add(item.serialize())
         }
 
-        state.edit()
-            .putString(FEEDS_KEY, JSONArray(serials).toString())
-            .commit()
+        state.edit(commit = true) {
+                putString(FEEDS_KEY, JSONArray(serials).toString())
+            }
     }
 
     fun addOnFeedUpdateListener(listener: FeedListener?) {

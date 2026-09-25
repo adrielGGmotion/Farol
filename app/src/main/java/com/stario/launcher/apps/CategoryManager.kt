@@ -32,6 +32,9 @@ import java.util.Collections
 import java.util.HashMap
 import java.util.Locale
 import java.util.UUID
+import androidx.core.view.isVisible
+import androidx.core.view.size
+import androidx.core.content.edit
 
 class CategoryManager private constructor(stario: Stario) {
     private val categories: MutableList<Category> = Collections.synchronizedList(ArrayList())
@@ -233,9 +236,9 @@ class CategoryManager private constructor(stario: Stario) {
             try {
                 return UUID.fromString(identifier)
             } catch (exception: IllegalArgumentException) {
-                remappedCategories.edit()
-                    .remove(key)
-                    .apply()
+                remappedCategories.edit {
+                        remove(key)
+                    }
             }
         }
 
@@ -282,9 +285,9 @@ class CategoryManager private constructor(stario: Stario) {
         if (identifier == null) {
             identifier = UUID.randomUUID()
 
-            customCategoryNames.edit()
-                .putString(identifier.toString(), name)
-                .apply()
+            customCategoryNames.edit {
+                    putString(identifier.toString(), name)
+                }
         } else if (indexOf(identifier) == NO_CATEGORY) {
             addCategory(identifier)
         }
@@ -297,9 +300,9 @@ class CategoryManager private constructor(stario: Stario) {
             return
         }
 
-        remappedCategories.edit()
-            .putString(getRemappedCategoryKey(application.info, application.handle), uuid.toString())
-            .apply()
+        remappedCategories.edit {
+                putString(getRemappedCategoryKey(application.info, application.handle), uuid.toString())
+            }
 
         val category = getCategoryIdentifier(application.info, application.handle)
 
@@ -315,9 +318,9 @@ class CategoryManager private constructor(stario: Stario) {
             return
         }
 
-        customCategoryNames.edit()
-            .putString(categoryIdentifier.toString(), text)
-            .apply()
+        customCategoryNames.edit {
+                putString(categoryIdentifier.toString(), text)
+            }
 
         for (listener in categoryListeners) {
             listener.onChanged(get(categoryIdentifier))

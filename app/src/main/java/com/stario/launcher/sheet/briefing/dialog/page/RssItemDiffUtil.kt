@@ -20,6 +20,7 @@ package com.stario.launcher.sheet.briefing.dialog.page
 import androidx.recyclerview.widget.DiffUtil
 import com.prof18.rssparser.model.RssItem
 import java.util.Objects
+import androidx.core.view.size
 
 open class RssItemDiffUtil(
     private val oldList: List<RssItem>,

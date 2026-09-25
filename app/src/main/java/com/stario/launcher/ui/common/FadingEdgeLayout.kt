@@ -32,6 +32,8 @@ import android.util.TypedValue
 import android.widget.FrameLayout
 import com.stario.launcher.R
 import kotlin.math.min
+import androidx.core.content.withStyledAttributes
+import androidx.core.view.isGone
 
 open class FadingEdgeLayout : FrameLayout {
     companion object {
@@ -75,22 +77,22 @@ open class FadingEdgeLayout : FrameLayout {
     private fun init(attrs: AttributeSet?) {
         val defaultSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_GRADIENT_SIZE_DP.toFloat(), resources.displayMetrics).toInt()
         if (attrs != null) {
-            val arr = context.obtainStyledAttributes(attrs, R.styleable.FadingEdgeLayout, 0, 0)
-            val flags = arr.getInt(R.styleable.FadingEdgeLayout_edge, 0)
-            fadeTop = flags and FADE_EDGE_TOP == FADE_EDGE_TOP
-            fadeBottom = flags and FADE_EDGE_BOTTOM == FADE_EDGE_BOTTOM
-            fadeLeft = flags and FADE_EDGE_LEFT == FADE_EDGE_LEFT
-            fadeRight = flags and FADE_EDGE_RIGHT == FADE_EDGE_RIGHT
-            gradientSizeTop = arr.getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_top, defaultSize)
-            gradientSizeBottom = arr.getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_bottom, defaultSize)
-            gradientSizeLeft = arr.getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_left, defaultSize)
-            gradientSizeRight = arr.getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_right, defaultSize)
-            rounded = arr.getBoolean(R.styleable.FadingEdgeLayout_is_rounded, false)
-            if (fadeTop && gradientSizeTop > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_TOP
-            if (fadeLeft && gradientSizeLeft > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_LEFT
-            if (fadeBottom && gradientSizeBottom > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_BOTTOM
-            if (fadeRight && gradientSizeRight > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_RIGHT
-            arr.recycle()
+            context.withStyledAttributes(attrs, R.styleable.FadingEdgeLayout, 0, 0) {
+                val flags = getInt(R.styleable.FadingEdgeLayout_edge, 0)
+                fadeTop = flags and FADE_EDGE_TOP == FADE_EDGE_TOP
+                fadeBottom = flags and FADE_EDGE_BOTTOM == FADE_EDGE_BOTTOM
+                fadeLeft = flags and FADE_EDGE_LEFT == FADE_EDGE_LEFT
+                fadeRight = flags and FADE_EDGE_RIGHT == FADE_EDGE_RIGHT
+                gradientSizeTop = getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_top, defaultSize)
+                gradientSizeBottom = getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_bottom, defaultSize)
+                gradientSizeLeft = getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_left, defaultSize)
+                gradientSizeRight = getDimensionPixelSize(R.styleable.FadingEdgeLayout_size_right, defaultSize)
+                rounded = getBoolean(R.styleable.FadingEdgeLayout_is_rounded, false)
+                if (fadeTop && gradientSizeTop > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_TOP
+                if (fadeLeft && gradientSizeLeft > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_LEFT
+                if (fadeBottom && gradientSizeBottom > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_BOTTOM
+                if (fadeRight && gradientSizeRight > 0) gradientDirtyFlags = gradientDirtyFlags or DIRTY_FLAG_RIGHT
+            }
         } else {
             gradientSizeTop = defaultSize
             gradientSizeBottom = defaultSize
@@ -166,7 +168,7 @@ open class FadingEdgeLayout : FrameLayout {
     override fun dispatchDraw(canvas: Canvas) {
         val width = width
         val height = height
-        if (visibility == GONE || width == 0 || height == 0 || !(fadeTop || fadeBottom || fadeLeft || fadeRight)) {
+        if (isGone || width == 0 || height == 0 || !(fadeTop || fadeBottom || fadeLeft || fadeRight)) {
             super.dispatchDraw(canvas)
             return
         }

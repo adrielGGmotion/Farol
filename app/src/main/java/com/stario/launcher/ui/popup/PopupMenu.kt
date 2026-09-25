@@ -63,8 +63,12 @@ import com.stario.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
 import com.stario.launcher.ui.utils.animation.Animation
 
 import java.util.HashMap
-import java.util.List
 import java.util.Map
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.get
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.isEmpty
+import androidx.core.view.size
 
 open class PopupMenu {
     companion object {
@@ -102,7 +106,7 @@ open class PopupMenu {
 
         val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-        this.root = inflater.inflate(R.layout.popup_window, null) as LinearLayout
+        this.root = inflater.inflate(R.layout.popup_window, android.widget.FrameLayout(activity), false) as LinearLayout
         this.popupWindow = PopupWindow(
             root,
             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -212,11 +216,7 @@ open class PopupMenu {
                 val paddingHorizontal = (Math.max(width, height) - width) / 2
                 val paddingVertical = (Math.max(width, height) - height) / 2
 
-                val bitmap = Bitmap.createBitmap(
-                    width + 2 * paddingHorizontal,
-                    height + 2 * paddingVertical,
-                    Bitmap.Config.ARGB_8888
-                )
+                val bitmap = createBitmap(width + 2 * paddingHorizontal, height + 2 * paddingVertical)
 
                 val canvas = Canvas(bitmap)
                 drawable.setBounds(
@@ -236,41 +236,35 @@ open class PopupMenu {
 
                     while (
                         target > threshold &&
-                        Color.alpha(bitmap.getPixel(centerX, target)) == 255 &&
-                        Color.alpha(bitmap.getPixel(target, centerY)) == 255 &&
-                        Color.alpha(bitmap.getPixel(centerX, width - target)) == 255 &&
-                        Color.alpha(bitmap.getPixel(height - target, centerY)) == 255 &&
+                        Color.alpha(bitmap[centerX, target]) == 255 &&
+                        Color.alpha(bitmap[target, centerY]) == 255 &&
+                        Color.alpha(bitmap[centerX, width - target]) == 255 &&
+                        Color.alpha(bitmap[height - target, centerY]) == 255 &&
                         Color.alpha(
-                            bitmap.getPixel(
-                                centerX / 2 + target,
-                                centerY / 2 + target
-                            )
+                            bitmap[centerX / 2 + target, centerY / 2 + target]
                         ) == 255 &&
                         Color.alpha(
-                            bitmap.getPixel(
-                                centerY / 2 + target,
-                                centerX / 2 + target
-                            )
+                            bitmap[centerY / 2 + target, centerX / 2 + target]
                         ) == 255
                     ) {
                         target -= 2
                     }
 
                     drawable = if (target <= threshold) {
-                        BitmapDrawable(activity.getResources(), bitmap)
+                        bitmap.toDrawable(activity.getResources())
                     } else {
                         LayerDrawable(
                             arrayOf(
-                                ColorDrawable(Color.WHITE),
+                                Color.WHITE.toDrawable(),
                                 InsetDrawable(
-                                    BitmapDrawable(activity.getResources(), bitmap),
+                                    bitmap.toDrawable(activity.getResources()),
                                     INSET_FRACTION
                                 )
                             )
                         )
                     }
                 } else {
-                    drawable = BitmapDrawable(activity.getResources(), bitmap)
+                    drawable = bitmap.toDrawable(activity.getResources())
                 }
 
                 if (label != null) {
@@ -297,7 +291,7 @@ open class PopupMenu {
             return null
         }
 
-        val bitmap = Bitmap.createBitmap(ICON_SIZE, ICON_SIZE, Bitmap.Config.ARGB_8888)
+        val bitmap = createBitmap(ICON_SIZE, ICON_SIZE)
 
         val paint = Paint()
         paint.setStyle(Paint.Style.FILL)
@@ -315,7 +309,7 @@ open class PopupMenu {
             paint
         )
 
-        return BitmapDrawable(activity.getResources(), bitmap)
+        return bitmap.toDrawable(activity.getResources())
     }
 
     open fun add(item: Item?) {

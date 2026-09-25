@@ -30,6 +30,8 @@ import com.stario.launcher.activities.launcher.widgets.pins.PinnedCategory
 import com.stario.launcher.apps.CategoryManager
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.themes.ThemedActivity
+import androidx.core.view.size
+import androidx.core.content.edit
 
 internal class PinnedCategoryRecyclerAdapter(
     private val activity: ThemedActivity,
@@ -53,16 +55,14 @@ internal class PinnedCategoryRecyclerAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val category = categoryManager.get(position)
 
-        if (category != null) {
-            viewHolder.label.setText(CategoryManager.getInstance().getCategoryName(category.identifier))
-            viewHolder.recyclerView.setAdapter(PinnedCategoryApplicationRecyclerAdapter(activity, category))
+        viewHolder.label.setText(CategoryManager.getInstance().getCategoryName(category.identifier))
+        viewHolder.recyclerView.setAdapter(PinnedCategoryApplicationRecyclerAdapter(activity, category))
 
-            viewHolder.itemView.setOnClickListener { view ->
-                settings.edit()
-                    .putString(PinnedCategory.PINNED_CATEGORY, category.identifier.toString())
-                    .apply()
-                listener?.onClick(view)
-            }
+        viewHolder.itemView.setOnClickListener { view ->
+            settings.edit {
+                    putString(PinnedCategory.PINNED_CATEGORY, category.identifier.toString())
+                }
+            listener?.onClick(view)
         }
     }
 

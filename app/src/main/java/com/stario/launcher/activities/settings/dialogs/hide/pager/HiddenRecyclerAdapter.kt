@@ -30,6 +30,7 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.recyclers.async.InflationType
 import java.util.function.Supplier
+import androidx.core.view.isVisible
 
 open class HiddenRecyclerAdapter(
     activity: ThemedActivity,
@@ -94,11 +95,11 @@ open class HiddenRecyclerAdapter(
         override fun getOnLongClickListener(): View.OnLongClickListener? = null
     }
 
-    override fun onBind(viewHolder: ApplicationViewHolder, index: Int) {
-        super.onBind(viewHolder, index)
+    override fun onBind(holder: ApplicationViewHolder, position: Int) {
+        super.onBind(holder, position)
 
-        val hidden = !applicationManager!!.isVisibleToUser(getApplication(index))
-        val hiddenViewHolder = viewHolder as HiddenViewHolder
+        val hidden = !applicationManager!!.isVisibleToUser(getApplication(position))
+        val hiddenViewHolder = holder as HiddenViewHolder
 
         hiddenViewHolder.icon.setAlpha(if (hidden) HIDDEN_ALPHA else 1f)
         hiddenViewHolder.icon.setScaleX(if (hidden) HIDDEN_SCALE else 1f)

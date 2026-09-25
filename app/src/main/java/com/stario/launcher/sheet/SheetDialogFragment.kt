@@ -20,6 +20,7 @@ package com.stario.launcher.sheet
 import android.app.Dialog
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -106,7 +107,12 @@ abstract class SheetDialogFragment() : DialogFragment() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState != null) {
-            sheetType = savedInstanceState.getSerializable(TYPE_KEY) as SheetType?
+            sheetType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                savedInstanceState.getSerializable(TYPE_KEY, SheetType::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                savedInstanceState.getSerializable(TYPE_KEY) as SheetType?
+            }
         }
 
         if (sheetType == null) {
@@ -265,15 +271,7 @@ abstract class SheetDialogFragment() : DialogFragment() {
         val window: Window? = dialog.window
 
         if (window != null) {
-            val decor = window.decorView
-
-            if (lightMode) {
-                decor.systemUiVisibility = decor.systemUiVisibility and
-                        (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR).inv()
-            } else {
-                decor.systemUiVisibility = decor.systemUiVisibility or
-                        (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
-            }
+            UiUtils.setLightSystemBars(window, !lightMode)
         }
     }
 

@@ -91,6 +91,7 @@ open class PersistentFullscreenDialog(
     }
 
     @SuppressLint("GestureBackNavigation")
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
         if (listener == null || listener!!.onPressed()) {
             super.onBackPressed()

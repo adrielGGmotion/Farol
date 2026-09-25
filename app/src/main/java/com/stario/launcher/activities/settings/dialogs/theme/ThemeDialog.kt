@@ -30,16 +30,17 @@ import com.stario.launcher.R
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
+import androidx.core.content.edit
 
 open class ThemeDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private var listener: OnDismissListener? = null
     private var recreateActivity = false
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
         val themePreferences: SharedPreferences = activity.getApplicationContext()
             .getSharedPreferences(Entry.THEME)
-        val root = inflater.inflate(R.layout.pop_up_theme, null)
+        val root = inflater.inflate(R.layout.pop_up_theme, parent, false)
 
         val isForceDarkOn = themePreferences.getBoolean(ThemedActivity.FORCE_DARK, false)
 
@@ -47,9 +48,9 @@ open class ThemeDialog(activity: ThemedActivity) : ActionDialog(activity) {
         materialSwitch.setChecked(isForceDarkOn)
         materialSwitch.jumpDrawablesToCurrentState()
         materialSwitch.setOnCheckedChangeListener { _, isChecked ->
-            themePreferences.edit()
-                .putBoolean(ThemedActivity.FORCE_DARK, isChecked)
-                .apply()
+            themePreferences.edit {
+                    putBoolean(ThemedActivity.FORCE_DARK, isChecked)
+                }
         }
 
         root.findViewById<View>(R.id.force_dark_container)

@@ -57,6 +57,6 @@ open class AnimatedInsetDrawable(private val inner: Drawable) : Drawable() {
         inner.colorFilter = colorFilter
     }
 
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
     override fun getOpacity(): Int = inner.opacity
 }

@@ -42,6 +42,7 @@ import androidx.annotation.FloatRange
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.utils.Utils
 import kotlin.jvm.JvmStatic
+import androidx.core.graphics.drawable.toDrawable
 
 open class DialogBackgroundDimmingController private constructor(
     private val activity: ThemedActivity
@@ -134,9 +135,7 @@ open class DialogBackgroundDimmingController private constructor(
     }
     private val settings: SharedPreferences = activity.applicationContext.getSettings()
     private val powerManager: PowerManager = activity.getSystemService(PowerManager::class.java)
-    private val background: Drawable = ColorDrawable(
-        activity.getAttributeData(com.google.android.material.R.attr.colorSurfaceContainer)
-    ).apply {
+    private val background: Drawable = activity.getAttributeData(com.google.android.material.R.attr.colorSurfaceContainer).toDrawable().apply {
         alpha = 0
     }
 

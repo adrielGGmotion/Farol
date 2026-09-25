@@ -33,6 +33,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.stario.launcher.ui.Measurements
 import com.stario.launcher.ui.utils.animation.Animation
 import java.util.ArrayList
+import androidx.core.view.size
 
 open class PulsingTextView : AppCompatTextView {
     private lateinit var animator: ValueAnimator

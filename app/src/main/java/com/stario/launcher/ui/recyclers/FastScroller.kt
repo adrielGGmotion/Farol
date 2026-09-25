@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.R
 import com.stario.launcher.ui.utils.animation.Animation
+import androidx.core.view.size
 
 open class FastScroller : RelativeLayout {
     private var recyclerView: RecyclerView? = null
@@ -121,7 +122,7 @@ open class FastScroller : RelativeLayout {
         super.onFinishInflate()
 
         // two tracks + popup view which are inflated before everything else
-        if (getChildCount() > 3) {
+        if (size > 3) {
             val child = getChildAt(3)
             removeView(child)
             addView(child, 0)
@@ -238,7 +239,7 @@ open class FastScroller : RelativeLayout {
         }
 
         if (view is ViewGroup) {
-            for (index in 0 until view.getChildCount()) {
+            for (index in 0 until view.size) {
                 val recycler = findRecycler(view.getChildAt(index))
                 if (recycler != null) {
                     return recycler

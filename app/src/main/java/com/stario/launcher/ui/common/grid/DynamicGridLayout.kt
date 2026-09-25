@@ -24,6 +24,7 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -38,6 +39,8 @@ import java.util.LinkedList
 import java.util.Queue
 import kotlin.math.pow
 import kotlin.math.sqrt
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
 
 open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, attrs) {
     private val templateManager: GridTemplateManager
@@ -58,7 +61,7 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
     private lateinit var originalParams: LayoutParams
     private var reorderRunnable: Runnable? = null
     private var currentHoverTarget: View? = null
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
     private var pendingTargetCol = 0
     private var pendingTargetRow = 0
     private var lastMeasuredCols = -1

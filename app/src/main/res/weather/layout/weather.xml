@@ -17,13 +17,16 @@
 
 <com.stario.launcher.ui.common.glance.GlanceConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_weather"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorSurfaceContainer"
     android:minHeight="200dp"
     app:strokeColor="?attr/colorSurfaceContainerHigh"
-    app:strokeWidth="1dp">
+    app:strokeWidth="1dp"
+    tools:context=".activities.launcher.Launcher"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:id="@+id/container"
@@ -35,6 +38,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:baselineAligned="false"
             android:orientation="horizontal"
             android:padding="15dp">
 
@@ -51,6 +55,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:id="@+id/icon"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
@@ -103,11 +108,12 @@
                     android:layout_height="wrap_content"
                     android:alpha="0.7"
                     android:fontFamily="@font/dm_sans_regular"
-                    android:text="N"
+                    android:text="@string/north_abbreviation"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="14sp" />
 
                 <ImageView
+                    android:contentDescription="@null"
                     android:id="@+id/direction"
                     android:layout_width="40dp"
                     android:layout_height="40dp"

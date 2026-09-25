@@ -27,13 +27,14 @@ import android.os.Build
 import android.os.Process
 import android.os.UserHandle
 import android.os.UserManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.core.content.ContextCompat
 import com.stario.launcher.Stario
 import com.stario.launcher.apps.interfaces.LauncherProfileListener
 import com.stario.launcher.utils.Utils
 import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
+import androidx.core.view.size
 
 class ProfileManager private constructor(stario: Stario) {
     private val profilesMap: MutableMap<UserHandle, ProfileApplicationManager> = HashMap()
@@ -172,11 +173,12 @@ class ProfileManager private constructor(stario: Stario) {
                 val created = ProfileManager(stario)
                 val receiver = getReceiver(created)
 
-                if (Utils.isMinimumSDK(Build.VERSION_CODES.TIRAMISU)) {
-                    stario.registerReceiver(receiver, getIntentFilter(), Context.RECEIVER_EXPORTED)
-                } else {
-                    stario.registerReceiver(receiver, getIntentFilter())
-                }
+                ContextCompat.registerReceiver(
+                    stario,
+                    receiver,
+                    getIntentFilter(),
+                    ContextCompat.RECEIVER_EXPORTED
+                )
             } else if (refreshIcons) {
                 manager.iconPacks.refresh()
                 manager.update()
@@ -245,16 +247,16 @@ class ProfileManager private constructor(stario: Stario) {
                                 val availabilityIntent = Intent(getProfileAvailabilityIntentAction(handle))
                                 availabilityIntent.putExtra(PROFILE_AVAILABLE_EXTRA, true)
 
-                                LocalBroadcastManager.getInstance(context)
-                                    .sendBroadcastSync(availabilityIntent)
+                                availabilityIntent.setPackage(context.packageName)
+                                context.sendBroadcast(availabilityIntent)
                             }
 
                             Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE -> {
                                 val availabilityIntent = Intent(getProfileAvailabilityIntentAction(handle))
                                 availabilityIntent.putExtra(PROFILE_AVAILABLE_EXTRA, false)
 
-                                LocalBroadcastManager.getInstance(context)
-                                    .sendBroadcastSync(availabilityIntent)
+                                availabilityIntent.setPackage(context.packageName)
+                                context.sendBroadcast(availabilityIntent)
                             }
                         }
                     }

@@ -17,13 +17,16 @@
 
 <com.stario.launcher.ui.common.glance.GlanceConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_media"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/colorSurfaceContainer"
     android:minHeight="180dp"
     app:strokeColor="?attr/colorSurfaceContainerHigh"
-    app:strokeWidth="1dp">
+    app:strokeWidth="1dp"
+    tools:context=".activities.launcher.Launcher"
+    tools:ignore="Overdraw">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -32,6 +35,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/album_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -90,6 +94,7 @@
             </LinearLayout>
 
             <ImageView
+                android:contentDescription="@null"
                 android:id="@+id/play_pause"
                 android:layout_width="46dp"
                 android:layout_height="46dp"

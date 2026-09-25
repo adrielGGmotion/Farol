@@ -68,9 +68,12 @@ open class CenterTabLayout : SmartTabLayout {
         super.setViewPager(viewPager)
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent): Boolean = false
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean = false
+
+    override fun performClick(): Boolean = super.performClick()
 
     open fun setOnTabLongClickListener(listener: OnLongClickTabListener?) {
         this.listener = listener

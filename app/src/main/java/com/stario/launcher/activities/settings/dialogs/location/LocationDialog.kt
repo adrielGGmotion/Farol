@@ -38,8 +38,8 @@ open class LocationDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private var listener: OnLocationUpdate? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_location, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_location, parent, false)
 
         val query = root.findViewById<EditText>(R.id.query)
         val recycler = root.findViewById<RecyclerView>(R.id.recycler)

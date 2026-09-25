@@ -29,6 +29,7 @@ import com.stario.launcher.apps.IconPackManager
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.utils.UiUtils
+import java.util.Locale
 import java.util.concurrent.CompletableFuture
 
 open class IconsRecyclerAdapter(
@@ -58,7 +59,7 @@ open class IconsRecyclerAdapter(
             future.thenAccept { integer ->
                 UiUtils.post {
                     viewHolder.count.setText(
-                        String.format("%,d", integer) + " " + activity.getResources().getString(R.string.components)
+                        activity.getString(R.string.components_count, String.format(Locale.getDefault(), "%,d", integer))
                     )
                 }
             }

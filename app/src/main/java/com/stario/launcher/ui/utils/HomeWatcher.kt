@@ -25,6 +25,7 @@ import android.os.Build
 import com.stario.launcher.utils.Utils
 
 open class HomeWatcher(private val context: Context) {
+    @Suppress("DEPRECATION")
     private val filter = IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)
 
     private var receiver: InnerReceiver? = null
@@ -55,6 +56,7 @@ open class HomeWatcher(private val context: Context) {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
 
+            @Suppress("DEPRECATION")
             if (action == Intent.ACTION_CLOSE_SYSTEM_DIALOGS) {
                 val reason: String? = intent.getStringExtra("reason")
 

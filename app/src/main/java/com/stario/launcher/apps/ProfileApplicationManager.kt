@@ -33,6 +33,10 @@ import com.stario.launcher.utils.Utils
 import java.util.ArrayList
 import java.util.Collections
 import java.util.HashMap
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
+import androidx.core.view.size
+import androidx.core.content.edit
 
 class ProfileApplicationManager(stario: Stario, @JvmField val handle: UserHandle) {
     private val visibleApplicationList: MutableList<LauncherApplication> =
@@ -238,9 +242,9 @@ class ProfileApplicationManager(stario: Stario, @JvmField val handle: UserHandle
         }
 
         if (oldLabel != application.label) {
-            applicationLabels.edit()
-                .putString(application.info.packageName, label)
-                .apply()
+            applicationLabels.edit {
+                    putString(application.info.packageName, label)
+                }
 
             if (isVisibleToUser(application.info.packageName)) {
                 notifyUpdate(application)
@@ -387,9 +391,9 @@ class ProfileApplicationManager(stario: Stario, @JvmField val handle: UserHandle
 
     @Synchronized
     fun showApplication(application: LauncherApplication) {
-        hiddenApplications.edit()
-            .remove(application.info.packageName)
-            .apply()
+        hiddenApplications.edit {
+                remove(application.info.packageName)
+            }
 
         if (!visibleApplicationList.contains(application)) {
             addApplicationToList(application, visibleApplicationList)
@@ -403,9 +407,9 @@ class ProfileApplicationManager(stario: Stario, @JvmField val handle: UserHandle
 
     @Synchronized
     fun hideApplication(application: LauncherApplication) {
-        hiddenApplications.edit()
-            .putBoolean(application.info.packageName, true)
-            .apply()
+        hiddenApplications.edit {
+                putBoolean(application.info.packageName, true)
+            }
 
         for (listener in listeners) {
             listener.onPrepareHiding()

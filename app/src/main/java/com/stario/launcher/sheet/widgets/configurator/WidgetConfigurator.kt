@@ -39,8 +39,8 @@ open class WidgetConfigurator(
     private lateinit var scroller: NestedScrollView
     private lateinit var adapter: WidgetListAdapter
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val contentView = inflater.inflate(R.layout.widget_picker, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val contentView = inflater.inflate(R.layout.widget_picker, parent, false)
 
         scroller = contentView.findViewById(R.id.scroller)
         scroller.setClipToOutline(true)

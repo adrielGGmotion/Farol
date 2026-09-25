@@ -63,18 +63,18 @@ open class LauncherApplication(
 
     override fun hashCode(): Int = info.packageName.hashCode()
 
-    override fun equals(obj: Any?): Boolean {
-        if (this === obj) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
 
-        return obj is LauncherApplication &&
-            info.packageName == obj.info.packageName && handle == obj.handle
+        return other is LauncherApplication &&
+            info.packageName == other.info.packageName && handle == other.handle
     }
 
-    override fun compareTo(launcherApplication: LauncherApplication): Int {
-        val result = getLabel().compareTo(launcherApplication.getLabel())
-        return if (result != 0) result else handle.hashCode() - launcherApplication.handle.hashCode()
+    override fun compareTo(other: LauncherApplication): Int {
+        val result = getLabel().compareTo(other.getLabel())
+        return if (result != 0) result else handle.hashCode() - other.handle.hashCode()
     }
 
     companion object {

@@ -30,6 +30,7 @@ import com.stario.launcher.sheet.behavior.SheetBehavior
 import com.stario.launcher.sheet.behavior.SheetDragHelper
 import com.stario.launcher.ui.Measurements
 import kotlin.math.abs
+import androidx.core.view.isVisible
 
 open class RightSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) : SheetBehavior<V>(context, attrs) {
     private var rememberInterceptResult: Boolean? = null
@@ -186,7 +187,7 @@ open class RightSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) 
                 if (pager != null && adapter != null && pager.currentItem > 0) return false
 
                 val scroll = nestedScrollingChildRef?.get()
-                if (scroll != null && scroll.visibility == View.VISIBLE && scroll.canScrollHorizontally(-1)) return false
+                if (scroll != null && scroll.isVisible && scroll.canScrollHorizontally(-1)) return false
             }
             return viewRef?.get() === child
         }
@@ -203,8 +204,8 @@ open class RightSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) 
             val left: Int
             val targetState: Int
             if (xvel == 0f || Measurements.dpToPx(
-                    ViewConfiguration.getMinimumFlingVelocity() +
-                        (ViewConfiguration.getMaximumFlingVelocity() - ViewConfiguration.getMinimumFlingVelocity()) / 10f
+                    ViewConfiguration.get(releasedChild.context).scaledMinimumFlingVelocity +
+                        (ViewConfiguration.get(releasedChild.context).scaledMaximumFlingVelocity - ViewConfiguration.get(releasedChild.context).scaledMinimumFlingVelocity) / 10f
                 ).toFloat() > abs(xvel)
             ) {
                 val currentLeft = releasedChild.left

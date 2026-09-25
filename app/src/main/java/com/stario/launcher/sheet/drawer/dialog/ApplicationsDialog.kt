@@ -34,7 +34,6 @@ import android.window.OnBackInvokedDispatcher
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.transition.Transition
 import androidx.transition.TransitionListenerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -54,6 +53,7 @@ import com.stario.launcher.ui.common.FadingEdgeLayout
 import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.ui.utils.animation.FragmentTransition
 import com.stario.launcher.utils.Utils
+import androidx.core.content.edit
 
 open class ApplicationsDialog : SheetDialogFragment {
     companion object {
@@ -184,6 +184,7 @@ open class ApplicationsDialog : SheetDialogFragment {
                     dialog.onBackInvokedDispatcher.registerOnBackInvokedCallback(
                         OnBackInvokedDispatcher.PRIORITY_OVERLAY) {
                         if (!requireNotNull(searchFragment).onBackPressed()) {
+                            @Suppress("DEPRECATION")
                             dialog.onBackPressed()
                             getBehavior()?.setDraggable(true)
                         }
@@ -264,7 +265,7 @@ open class ApplicationsDialog : SheetDialogFragment {
             override fun onPageSelected(position: Int) {
                 if (position > 0 && position < adapter.count - 1) {
                     activity.applicationContext.getSharedPreferences(Entry.DRAWER)
-                        .edit().putInt(APPLICATIONS_PAGE, position).apply()
+                        .edit {putInt(APPLICATIONS_PAGE, position)}
                 }
             }
             override fun onPageScrollStateChanged(state: Int) {
@@ -299,14 +300,16 @@ open class ApplicationsDialog : SheetDialogFragment {
                 if (::adapter.isInitialized) adapter.collapse()
             }
         }
-        val manager = LocalBroadcastManager.getInstance(activity)
+        @Suppress("DEPRECATION")
+        val manager = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(activity)
         manager.registerReceiver(popStackReceiver, IntentFilter(Categories.FOLDER_STACK_ID))
         manager.registerReceiver(launchSearchReceiver, IntentFilter(INTENT_LAUNCH_SEARCH))
         swipeDrawable = AppCompatResources.getDrawable(activity, R.drawable.ic_swipe)
     }
 
     override fun onDestroy() {
-        val manager = LocalBroadcastManager.getInstance(activity)
+        @Suppress("DEPRECATION")
+        val manager = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(activity)
         manager.unregisterReceiver(launchSearchReceiver)
         manager.unregisterReceiver(popStackReceiver)
         super.onDestroy()

@@ -18,6 +18,7 @@
 package com.stario.launcher.utils.objects
 
 import java.util.ArrayList
+import androidx.core.view.size
 
 open class ObservableObject<A>(initialObject: A?) {
     private val observable = ClosedObservableObject(initialObject)

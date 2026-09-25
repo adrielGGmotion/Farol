@@ -38,6 +38,7 @@ import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.ui.widgets.RoundedWidgetHost
 import com.stario.launcher.utils.Casing
 import com.stario.launcher.utils.Utils
+import androidx.core.view.size
 
 open class WidgetItemAdapter(
     private val activity: ThemedActivity,

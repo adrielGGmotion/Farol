@@ -37,8 +37,8 @@ open class FeedConfigurator(
     private val list = BriefingFeedList.from(activity)
     private var name: EditText? = null
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val contentView = inflater.inflate(R.layout.feed_configurator, null) as ViewGroup
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val contentView = inflater.inflate(R.layout.feed_configurator, parent, false) as ViewGroup
 
         val name = contentView.findViewById<EditText>(R.id.name)
         this.name = name

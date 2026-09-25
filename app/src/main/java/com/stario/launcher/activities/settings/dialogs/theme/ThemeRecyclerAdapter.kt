@@ -27,6 +27,8 @@ import com.stario.launcher.R
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.themes.Theme
 import com.stario.launcher.themes.ThemedActivity
+import androidx.core.view.size
+import androidx.core.content.edit
 
 open class ThemeRecyclerAdapter(
     private val activity: ThemedActivity,
@@ -52,9 +54,9 @@ open class ThemeRecyclerAdapter(
 
         viewHolder.itemView.setOnClickListener { view ->
             activity.getApplicationContext()
-                .getSharedPreferences(Entry.THEME).edit()
-                .putString(ThemedActivity.THEME, theme.toString())
-                .apply()
+                .getSharedPreferences(Entry.THEME).edit {
+                    putString(ThemedActivity.THEME, theme.toString())
+                }
             clickListener?.onClick(view)
         }
     }

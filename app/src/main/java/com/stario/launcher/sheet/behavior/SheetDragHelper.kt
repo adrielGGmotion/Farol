@@ -32,6 +32,7 @@ import androidx.annotation.Px
 import androidx.core.view.ViewCompat
 import java.util.Arrays
 import kotlin.math.sin
+import androidx.core.view.size
 
 /**
  * ViewDragHelper is a utility class for writing custom ViewGroups. It offers a number

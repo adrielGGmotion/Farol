@@ -45,8 +45,8 @@ internal open class PinnedAppsGroupAdapter(
         }
     }
 
-    override fun onBind(viewHolder: ViewHolder, index: Int) {
-        viewHolder.setApplication(getApplication(index))
+    override fun onBind(holder: ViewHolder, position: Int) {
+        holder.setApplication(getApplication(position))
     }
 
     override fun getLayout(viewType: Int): Int = R.layout.pinned_application_group_item

@@ -18,10 +18,7 @@
 package com.stario.launcher.activities.launcher.widgets.glance.extensions.weather
 
 import android.annotation.SuppressLint
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
@@ -36,7 +33,6 @@ import androidx.annotation.FloatRange
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
@@ -61,9 +57,10 @@ import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Future
 import kotlin.math.roundToInt
+import androidx.core.view.isNotEmpty
+import androidx.core.view.size
 
 open class Weather : GlanceDialogExtension() {
-    private val receiver: BroadcastReceiver
     private val preview = WeatherPreview()
 
     private lateinit var weatherPreferences: SharedPreferences
@@ -80,27 +77,27 @@ open class Weather : GlanceDialogExtension() {
     private lateinit var speed: TextView
     private lateinit var containerView: View
     private lateinit var icon: ImageView
+    private var preferencesListenerRegistered = false
+    private val weatherPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
+        requestUpdate()
+    }
 
     @JvmField
     val data = HashMap<String, Any>()
 
-    init {
-        receiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                lastUpdate = 0
-                address = null
-                weatherData.clear()
-                preview.update(null)
+    private fun requestUpdate() {
+        lastUpdate = 0
+        address = null
+        weatherData.clear()
+        preview.update(null)
 
-                synchronized(this@Weather) {
-                    if (runningTask != null && !runningTask!!.isDone) {
-                        runningTask!!.cancel(true)
-                    }
-                }
-
-                update()
+        synchronized(this@Weather) {
+            if (runningTask != null && !runningTask!!.isDone) {
+                runningTask!!.cancel(true)
             }
         }
+
+        update()
     }
 
     override fun getTAG(): String = TAG
@@ -112,6 +109,10 @@ open class Weather : GlanceDialogExtension() {
         val stario = activity.applicationContext as Stario
         weatherPreferences = stario.getSharedPreferences(Entry.WEATHER)
         geocoder = GeocoderFallback(activity)
+        if (!preferencesListenerRegistered) {
+            weatherPreferences.registerOnSharedPreferenceChangeListener(weatherPreferencesListener)
+            preferencesListenerRegistered = true
+        }
 
         containerView = root.findViewById(R.id.container)
         temperature = root.findViewById(R.id.temperature)
@@ -137,17 +138,14 @@ open class Weather : GlanceDialogExtension() {
                 }
             }
         })
-
-        LocalBroadcastManager.getInstance(activity).registerReceiver(receiver, IntentFilter(ACTION_REQUEST_UPDATE))
     }
 
     override fun onDetach() {
         super.onDetach()
 
-        try {
-            LocalBroadcastManager.getInstance(activity).unregisterReceiver(receiver)
-        } catch (exception: Exception) {
-            Log.e(TAG, "onDetach: Receiver not registered.")
+        if (preferencesListenerRegistered) {
+            weatherPreferences.unregisterOnSharedPreferenceChangeListener(weatherPreferencesListener)
+            preferencesListenerRegistered = false
         }
     }
 

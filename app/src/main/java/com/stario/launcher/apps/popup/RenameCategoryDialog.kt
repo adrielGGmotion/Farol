@@ -50,8 +50,8 @@ open class RenameCategoryDialog(
         }
     }
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_category, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_category, parent, false)
         val initialName = categoryManager.getCategoryName(categoryIdentifier)
         val warning = root.findViewById<View>(R.id.warning)
 

@@ -32,6 +32,7 @@ import com.stario.launcher.preferences.Vibrations
 import java.util.ArrayList
 
 import carbon.widget.ImageView
+import androidx.core.view.size
 
 open class RecyclerAdapter(
     private val activity: Activity,

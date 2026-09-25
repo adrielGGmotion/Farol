@@ -31,6 +31,7 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.utils.UiUtils
 import java.util.ArrayList
+import androidx.core.view.size
 
 open class IconsRecyclerAdapter(
     private val activity: ThemedActivity,

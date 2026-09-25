@@ -57,6 +57,9 @@ import com.stario.launcher.ui.widgets.WidgetHost
 import com.stario.launcher.ui.widgets.WidgetScroller
 import java.util.ArrayList
 import java.util.PriorityQueue
+import androidx.core.view.isEmpty
+import androidx.core.view.size
+import androidx.core.content.edit
 
 open class WidgetsDialog : SheetDialogFragment {
     private var bindWidgetRequest: ActivityResultLauncher<Intent>? = null
@@ -184,7 +187,7 @@ open class WidgetsDialog : SheetDialogFragment {
                         requireWidgetHost().deleteAppWidgetId(identifier)
                     }
                 } else {
-                    widgetStore.edit().remove(key).apply()
+                    widgetStore.edit {remove(key)}
                 }
             } else {
                 requireWidgetHost().deleteAppWidgetId(identifier)
@@ -298,9 +301,9 @@ open class WidgetsDialog : SheetDialogFragment {
     }
 
     private fun completeWidgetSetup(widget: Widget, host: AppWidgetHostView) {
-        widgetStore.edit()
-            .putString(widget.id.toString(), widget.serialize())
-            .apply()
+        widgetStore.edit {
+                putString(widget.id.toString(), widget.serialize())
+            }
 
         grid.attach(host, widget)
         updatePlaceholderVisibility(View.GONE)
@@ -424,10 +427,10 @@ open class WidgetsDialog : SheetDialogFragment {
                 widget.position = swapWidget.position
                 swapWidget.position = tempPos
 
-                widgetStore.edit()
-                    .putString(widget.id.toString(), widget.serialize())
-                    .putString(swapWidget.id.toString(), swapWidget.serialize())
-                    .apply()
+                widgetStore.edit {
+                        putString(widget.id.toString(), widget.serialize())
+                        .putString(swapWidget.id.toString(), swapWidget.serialize())
+                    }
 
                 grid.reorder()
             }
@@ -520,13 +523,13 @@ open class WidgetsDialog : SheetDialogFragment {
             for (i in chunkStart..chunkEnd) newOrder.add(list[i])
         }
 
-        val editor = widgetStore.edit()
-        for (i in newOrder.indices) {
-            val movedWidget = newOrder[i].getWidget()
-            movedWidget.position = positions[i]
-            editor.putString(movedWidget.id.toString(), movedWidget.serialize())
+        widgetStore.edit {
+            for (i in newOrder.indices) {
+                val movedWidget = newOrder[i].getWidget()
+                movedWidget.position = positions[i]
+                putString(movedWidget.id.toString(), movedWidget.serialize())
+            }
         }
-        editor.apply()
 
         grid.reorder()
     }
@@ -536,12 +539,12 @@ open class WidgetsDialog : SheetDialogFragment {
         if (widgetStore.contains(identifier) &&
             Widget.deserialize(widgetStore.getString(identifier, null)) != null
         ) {
-            widgetStore.edit().remove(identifier).apply()
+            widgetStore.edit {remove(identifier)}
         }
 
         requireWidgetHost().deleteAppWidgetId(host.appWidgetId)
         grid.removeView(host.parent as View)
-        updatePlaceholderVisibility(if (grid.childCount == 0) View.VISIBLE else View.GONE)
+        updatePlaceholderVisibility(if (grid.isEmpty()) View.VISIBLE else View.GONE)
     }
 
     fun requireWidgetHost(): WidgetHost {
@@ -593,6 +596,7 @@ open class WidgetsDialog : SheetDialogFragment {
         @JvmStatic
         fun getWidgetCellSize(): Int = columnSize
 
+        @Suppress("DEPRECATION")
         private fun getActivityOptionsBundle(): Bundle {
             val activityOptions = ActivityOptions.makeBasic()
 

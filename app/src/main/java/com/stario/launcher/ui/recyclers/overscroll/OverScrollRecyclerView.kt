@@ -25,6 +25,7 @@ import android.view.MotionEvent
 import android.widget.EdgeEffect
 import androidx.recyclerview.widget.RecyclerView
 import java.util.ArrayList
+import androidx.core.view.isNotEmpty
 
 open class OverScrollRecyclerView : RecyclerView, OverScroll {
     private val overScrollListeners = ArrayList<OverScrollEffect.OnOverScrollListener>()

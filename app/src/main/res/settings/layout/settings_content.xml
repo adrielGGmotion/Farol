@@ -103,6 +103,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_theme" />
@@ -175,6 +176,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_hidden" />
@@ -225,6 +227,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_icons" />
@@ -297,6 +300,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_search_engine" />
@@ -347,6 +351,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_search_results" />
@@ -454,6 +459,7 @@
             app:carbon_cornerRadius="5dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_memory" />
@@ -597,6 +603,7 @@
                 android:padding="20dp">
 
                 <ImageView
+                    android:contentDescription="@null"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"

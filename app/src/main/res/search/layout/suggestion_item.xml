@@ -59,7 +59,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="20dp"
         android:fontFamily="@font/dm_sans_medium"
-        android:text="↗"
+        android:text="@string/external_link_arrow"
         android:textColor="?attr/colorOnSurface"
         android:textSize="18sp" />
 

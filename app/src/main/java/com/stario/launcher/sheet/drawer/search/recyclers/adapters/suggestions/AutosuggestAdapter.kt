@@ -42,6 +42,9 @@ import java.util.Objects
 import java.util.concurrent.Callable
 import java.util.concurrent.CompletableFuture
 import java.util.stream.Collectors
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
+import androidx.core.view.size
 
 open class AutosuggestAdapter(private val activity: ThemedActivity) : SuggestionSearchAdapter(activity, true) {
     companion object {
@@ -73,8 +76,7 @@ open class AutosuggestAdapter(private val activity: ThemedActivity) : Suggestion
                         if (target is JSONArray) {
                             for (index in 0 until minOf(target.length(), MAX_RESULTS)) {
                                 val result = target.getString(index)
-                                val uri = Uri.parse(engine.getQuery(result))
-                                if (uri != null) results.add(SuggestionEntry(result, uri))
+                                results.add(SuggestionEntry(result, engine.getQuery(result).toUri()))
                             }
                         }
                     }
@@ -107,7 +109,7 @@ open class AutosuggestAdapter(private val activity: ThemedActivity) : Suggestion
             options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON)
         }
         val engine = SearchEngine.getEngine(activity.applicationContext)
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(engine.getQuery(currentQuery)))
+        val intent = Intent(Intent.ACTION_VIEW, engine.getQuery(currentQuery).toUri())
         if (engine.getIsWebOnly()) configureIntentToLaunchInBrowser(intent)
         activity.startActivity(intent, options.toBundle())
         return true
@@ -117,7 +119,7 @@ open class AutosuggestAdapter(private val activity: ThemedActivity) : Suggestion
         val holder = super.onCreateViewHolder(container, viewType)
         holder.icon.setLooseClipping(false)
         holder.icon.setIcon(LayerDrawable(arrayOf<Drawable>(
-            ColorDrawable(activity.getAttributeData(com.google.android.material.R.attr.colorSecondaryContainer)),
+            activity.getAttributeData(com.google.android.material.R.attr.colorSecondaryContainer).toDrawable(),
             AppCompatResources.getDrawable(activity, R.drawable.ic_search)!!
         )))
         return holder
@@ -146,7 +148,7 @@ open class AutosuggestAdapter(private val activity: ThemedActivity) : Suggestion
         intent.addCategory(Intent.CATEGORY_BROWSABLE)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         val pm = activity.packageManager
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://"))
+        val browserIntent = Intent(Intent.ACTION_VIEW, "http://".toUri())
         val resolveInfo = pm.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY)
         if (resolveInfo != null) intent.setPackage(resolveInfo.activityInfo.packageName)
     }

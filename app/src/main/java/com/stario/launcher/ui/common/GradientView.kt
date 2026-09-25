@@ -42,6 +42,7 @@ import javax.microedition.khronos.egl.EGLContext
 import javax.microedition.khronos.egl.EGLDisplay
 import javax.microedition.khronos.egl.EGLSurface
 import kotlin.math.ceil
+import androidx.core.view.size
 
 open class GradientView : TextureView, TextureView.SurfaceTextureListener {
     companion object {

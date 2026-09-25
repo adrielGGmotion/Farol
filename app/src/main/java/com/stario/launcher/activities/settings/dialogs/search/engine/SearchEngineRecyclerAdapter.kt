@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.R
 import com.stario.launcher.sheet.drawer.search.SearchEngine
 import com.stario.launcher.themes.ThemedActivity
+import androidx.core.view.size
 
 open class SearchEngineRecyclerAdapter(
     private val activity: ThemedActivity,

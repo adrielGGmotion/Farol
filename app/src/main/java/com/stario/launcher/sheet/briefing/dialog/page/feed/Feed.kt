@@ -21,6 +21,7 @@ import android.util.Log
 import org.json.JSONObject
 import java.io.Serializable
 import java.util.Objects
+import androidx.core.view.isEmpty
 
 open class Feed(
     title: String,

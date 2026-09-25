@@ -31,6 +31,7 @@ import com.stario.launcher.apps.ProfileManager
 import com.stario.launcher.apps.interfaces.LauncherProfileListener
 import com.stario.launcher.sheet.drawer.category.Categories
 import com.stario.launcher.sheet.drawer.list.List as DrawerList
+import androidx.core.view.size
 
 /**
  * @noinspection deprecation

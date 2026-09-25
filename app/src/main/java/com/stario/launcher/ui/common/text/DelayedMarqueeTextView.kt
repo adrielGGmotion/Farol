@@ -31,6 +31,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.stario.launcher.ui.Measurements
 import com.stario.launcher.ui.utils.UiUtils
 import java.util.concurrent.locks.ReentrantLock
+import androidx.core.view.isEmpty
 
 open class DelayedMarqueeTextView : AppCompatTextView {
     private var scrollAnimator: ValueAnimator? = null

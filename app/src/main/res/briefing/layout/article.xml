@@ -48,6 +48,7 @@
             app:size_bottom="250dp">
 
             <ImageView
+                android:contentDescription="@null"
                 android:id="@+id/display"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

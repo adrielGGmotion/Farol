@@ -34,6 +34,9 @@ import com.stario.launcher.preferences.Entry
 import com.stario.launcher.sheet.drawer.search.recyclers.adapters.WebAdapter
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
+import androidx.core.content.edit
 
 open class SearchResultsDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private val preferences: SharedPreferences = activity.getApplicationContext()
@@ -42,8 +45,8 @@ open class SearchResultsDialog(activity: ThemedActivity) : ActionDialog(activity
     private lateinit var resultsSwitch: MaterialSwitch
     private var listener: StatusListener? = null
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_kagi, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_kagi, parent, false)
 
         resultsSwitch = root.findViewById(R.id.search_results)
         resultsSwitch.setOnCheckedChangeListener { button, isChecked ->
@@ -69,9 +72,9 @@ open class SearchResultsDialog(activity: ThemedActivity) : ActionDialog(activity
             }
 
             override fun afterTextChanged(content: Editable?) {
-                preferences.edit()
-                    .putString(WebAdapter.KAGI_API_KEY, content!!.toString())
-                    .apply()
+                preferences.edit {
+                        putString(WebAdapter.KAGI_API_KEY, content!!.toString())
+                    }
             }
         })
 

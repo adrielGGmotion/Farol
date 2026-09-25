@@ -78,6 +78,7 @@ open class Launcher : ThemedActivity() {
     private lateinit var decorView: View
     private lateinit var glance: Glance
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         val intent = Intent(ACTION_KILL_TASK)
         intent.putExtra(INTENT_KILL_TASK_ID_EXTRA, taskId)
@@ -125,13 +126,11 @@ open class Launcher : ThemedActivity() {
             insets
         }
 
-        if (Utils.isMinimumSDK(Build.VERSION_CODES.TIRAMISU)) {
-            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    setRearrangeable(false)
-                }
-            })
-        }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                setRearrangeable(false)
+            }
+        })
 
         statusBarContrast = findViewById(R.id.status_bar_contrast)
         navBarContrast = findViewById(R.id.navigation_bar_contrast)
@@ -395,11 +394,6 @@ open class Launcher : ThemedActivity() {
 
     protected override fun isAffectedByBackGesture() = false
 
-    @SuppressLint("MissingSuperCall", "GestureBackNavigation")
-    @Suppress("DEPRECATION")
-    override fun onBackPressed() {
-        setRearrangeable(false)
-    }
 
     companion object {
         const val INTENT_KILL_TASK_ID_EXTRA = "com.stario.launcher.INTENT_KILL_TASK_ID_EXTRA"

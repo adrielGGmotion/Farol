@@ -38,8 +38,8 @@ open class PinnedCategoryDialog(
     private val checkedChangeListener: OnCheckedChangeListener?
 ) : ActionDialog(activity) {
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_pinned_category, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_pinned_category, parent, false)
         val recycler = root.findViewById<RecyclerView>(R.id.recycler)
 
         val materialSwitch = root.findViewById<MaterialSwitch>(R.id.pinned_category)

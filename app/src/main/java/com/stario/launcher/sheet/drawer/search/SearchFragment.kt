@@ -63,6 +63,8 @@ import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.ui.utils.animation.KeyboardAnimationHelper
 import com.stario.launcher.utils.Utils
 import java.util.concurrent.atomic.AtomicBoolean
+import androidx.core.view.isNotEmpty
+import androidx.core.view.isVisible
 
 open class SearchFragment : Fragment() {
     companion object {
@@ -305,7 +307,7 @@ open class SearchFragment : Fragment() {
                 searchLayoutTransition.setAnimate(false)
                 if (UiUtils.isKeyboardVisible(view)) scrollView.smoothScrollTo(0, 0, Animation.LONG.getDuration())
                 content.setPadding(content.paddingLeft, content.paddingTop, content.paddingRight,
-                    height + if (hint.visibility == View.VISIBLE) hint.height else 0)
+                    height + if (hint.isVisible) hint.height else 0)
                 (search.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin = height + Measurements.getNavHeight()
                 search.requestLayout()
                 search.post { searchLayoutTransition.setAnimate(true) }
@@ -329,7 +331,7 @@ open class SearchFragment : Fragment() {
                         return@setOnEditorActionListener true
                     }
                 }
-                if (base.visibility == View.VISIBLE) {
+                if (base.isVisible) {
                     return@setOnEditorActionListener appAdapter.submit() || autosuggestAdapter.submit() || optionAdapter.submit()
                 }
             }
@@ -353,10 +355,10 @@ open class SearchFragment : Fragment() {
                 hint.post {
                     content.setPadding(content.paddingLeft, content.paddingTop, content.paddingRight,
                         (if (Utils.isMinimumSDK(Build.VERSION_CODES.R)) 0 else heightProvider.getKeyboardHeight()) +
-                            if (hint.visibility == View.VISIBLE) hint.height else 0)
+                            if (hint.isVisible) hint.height else 0)
                 }
                 if (filteredQuery == query) {
-                    if (base.visibility == View.VISIBLE) {
+                    if (base.isVisible) {
                         appAdapter.update(query)
                         optionAdapter.update(query)
                         val timeStamp = System.currentTimeMillis()

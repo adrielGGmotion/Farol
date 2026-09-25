@@ -13,6 +13,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.widget.AppCompatTextView
 import com.stario.launcher.R
+import androidx.core.view.isEmpty
 
 open class WaveUnderlineTextView : AppCompatTextView {
     private var pulsationAnimator: ValueAnimator? = null

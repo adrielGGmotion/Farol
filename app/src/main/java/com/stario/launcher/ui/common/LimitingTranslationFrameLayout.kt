@@ -26,6 +26,7 @@ import android.widget.ScrollView
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.max
+import androidx.core.view.isNotEmpty
 
 open class LimitingTranslationFrameLayout : FrameLayout {
     private lateinit var layoutChangeListener: View.OnLayoutChangeListener
@@ -97,7 +98,7 @@ open class LimitingTranslationFrameLayout : FrameLayout {
         is RecyclerView -> parent.computeVerticalScrollRange() - parent.computeVerticalScrollExtent()
         is ScrollView, is NestedScrollView -> {
             val scrollView = parent as ViewGroup
-            if (scrollView.childCount > 0) {
+            if (scrollView.isNotEmpty()) {
                 val child = scrollView.getChildAt(0)
                 max(0, child.height - (scrollView.height - scrollView.paddingBottom - scrollView.paddingTop))
             } else 0

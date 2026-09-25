@@ -31,11 +31,10 @@ import androidx.core.view.ViewCompat
 import androidx.customview.widget.ViewDragHelper
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import java.lang.annotation.Retention
-import java.lang.annotation.RetentionPolicy
 import java.lang.ref.WeakReference
 import kotlin.math.max
 import kotlin.math.min
+import androidx.core.view.isNotEmpty
 
 /**
  * An interaction behavior plugin for a child view of [CoordinatorLayout] to make it work as a sheet.
@@ -83,7 +82,7 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         STATE_DRAGGING,
         STATE_SETTLING
     )
-    @Retention(RetentionPolicy.SOURCE)
+    @Retention(AnnotationRetention.SOURCE)
     annotation class State
 
     private var settleRunnable: SettleRunnable? = null
@@ -142,7 +141,7 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
     }
 
     override fun onLayoutChild(parent: CoordinatorLayout, child: V, layoutDirection: Int): Boolean {
-        if (ViewCompat.getFitsSystemWindows(parent) && !ViewCompat.getFitsSystemWindows(child)) {
+        if (parent.fitsSystemWindows && !child.fitsSystemWindows) {
             child.fitsSystemWindows = true
         }
 
@@ -150,8 +149,8 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
             // First layout with this behavior.
             viewRef = WeakReference(child)
 
-            if (ViewCompat.getImportantForAccessibility(child) == ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
-                ViewCompat.setImportantForAccessibility(child, ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES)
+            if (child.importantForAccessibility == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
+                child.importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
             }
         }
 
@@ -410,7 +409,7 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
         // Start the animation; wait until a pending layout if there is one.
         val parent = child.parent
 
-        if (parent != null && parent.isLayoutRequested && ViewCompat.isAttachedToWindow(child)) {
+        if (parent != null && parent.isLayoutRequested && child.isAttachedToWindow) {
             child.post { settleToState(child, state, animate) }
         } else {
             settleToState(child, state, animate)
@@ -600,7 +599,7 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
                 if (!runnable.isPosted) {
                     runnable.targetState = state
 
-                    ViewCompat.postOnAnimation(child, runnable)
+                    child.postOnAnimation(runnable)
                     runnable.isPosted = true
                 } else {
                     // Otherwise, if it has been posted, just update the target state.
@@ -634,7 +633,7 @@ abstract class SheetBehavior<V : View> : CoordinatorLayout.Behavior<V> {
 
         override fun run() {
             if (dragHelper != null && dragHelper?.continueSettling(true) == true) {
-                ViewCompat.postOnAnimation(view, this)
+                view.postOnAnimation(this)
             } else {
                 setStateInternal(targetState)
             }

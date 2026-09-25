@@ -34,6 +34,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import kotlin.math.min
 import kotlin.math.roundToInt
+import androidx.core.view.size
 
 class ForecastAdapter(activity: ThemedActivity, private val data: List<Weather.Data>, private val indexToStart: Int) : RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
     private val preferences: SharedPreferences = activity.applicationContext.getSharedPreferences(Entry.WEATHER)

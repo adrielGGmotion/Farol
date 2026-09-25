@@ -20,6 +20,7 @@ package com.stario.launcher.activities.launcher.widgets.glance.extensions.weathe
 import android.app.Activity
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.util.Log
 import android.webkit.WebSettings
 import com.stario.launcher.utils.Utils
@@ -31,6 +32,9 @@ import java.net.URL
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.Locale
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.TimeUnit
+import androidx.core.view.isEmpty
 
 class GeocoderFallback(private val activity: Activity) {
     private val geocoder: Geocoder? = if (Geocoder.isPresent()) Geocoder(activity) else null
@@ -41,11 +45,7 @@ class GeocoderFallback(private val activity: Activity) {
         }
 
         geocoder?.let {
-            try {
-                return it.getFromLocationName(query, maxResults)
-            } catch (e: IOException) {
-                return null
-            }
+            return getFromLocationName(it, query, maxResults)
         }
 
         val addresses = ArrayList<Address>()
@@ -90,15 +90,7 @@ class GeocoderFallback(private val activity: Activity) {
 
     fun getFromLocation(lat: Double, lon: Double): Address? {
         geocoder?.let {
-            try {
-                val addresses = it.getFromLocation(lat, lon, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    return addresses[0]
-                }
-                return null
-            } catch (e: IOException) {
-                return null
-            }
+            return getFromLocation(it, lat, lon)
         }
 
         var connection: HttpURLConnection? = null
@@ -173,9 +165,51 @@ class GeocoderFallback(private val activity: Activity) {
         return address
     }
 
+    private fun getFromLocationName(geocoder: Geocoder, query: String, maxResults: Int): List<Address>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            var result: List<Address>? = null
+            val latch = CountDownLatch(1)
+            geocoder.getFromLocationName(query, maxResults) { addresses ->
+                result = addresses
+                latch.countDown()
+            }
+            latch.await(GEOCODER_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            result
+        } else {
+            try {
+                @Suppress("DEPRECATION")
+                geocoder.getFromLocationName(query, maxResults)
+            } catch (e: IOException) {
+                null
+            }
+        }
+    }
+
+    private fun getFromLocation(geocoder: Geocoder, lat: Double, lon: Double): Address? {
+        val addresses = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            var result: List<Address>? = null
+            val latch = CountDownLatch(1)
+            geocoder.getFromLocation(lat, lon, 1) { values ->
+                result = values
+                latch.countDown()
+            }
+            latch.await(GEOCODER_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            result
+        } else {
+            try {
+                @Suppress("DEPRECATION")
+                geocoder.getFromLocation(lat, lon, 1)
+            } catch (e: IOException) {
+                null
+            }
+        }
+        return addresses?.firstOrNull()
+    }
+
     companion object {
         private const val TAG = "Geocoder"
         private const val API = "https://photon.komoot.io/"
         private const val REQUEST_TIMEOUT = 5_000
+        private const val GEOCODER_TIMEOUT_SECONDS = 5L
     }
 }

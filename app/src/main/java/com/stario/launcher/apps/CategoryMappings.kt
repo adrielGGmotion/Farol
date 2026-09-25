@@ -24,6 +24,7 @@ import com.stario.launcher.exceptions.NoExistingInstanceException
 import com.stario.launcher.preferences.Entry
 import java.util.HashMap
 import java.util.Map
+import androidx.core.content.edit
 
 open class CategoryMappings private constructor(private val provider: SharedPreferencesProvider) {
     private fun interface SharedPreferencesProvider {
@@ -70,19 +71,19 @@ open class CategoryMappings private constructor(private val provider: SharedPref
 
         override fun updatePermutation() {
             val applications = category.getAll()
-            val editor = categoryMap.edit()
-            editor.clear()
-            indexCache.clear()
+            categoryMap.edit {
+                clear()
+                indexCache.clear()
 
-            for (index in applications.indices) {
-                val application = applications[index]
-                val key = getApplicationKey(application)
+                for (index in applications.indices) {
+                    val application = applications[index]
+                    val key = getApplicationKey(application)
 
-                editor.putInt(key, index)
-                indexCache[key] = index
+                    putInt(key, index)
+                    indexCache[key] = index
+                }
+
             }
-
-            editor.apply()
         }
     }
 
@@ -111,19 +112,19 @@ open class CategoryMappings private constructor(private val provider: SharedPref
 
         override fun updatePermutation() {
             val categories = CategoryManager.getInstance().getAll()
-            val editor = categoryMap.edit()
-            editor.clear()
-            indexCache.clear()
+            categoryMap.edit {
+                clear()
+                indexCache.clear()
 
-            for (index in categories.indices) {
-                val category = categories[index]
-                val key = category.identifier.toString()
+                for (index in categories.indices) {
+                    val category = categories[index]
+                    val key = category.identifier.toString()
 
-                editor.putInt(key, index)
-                indexCache[key] = index
+                    putInt(key, index)
+                    indexCache[key] = index
+                }
+
             }
-
-            editor.apply()
         }
     }
 

@@ -30,6 +30,8 @@ import android.view.View
 import com.stario.launcher.apps.ProfileApplicationManager
 import com.stario.launcher.apps.ProfileManager
 import com.stario.launcher.ui.Measurements
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 
 open class ImageUtils {
     companion object {
@@ -53,7 +55,7 @@ open class ImageUtils {
 
             if (drawable != null) {
                 return AdaptiveIconDrawable(
-                    ColorDrawable(Color.WHITE),
+                    Color.WHITE.toDrawable(),
                     InsetDrawable(drawable, AdaptiveIconDrawable.getExtraInsetFraction())
                 )
             }
@@ -63,11 +65,7 @@ open class ImageUtils {
 
         @JvmStatic
         fun toBitmap(view: View): Bitmap {
-            val bitmap = Bitmap.createBitmap(
-                view.getMeasuredWidth(),
-                view.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888
-            )
+            val bitmap = createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight())
             val canvas = Canvas(bitmap)
 
             view.layout(view.getLeft(), view.getTop(), view.getRight(), view.getBottom())

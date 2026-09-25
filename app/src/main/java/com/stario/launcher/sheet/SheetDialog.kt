@@ -78,16 +78,16 @@ abstract class SheetDialog(activity: ThemedActivity, theme: Int) : PersistentFul
         behavior.addSheetCallback(object : SheetBehavior.SheetCallback {
             private var wasCollapsed = true
 
-            override fun onStateChanged(sheet: View, state: Int) {
-                if (state == SheetBehavior.STATE_COLLAPSED) {
+            override fun onStateChanged(sheet: View, newState: Int) {
+                if (newState == SheetBehavior.STATE_COLLAPSED) {
                     hide()
 
                     wasCollapsed = true
                     container.intercept(SheetCoordinator.ALL)
-                } else if (state == SheetBehavior.STATE_EXPANDED || state == SheetBehavior.STATE_SETTLING) {
+                } else if (newState == SheetBehavior.STATE_EXPANDED || newState == SheetBehavior.STATE_SETTLING) {
                     container.intercept(SheetCoordinator.OWN)
 
-                    if (state == SheetBehavior.STATE_EXPANDED) {
+                    if (newState == SheetBehavior.STATE_EXPANDED) {
                         shouldDispatchMotionEventsToParent = false
                         dispatchMotionEventsToParent = false
                     }
@@ -180,10 +180,10 @@ abstract class SheetDialog(activity: ThemedActivity, theme: Int) : PersistentFul
         return false
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (dispatchMotionEventsToParent) {
-            val newEvent = MotionEvent.obtain(event)
-            newEvent.setLocation(event.rawX, event.rawY)
+            val newEvent = MotionEvent.obtain(ev)
+            newEvent.setLocation(ev.rawX, ev.rawY)
 
             ownerActivity?.dispatchTouchEvent(newEvent)
 
@@ -193,7 +193,7 @@ abstract class SheetDialog(activity: ThemedActivity, theme: Int) : PersistentFul
         }
 
         return try {
-            super.dispatchTouchEvent(event)
+            super.dispatchTouchEvent(ev)
         } catch (exception: RuntimeException) {
             Log.e(TAG, "dispatchTouchEvent: " + exception.message)
             false

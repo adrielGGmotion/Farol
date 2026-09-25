@@ -71,6 +71,9 @@ import com.stario.launcher.ui.Measurements
 import com.stario.launcher.ui.dialogs.DialogBackgroundDimmingController
 import com.stario.launcher.ui.utils.LayoutSizeObserver
 import com.stario.launcher.ui.utils.UiUtils
+import androidx.core.net.toUri
+import androidx.core.view.isEmpty
+import androidx.core.content.edit
 
 open class Settings : ThemedActivity() {
     // Data
@@ -390,9 +393,9 @@ open class Settings : ThemedActivity() {
                 searchResultsContainer.performClick()
                 button.setChecked(false)
             } else {
-                searchPrefs.edit()
-                    .putBoolean(WebAdapter.SEARCH_RESULTS, checked)
-                    .apply()
+                searchPrefs.edit {
+                        putBoolean(WebAdapter.SEARCH_RESULTS, checked)
+                    }
                 updateEngineName()
             }
         }
@@ -403,9 +406,9 @@ open class Settings : ThemedActivity() {
             findViewById(R.id.search_hidden_apps_container),
             searchPrefs.getBoolean(SearchFragment.SEARCH_HIDDEN_APPS, false)
         ) { _, checked ->
-            searchPrefs.edit()
-                .putBoolean(SearchFragment.SEARCH_HIDDEN_APPS, checked)
-                .apply()
+            searchPrefs.edit {
+                    putBoolean(SearchFragment.SEARCH_HIDDEN_APPS, checked)
+                }
         }
     }
 
@@ -413,9 +416,9 @@ open class Settings : ThemedActivity() {
         updateLowSpecState()
         lowSpecSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (!isBatterySaverOn) {
-                settingsPrefs.edit()
-                    .putBoolean(DialogBackgroundDimmingController.LOW_SPEC_KEY, isChecked)
-                    .apply()
+                settingsPrefs.edit {
+                        putBoolean(DialogBackgroundDimmingController.LOW_SPEC_KEY, isChecked)
+                    }
             }
         }
         lowSpecSwitch.jumpDrawablesToCurrentState()
@@ -425,9 +428,9 @@ open class Settings : ThemedActivity() {
             findViewById(R.id.vibrations_container),
             settingsPrefs.getBoolean(Vibrations.PREFERENCE_ENTRY, true)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(Vibrations.PREFERENCE_ENTRY, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(Vibrations.PREFERENCE_ENTRY, checked)
+                }
         }
 
         findViewById<View>(R.id.restart).setOnClickListener { restart() }
@@ -440,7 +443,7 @@ open class Settings : ThemedActivity() {
 
         findViewById<View>(R.id.about).setOnClickListener {
             val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            intent.setData(Uri.parse("package:" + getPackageName()))
+            intent.setData(("package:" + getPackageName()).toUri())
             startActivity(intent)
         }
 
@@ -493,7 +496,7 @@ open class Settings : ThemedActivity() {
     private fun setupUrlButton(viewId: Int, url: String) {
         findViewById<View>(viewId).setOnClickListener { view ->
             view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.bounce_small))
-            startActivity(Intent(Intent.ACTION_DEFAULT, Uri.parse(url)))
+            startActivity(Intent(Intent.ACTION_DEFAULT, url.toUri()))
         }
     }
 

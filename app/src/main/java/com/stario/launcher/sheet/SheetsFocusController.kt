@@ -38,6 +38,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.activities.launcher.Launcher
 import com.stario.launcher.sheet.behavior.SheetBehavior
 import com.stario.launcher.ui.utils.UiUtils
+import androidx.core.view.isEmpty
+import androidx.core.view.size
 
 open class SheetsFocusController : ConstraintLayout {
     constructor(context: Context) : super(context)

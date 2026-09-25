@@ -70,6 +70,8 @@ import java.io.FileInputStream
 import java.util.ArrayList
 import java.util.HashMap
 import jp.wasabeef.glide.transformations.CropSquareTransformation
+import androidx.core.net.toUri
+import androidx.core.view.isEmpty
 
 open class Media : GlanceDialogExtension() {
     private val preview = MediaPreview()
@@ -464,8 +466,8 @@ open class Media : GlanceDialogExtension() {
     fun updateCover(stringUri: String?): Boolean {
         if (stringUri != null) {
             try {
-                val uri = Uri.parse(stringUri)
-                val inputStream = if (uri != null && "content" == uri.scheme) {
+                val uri = stringUri.toUri()
+                val inputStream = if ("content" == uri.scheme) {
                     activity.contentResolver.openInputStream(uri)
                 } else {
                     FileInputStream(stringUri)

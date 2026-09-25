@@ -24,6 +24,7 @@ import com.stario.launcher.sheet.drawer.RecyclerApplicationAdapter
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.recyclers.async.InflationType
 import java.util.Collections
+import androidx.core.view.size
 
 open class PinnedAppsGroupDialogRecyclerAdapter(activity: ThemedActivity) :
     RecyclerApplicationAdapter(activity, InflationType.SYNCED) {

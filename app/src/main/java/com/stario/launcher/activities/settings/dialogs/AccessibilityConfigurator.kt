@@ -29,8 +29,8 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
 
 open class AccessibilityConfigurator(activity: ThemedActivity) : ActionDialog(activity) {
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_accesibility, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_accesibility, parent, false)
 
         root.findViewById<View>(R.id.proceed).setOnClickListener {
             setOnDismissListener(null)

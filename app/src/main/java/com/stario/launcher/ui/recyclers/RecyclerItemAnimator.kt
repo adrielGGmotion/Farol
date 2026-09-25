@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.ui.utils.animation.Animation
 import java.util.ArrayList
 import java.util.Collections
+import androidx.core.view.isNotEmpty
 
 open class RecyclerItemAnimator(
     private val animationFlags: Int,

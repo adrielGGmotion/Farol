@@ -39,6 +39,7 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sqrt
+import androidx.core.graphics.withSave
 
 open class StylizedClockView : View, SensorEventListener {
     companion object {
@@ -146,6 +147,7 @@ open class StylizedClockView : View, SensorEventListener {
         val y = event.values[1]
         val z = event.values[2]
         val flatAmount = min(1f, max(0f, abs(z) - LYING_ON_TABLE_THRESHOLD))
+        @Suppress("DEPRECATION")
         val rotation = (stario.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay.rotation
         var adjustedX = x
         var adjustedY = y
@@ -361,19 +363,19 @@ open class StylizedClockView : View, SensorEventListener {
             val radius = diagonal / 2f
             pillBgPaint.alpha = 255
             canvas.drawRoundRect(pillBackgroundRect, containerRadius, containerRadius, pillBgPaint)
-            canvas.save()
-            val clipPath = Path()
-            val padding = containerRadius / 3f
-            clipPath.addRoundRect(pillBackgroundRect.left + padding, pillBackgroundRect.top + padding,
-                pillBackgroundRect.right - padding, pillBackgroundRect.bottom - padding,
-                containerRadius - padding, containerRadius - padding, Path.Direction.CW)
-            canvas.clipPath(clipPath)
-            canvas.translate(centerX, centerY)
-            canvas.rotate(gravityAngle)
-            val progress = (second * 1000f + millisecond) / 60000f
-            val liquidLevel = radius - diagonal * progress
-            canvas.drawRect(RectF(-radius, liquidLevel, radius, radius + 100f), pillFgPaint)
-            canvas.restore()
+            canvas.withSave {
+                val clipPath = Path()
+                val padding = containerRadius / 3f
+                clipPath.addRoundRect(pillBackgroundRect.left + padding, pillBackgroundRect.top + padding,
+                    pillBackgroundRect.right - padding, pillBackgroundRect.bottom - padding,
+                    containerRadius - padding, containerRadius - padding, Path.Direction.CW)
+                clipPath(clipPath)
+                translate(centerX, centerY)
+                rotate(gravityAngle)
+                val progress = (second * 1000f + millisecond) / 60000f
+                val liquidLevel = radius - diagonal * progress
+                drawRect(RectF(-radius, liquidLevel, radius, radius + 100f), pillFgPaint)
+            }
         } else {
             val isAm = calendar.get(Calendar.AM_PM) == Calendar.AM
             pillBgPaint.alpha = if (isAm) 255 else 80

@@ -27,6 +27,7 @@ import com.stario.launcher.sheet.briefing.dialog.page.feed.BriefingFeedList
 import com.stario.launcher.sheet.briefing.dialog.page.feed.Feed
 import com.stario.launcher.themes.ThemedActivity
 import java.lang.ref.WeakReference
+import androidx.core.view.size
 
 open class BriefingAdapter(
     activity: ThemedActivity,
@@ -51,7 +52,7 @@ open class BriefingAdapter(
     override fun getItemId(position: Int): Long {
         val feed: Feed = list.get(position)
 
-        return if (feed != null) feed.getRSSLink().hashCode().toLong() else position.toLong()
+        return feed.getRSSLink().hashCode().toLong()
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, item: Any) {

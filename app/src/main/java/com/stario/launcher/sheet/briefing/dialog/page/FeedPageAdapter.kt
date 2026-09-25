@@ -47,6 +47,10 @@ import java.text.SimpleDateFormat
 import java.util.Collections
 import java.util.Date
 import java.util.Locale
+import androidx.core.net.toUri
+import androidx.core.view.isEmpty
+import androidx.core.view.isNotEmpty
+import androidx.core.view.size
 
 internal open class FeedPageAdapter(
     private val context: Stario
@@ -109,9 +113,9 @@ internal open class FeedPageAdapter(
             Vibrations.getInstance().vibrate()
 
             val intent = item.link?.let { link ->
-                Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                Intent(Intent.ACTION_VIEW, link.toUri())
             } ?: item.guid?.let { guid ->
-                Intent(Intent.ACTION_VIEW, Uri.parse(guid))
+                Intent(Intent.ACTION_VIEW, guid.toUri())
             }
 
             if (intent != null) {

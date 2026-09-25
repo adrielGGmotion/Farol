@@ -32,28 +32,27 @@ import android.graphics.Path
 import android.graphics.Rect
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.UserHandle
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.stario.launcher.R
-import com.stario.launcher.activities.settings.dialogs.icons.IconsDialog
 import com.stario.launcher.apps.LauncherApplication
 import com.stario.launcher.apps.ProfileManager
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.ui.Measurements
 import com.stario.launcher.utils.Utils
 import com.stario.launcher.utils.objects.ObjectDelegate
-import java.io.Serializable
+import androidx.core.content.withStyledAttributes
+import androidx.core.graphics.withClip
+import androidx.core.graphics.withTranslation
 
 open class AdaptiveIconView : View {
     private lateinit var pathAlgorithm: ObjectDelegate<PathCornerTreatmentAlgorithm>
     private var profileStateBinding: ProfileStateBinding? = null
-    private lateinit var localBroadcastManager: LocalBroadcastManager
     private lateinit var grayscaleFilter: ColorMatrixColorFilter
-    private lateinit var squircleReceiver: BroadcastReceiver
-    private lateinit var radiusReceiver: BroadcastReceiver
     private lateinit var iconDelegate: ObjectDelegate<Drawable?>
     private lateinit var preferences: SharedPreferences
     private lateinit var radius: ObjectDelegate<Float>
@@ -65,6 +64,20 @@ open class AdaptiveIconView : View {
     private var grayscale: Boolean? = null
     private var paused = false
     private lateinit var path: Path
+
+    private val iconPreferencesListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        when (key) {
+            CORNER_RADIUS_ENTRY -> radius.setValue(preferences.getFloat(CORNER_RADIUS_ENTRY, DEFAULT_CORNER_RADIUS))
+            PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY -> pathAlgorithm.setValue(
+                PathCornerTreatmentAlgorithm.fromIdentifier(
+                    preferences.getInt(
+                        PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY,
+                        PathCornerTreatmentAlgorithm.DEFAULT_PATH_ALGORITHM_ENTRY
+                    )
+                )
+            )
+        }
+    }
 
     private val pathAlgorithmValue: PathCornerTreatmentAlgorithm
         get() = pathAlgorithm.getValue()
@@ -90,32 +103,14 @@ open class AdaptiveIconView : View {
     private fun initialize(context: Context, attrs: AttributeSet?) {
         preferences = context.getApplicationContext()
             .getSharedPreferences(Entry.ICONS.toString(), Context.MODE_PRIVATE)
-        localBroadcastManager = LocalBroadcastManager.getInstance(context)
-        radiusReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                radius.setValue(intent.getFloatExtra(IconsDialog.EXTRA_CORNER_RADIUS, 1f))
-            }
-        }
-        squircleReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) {
-                val serializable: Serializable? = intent.getSerializableExtra(IconsDialog.EXTRA_PATH_ALGORITHM)
-
-                if (serializable is PathCornerTreatmentAlgorithm) {
-                    pathAlgorithm.setValue(serializable)
-                } else {
-                    pathAlgorithm.setValue(PathCornerTreatmentAlgorithm.REGULAR)
-                }
-            }
-        }
-
         if (attrs != null) {
-            val attributes: TypedArray = context.getApplicationContext()
-                .obtainStyledAttributes(attrs, R.styleable.AdaptiveIconView)
+            context.getApplicationContext()
+                .withStyledAttributes(attrs, R.styleable.AdaptiveIconView) {
 
-            sizeRestricted = attributes.getBoolean(R.styleable.AdaptiveIconView_sizeRestricted, true)
-            looseClipping = attributes.getBoolean(R.styleable.AdaptiveIconView_looseClipping, true)
+                sizeRestricted = getBoolean(R.styleable.AdaptiveIconView_sizeRestricted, true)
+                looseClipping = getBoolean(R.styleable.AdaptiveIconView_looseClipping, true)
 
-            attributes.recycle()
+            }
         } else {
             sizeRestricted = true
             looseClipping = true
@@ -155,21 +150,14 @@ open class AdaptiveIconView : View {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        localBroadcastManager.registerReceiver(
-            radiusReceiver,
-            IntentFilter(IconsDialog.INTENT_CHANGE_CORNER_RADIUS)
-        )
-        localBroadcastManager.registerReceiver(
-            squircleReceiver,
-            IntentFilter(IconsDialog.INTENT_CHANGE_PATH_ALGORITHM)
-        )
+        preferences.registerOnSharedPreferenceChangeListener(iconPreferencesListener)
 
         val binding = profileStateBinding
         if (binding != null) {
             paused = binding.isPaused(getContext())
             applyBadge = binding.shouldApplyManagedBadge()
 
-            localBroadcastManager.registerReceiver(binding.receiver, binding.filter)
+            binding.register(getContext())
         }
 
         val currentPathCornerTreatmentAlgorithm = PathCornerTreatmentAlgorithm.fromIdentifier(
@@ -191,12 +179,11 @@ open class AdaptiveIconView : View {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
 
-        localBroadcastManager.unregisterReceiver(radiusReceiver)
-        localBroadcastManager.unregisterReceiver(squircleReceiver)
+        preferences.unregisterOnSharedPreferenceChangeListener(iconPreferencesListener)
 
         val binding = profileStateBinding
         if (binding != null) {
-            localBroadcastManager.unregisterReceiver(binding.receiver)
+            binding.unregister(getContext())
         }
     }
 
@@ -291,7 +278,7 @@ open class AdaptiveIconView : View {
             paused = binding.isPaused(getContext())
             applyBadge = binding.shouldApplyManagedBadge()
 
-            localBroadcastManager.registerReceiver(binding.receiver, binding.filter)
+            binding.register(getContext())
         } else {
             setIcon(null)
         }
@@ -300,7 +287,7 @@ open class AdaptiveIconView : View {
     open fun setIcon(icon: Drawable?) {
         val binding = profileStateBinding
         if (binding != null) {
-            localBroadcastManager.unregisterReceiver(binding.receiver)
+            binding.unregister(getContext())
             profileStateBinding = null
         }
 
@@ -369,42 +356,32 @@ open class AdaptiveIconView : View {
     }
 
     override fun draw(canvas: Canvas) {
-        val saveCount = canvas.save()
-        canvas.translate(MAX_SHADOW_SIZE.toFloat(), MAX_SHADOW_SIZE.toFloat())
+        canvas.withTranslation(MAX_SHADOW_SIZE.toFloat(), MAX_SHADOW_SIZE.toFloat()) {
+            if (!looseClipping || iconDelegate.getValue() is AdaptiveIconDrawable) {
+                canvas.drawPath(path, shadowPaint)
+                canvas.withClip(path) {
+                    super.draw(canvas)
+                }
+            } else {
+                super.draw(canvas)
+            }
 
-        if (!looseClipping || iconDelegate.getValue() is AdaptiveIconDrawable) {
-            canvas.drawPath(path, shadowPaint)
+            if (applyBadge && iconDelegate.getValue() != null) {
+                val iconBounds = iconDelegate.getValue()!!.getBounds()
 
-            val clipSave = canvas.save()
+                val intrinsicW = badge!!.getIntrinsicWidth()
+                val intrinsicH = badge!!.getIntrinsicHeight()
+                badge!!.setBounds(0, 0, intrinsicW, intrinsicH)
 
-            canvas.clipPath(path)
+                val targetSize = iconBounds.width() * BADGE_SIZE
+                val scale = targetSize / intrinsicW
 
-            super.draw(canvas)
-            canvas.restoreToCount(clipSave)
-        } else {
-            super.draw(canvas)
+                canvas.withTranslation(iconBounds.right - targetSize, iconBounds.bottom - targetSize) {
+                    canvas.scale(scale, scale)
+                    badge!!.draw(canvas)
+                }
+            }
         }
-
-        if (applyBadge && iconDelegate.getValue() != null) {
-            val iconBounds = iconDelegate.getValue()!!.getBounds()
-
-            val intrinsicW = badge!!.getIntrinsicWidth()
-            val intrinsicH = badge!!.getIntrinsicHeight()
-            badge!!.setBounds(0, 0, intrinsicW, intrinsicH)
-
-            val targetSize = iconBounds.width() * BADGE_SIZE
-            val scale = targetSize / intrinsicW
-
-            val save = canvas.save()
-
-            canvas.translate(iconBounds.right - targetSize, iconBounds.bottom - targetSize)
-            canvas.scale(scale, scale)
-
-            badge!!.draw(canvas)
-            canvas.restoreToCount(save)
-        }
-
-        canvas.restoreToCount(saveCount)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -460,6 +437,19 @@ open class AdaptiveIconView : View {
 
         internal fun shouldApplyManagedBadge(): Boolean {
             return !Utils.isMainProfile(handle)
+        }
+
+        internal fun register(context: Context) {
+            ContextCompat.registerReceiver(
+                context.applicationContext,
+                receiver,
+                filter,
+                ContextCompat.RECEIVER_NOT_EXPORTED
+            )
+        }
+
+        internal fun unregister(context: Context) {
+            context.applicationContext.unregisterReceiver(receiver)
         }
     }
 

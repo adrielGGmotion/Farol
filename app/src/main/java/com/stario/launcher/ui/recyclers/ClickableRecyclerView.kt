@@ -74,4 +74,6 @@ open class ClickableRecyclerView : RecyclerView {
 
         return result
     }
+
+    override fun performClick(): Boolean = super.performClick()
 }

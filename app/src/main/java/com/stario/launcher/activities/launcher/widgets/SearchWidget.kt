@@ -23,7 +23,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View
 import android.view.animation.LinearInterpolator
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.stario.launcher.R
 import com.stario.launcher.preferences.Vibrations
 import com.stario.launcher.sheet.SheetsFocusController
@@ -77,7 +76,8 @@ open class SearchWidget(private val activity: ThemedActivity) {
 
         root.setOnTouchListener(SheetsFocusController.createClickTouchListener { _ ->
             Vibrations.getInstance().vibrate()
-            LocalBroadcastManager.getInstance(activity)
+            @Suppress("DEPRECATION")
+            androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(activity)
                 .sendBroadcastSync(Intent(ApplicationsDialog.INTENT_LAUNCH_SEARCH))
         })
 

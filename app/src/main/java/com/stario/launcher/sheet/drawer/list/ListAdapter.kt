@@ -31,6 +31,7 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.recyclers.FastScroller
 import com.stario.launcher.ui.utils.animation.Animation
+import androidx.core.view.isNotEmpty
 
 open class ListAdapter(activity: ThemedActivity, private val applicationManager: ProfileApplicationManager?) :
     RecyclerApplicationAdapter(activity), FastScroller.OnPopupViewUpdate, FastScroller.OnPopupViewReset {
@@ -97,7 +98,7 @@ open class ListAdapter(activity: ThemedActivity, private val applicationManager:
         }
     }
 
-    override fun onReset(index: Int) {
+    override fun onReset(position: Int) {
         val layoutManager = recyclerView?.layoutManager
         if (layoutManager != null) {
             val currentView = layoutManager.findViewByPosition(oldScrollerPosition)

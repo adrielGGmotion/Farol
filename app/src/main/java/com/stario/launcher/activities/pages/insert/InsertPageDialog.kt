@@ -37,8 +37,8 @@ class InsertPageDialog(activity: ThemedActivity, listener: OnItemSelected) : Act
         dismiss()
     }
 
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_insert_item, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_insert_item, parent, false)
         val recycler = root.findViewById<RecyclerView>(R.id.recycler)
         recycler.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recycler.addItemDecoration(DividerItemDecorator(activity, MaterialDividerItemDecoration.VERTICAL))

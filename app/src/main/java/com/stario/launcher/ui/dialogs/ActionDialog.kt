@@ -94,11 +94,11 @@ abstract class ActionDialog(activity: ThemedActivity) : BottomSheetDialog(activi
         behavior.setSkipCollapsed(true)
 
         val inflater = activity.layoutInflater
-        root = inflater.inflate(R.layout.pop_up_root, null, false)
+        root = inflater.inflate(R.layout.pop_up_root, android.widget.FrameLayout(activity), false)
         val rootView = root!!
         val content: ViewGroup? = rootView.findViewById(R.id.content)
         val contentView = content!!
-        contentView.addView(inflateContent(activity.layoutInflater))
+        contentView.addView(inflateContent(activity.layoutInflater, contentView))
 
         heightProvider = KeyboardHeightProvider(activity)
 
@@ -346,7 +346,7 @@ abstract class ActionDialog(activity: ThemedActivity) : BottomSheetDialog(activi
         }
     }
 
-    protected abstract fun inflateContent(inflater: LayoutInflater): View
+    protected abstract fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View
 
     protected abstract fun getDesiredInitialState(): Int
 

@@ -20,6 +20,7 @@ package com.stario.launcher.apps
 import java.util.ArrayList
 import java.util.Collections
 import java.util.UUID
+import androidx.core.view.size
 
 open class Category(@JvmField val identifier: UUID) {
     private val comparator: CategoryMappings.Comparator<LauncherApplication>
@@ -140,8 +141,8 @@ open class Category(@JvmField val identifier: UUID) {
 
     override fun hashCode(): Int = identifier.hashCode()
 
-    override fun equals(object_: Any?): Boolean {
-        return object_ is Category && object_.identifier == identifier
+    override fun equals(other: Any?): Boolean {
+        return other is Category && other.identifier == identifier
     }
 
     /**

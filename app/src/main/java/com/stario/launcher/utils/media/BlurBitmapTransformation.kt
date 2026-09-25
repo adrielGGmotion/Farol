@@ -30,6 +30,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import jp.wasabeef.glide.transformations.BlurTransformation
+import androidx.core.graphics.createBitmap
 
 open class BlurBitmapTransformation(radius: Int) : BlurTransformation(radius) {
     protected override fun transform(
@@ -57,7 +58,7 @@ open class BlurBitmapTransformation(radius: Int) : BlurTransformation(radius) {
         val width = bitmap.getWidth()
         val height = bitmap.getHeight()
 
-        val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        val result = createBitmap(width, height)
 
         val radialGradient = GradientDrawable(
             GradientDrawable.Orientation.TL_BR,

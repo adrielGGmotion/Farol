@@ -38,7 +38,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.util.Pair
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.stario.launcher.R
 import com.stario.launcher.activities.launcher.sheets.LauncherSheets
 import com.stario.launcher.activities.pages.insert.InsertPageDialog
@@ -53,12 +52,18 @@ import com.stario.launcher.ui.utils.UiUtils
 import com.stario.launcher.ui.utils.animation.Animation
 import java.lang.reflect.InvocationTargetException
 import java.util.Hashtable
+import androidx.core.view.isEmpty
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.view.size
+import androidx.core.content.edit
 
 class PageManager : ThemedActivity() {
     private val pages = Hashtable<View, Class<out SheetDialogFragment>>()
     private val placeholders = ArrayList<Pair<ConstraintLayout, SheetType>>()
 
-    private lateinit var broadcastManager: LocalBroadcastManager
+    @Suppress("DEPRECATION")
+    private lateinit var broadcastManager: androidx.localbroadcastmanager.content.LocalBroadcastManager
     private lateinit var pagesContainer: ConstraintLayout
     private lateinit var preferences: SharedPreferences
     private lateinit var inflater: LayoutInflater
@@ -72,7 +77,8 @@ class PageManager : ThemedActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.page_manager)
 
-        broadcastManager = LocalBroadcastManager.getInstance(this)
+        @Suppress("DEPRECATION")
+        broadcastManager = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this)
         preferences = applicationContext.getSharedPreferences(Entry.SHEET)
         inflater = LayoutInflater.from(this)
 
@@ -90,7 +96,7 @@ class PageManager : ThemedActivity() {
                 if (dialog == null) {
                     dialog = InsertPageDialog(this@PageManager) { item ->
                         val type = getAvailableSpace(item.first)
-                        preferences.edit().putString(item.second.name, type.toString()).apply()
+                        preferences.edit {putString(item.second.name, type.toString())}
                         pages[inflatePage(type, item.second)] = item.second
 
                         if (pages.size == SheetDialogFragment.IMPLEMENTATIONS.size || pages.size == placeholders.size) {
@@ -114,7 +120,7 @@ class PageManager : ThemedActivity() {
             private fun getAvailableSpace(desiredLocation: SheetType): SheetType {
                 var firstFreeSpace = SheetType.UNDEFINED
                 for (pair in placeholders) {
-                    if (pair.first.childCount == 0) {
+                    if (pair.first.isEmpty()) {
                         if (desiredLocation == pair.second) {
                             firstFreeSpace = pair.second
                             break
@@ -192,7 +198,7 @@ class PageManager : ThemedActivity() {
 
                                 val clazz = pages[draggedView]
                                 if (clazz != null) {
-                                    preferences.edit().putString(clazz.name, type.toString()).apply()
+                                    preferences.edit {putString(clazz.name, type.toString())}
                                     val intent = Intent(LauncherSheets.ACTION_MOVE_SHEET)
                                     intent.putExtra(LauncherSheets.INTENT_SHEET_CLASS_EXTRA, clazz)
                                     broadcastManager.sendBroadcastSync(intent)
@@ -223,7 +229,7 @@ class PageManager : ThemedActivity() {
     }
 
     private fun showAddButton() {
-        if (add.visibility == View.VISIBLE) return
+        if (add.isVisible) return
 
         add.setOnTouchListener(null)
         add.animate().cancel()
@@ -236,8 +242,9 @@ class PageManager : ThemedActivity() {
             .setInterpolator(FastOutSlowInInterpolator()).setListener(null).start()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun hideAddButton() {
-        if (add.visibility == View.GONE) return
+        if (add.isGone) return
 
         add.setOnTouchListener { _, _ -> false }
         add.animate().alpha(0f)
@@ -265,7 +272,7 @@ class PageManager : ThemedActivity() {
                 (parent as ViewGroup).removeView(page)
                 pages.remove(page)
                 showAddButton()
-                preferences.edit().putString(clazz.name, SheetType.UNDEFINED.toString()).apply()
+                preferences.edit {putString(clazz.name, SheetType.UNDEFINED.toString())}
                 val intent = Intent(LauncherSheets.ACTION_REMOVE_SHEET)
                 intent.putExtra(LauncherSheets.INTENT_SHEET_CLASS_EXTRA, clazz)
                 broadcastManager.sendBroadcastSync(intent)
@@ -311,7 +318,7 @@ class PageManager : ThemedActivity() {
                             for (pair in placeholders) {
                                 if (pair.first == parent) {
                                     pages[otherPage]?.let { clazz ->
-                                        preferences.edit().putString(clazz.name, pair.second.toString()).apply()
+                                        preferences.edit {putString(clazz.name, pair.second.toString())}
                                     }
                                     break
                                 }
@@ -323,7 +330,7 @@ class PageManager : ThemedActivity() {
                             for (pair in placeholders) {
                                 if (pair.first == view) {
                                     pages[draggedPage]?.let { clazz ->
-                                        preferences.edit().putString(clazz.name, pair.second.toString()).apply()
+                                        preferences.edit {putString(clazz.name, pair.second.toString())}
                                     }
                                     break
                                 }
@@ -354,6 +361,7 @@ class PageManager : ThemedActivity() {
             page.visibility = View.INVISIBLE
             true
         }
+        @SuppressLint("ClickableViewAccessibility")
         pageContainer.setOnTouchListener { _, event: MotionEvent ->
             touchPoint.x = event.x.toInt()
             touchPoint.y = event.y.toInt()
@@ -400,8 +408,8 @@ class PageManager : ThemedActivity() {
         getRoot()?.requestLayout()
     }
 
-    override fun onConfigurationChanged(config: Configuration) {
-        super.onConfigurationChanged(config)
+    override fun onConfigurationChanged(configuration: Configuration) {
+        super.onConfigurationChanged(configuration)
         loadParams()
     }
 

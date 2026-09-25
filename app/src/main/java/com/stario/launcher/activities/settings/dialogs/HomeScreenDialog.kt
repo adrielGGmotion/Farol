@@ -19,7 +19,6 @@ package com.stario.launcher.activities.settings.dialogs
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -29,7 +28,6 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.slider.Slider
@@ -50,6 +48,7 @@ import com.stario.launcher.ui.common.lock.LockDetector
 import com.stario.launcher.ui.dialogs.ActionDialog
 import com.stario.launcher.utils.Utils
 import java.util.UUID
+import androidx.core.content.edit
 
 open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private lateinit var scroller: NestedScrollView
@@ -71,8 +70,8 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private lateinit var lockAnimContainer: View
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
-        root = inflater.inflate(R.layout.pop_up_home, null) as ViewGroup
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        root = inflater.inflate(R.layout.pop_up_home, parent, false) as ViewGroup
 
         resources = activity.getResources()
         val stario: Stario = activity.getApplicationContext()
@@ -105,9 +104,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.media_container),
             settingsPrefs.getBoolean(Media.PREFERENCE_ENTRY, false)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(Media.PREFERENCE_ENTRY, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(Media.PREFERENCE_ENTRY, checked)
+                }
 
             if (checked && !Utils.isNotificationServiceEnabled(activity)) {
                 showNotificationPermissionDialog()
@@ -120,9 +119,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.search_container),
             settingsPrefs.getBoolean(SearchWidget.SEARCH_WIDGET_KEY, true)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(SearchWidget.SEARCH_WIDGET_KEY, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(SearchWidget.SEARCH_WIDGET_KEY, checked)
+                }
         }
 
         // Pinned Category
@@ -137,9 +136,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
                 pinnedCategorySwitch.setChecked(false)
                 pinnedCategoryContainer.performClick()
             } else {
-                pinsPrefs.edit()
-                    .putBoolean(PinnedCategory.PINNED_CATEGORY_VISIBLE, isChecked)
-                    .apply()
+                pinsPrefs.edit {
+                        putBoolean(PinnedCategory.PINNED_CATEGORY_VISIBLE, isChecked)
+                    }
             }
         }
 
@@ -177,9 +176,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.clock_container),
             settingsPrefs.getBoolean(ClockWidget.CLOCK_WIDGET_KEY, true)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(ClockWidget.CLOCK_WIDGET_KEY, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(ClockWidget.CLOCK_WIDGET_KEY, checked)
+                }
         }
 
         val slider = root.findViewById<Slider>(R.id.background_slider)
@@ -189,9 +188,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         slider.setStepSize(1f)
         slider.setValue(clockPrefs.getInt(StylizedClockView.BACKGROUND_ALPHA_KEY, 0).toFloat())
         slider.addOnChangeListener { _, value, _ ->
-            clockPrefs.edit()
-                .putInt(StylizedClockView.BACKGROUND_ALPHA_KEY, value.toInt())
-                .apply()
+            clockPrefs.edit {
+                    putInt(StylizedClockView.BACKGROUND_ALPHA_KEY, value.toInt())
+                }
         }
 
         setupSwitch(
@@ -199,9 +198,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.imperial_clock_container),
             clockPrefs.getBoolean(StylizedClockView.IMPERIAL_KEY, Utils.isSystemUsingImperial(activity))
         ) { _, checked ->
-            clockPrefs.edit()
-                .putBoolean(StylizedClockView.IMPERIAL_KEY, checked)
-                .apply()
+            clockPrefs.edit {
+                    putBoolean(StylizedClockView.IMPERIAL_KEY, checked)
+                }
         }
     }
 
@@ -212,13 +211,10 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.weather_container),
             weatherPrefs.getBoolean(Weather.FORECAST_KEY, true)
         ) { _, checked ->
-            weatherPrefs.edit()
-                .putBoolean(Weather.FORECAST_KEY, checked)
-                .apply()
+            weatherPrefs.edit {
+                    putBoolean(Weather.FORECAST_KEY, checked)
+                }
 
-            //noinspection deprecation
-            LocalBroadcastManager.getInstance(activity)
-                .sendBroadcastSync(Intent(Weather.ACTION_REQUEST_UPDATE))
         }
 
         // Location
@@ -252,9 +248,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.imperial_weather_container),
             weatherPrefs.getBoolean(Weather.IMPERIAL_KEY, Utils.isSystemUsingImperial(activity))
         ) { _, checked ->
-            weatherPrefs.edit()
-                .putBoolean(Weather.IMPERIAL_KEY, checked)
-                .apply()
+            weatherPrefs.edit {
+                    putBoolean(Weather.IMPERIAL_KEY, checked)
+                }
         }
     }
 
@@ -265,9 +261,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.lock_container),
             settingsPrefs.getBoolean(LockDetector.PREFERENCE_ENTRY, false)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(LockDetector.PREFERENCE_ENTRY, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(LockDetector.PREFERENCE_ENTRY, checked)
+                }
 
             if (checked && !Utils.isAccessibilityServiceEnabled(activity)) {
                 showAccessibilityPermissionDialog()
@@ -282,9 +278,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             root.findViewById(R.id.lock_animation_container),
             settingsPrefs.getBoolean(LockDetector.LEGACY_ANIMATION, false)
         ) { _, checked ->
-            settingsPrefs.edit()
-                .putBoolean(LockDetector.LEGACY_ANIMATION, checked)
-                .apply()
+            settingsPrefs.edit {
+                    putBoolean(LockDetector.LEGACY_ANIMATION, checked)
+                }
         }
         updateLockAnimationState(settingsPrefs.getBoolean(LockDetector.PREFERENCE_ENTRY, false))
     }

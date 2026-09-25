@@ -23,6 +23,7 @@ import android.database.ContentObserver
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.DisplayMetrics
 import android.view.View
@@ -31,6 +32,7 @@ import android.view.WindowManager
 import com.stario.launcher.utils.Utils
 import com.stario.launcher.utils.objects.ObservableObject
 import java.util.WeakHashMap
+import androidx.core.view.isVisible
 
 open class Measurements {
     companion object {
@@ -77,7 +79,7 @@ open class Measurements {
 
             dp = displayMetrics.density
             dpi = displayMetrics.densityDpi
-            sp = displayMetrics.scaledDensity
+            sp = activity.resources.configuration.fontScale * displayMetrics.density
 
             width = displayMetrics.widthPixels
             height = displayMetrics.heightPixels
@@ -142,7 +144,7 @@ open class Measurements {
                     )
                 )
 
-                val observer = object : ContentObserver(Handler()) {
+                val observer = object : ContentObserver(Handler(Looper.getMainLooper())) {
                     override fun onChange(selfChange: Boolean) {
                         onChange(selfChange, null)
                     }

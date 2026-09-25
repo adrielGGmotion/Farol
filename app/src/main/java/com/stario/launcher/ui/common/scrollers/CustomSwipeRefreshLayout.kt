@@ -41,6 +41,7 @@ open class CustomSwipeRefreshLayout : SwipeRefreshLayout {
         return super.onInterceptTouchEvent(event)
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
@@ -63,6 +64,8 @@ open class CustomSwipeRefreshLayout : SwipeRefreshLayout {
         }
         return super.onTouchEvent(event)
     }
+
+    override fun performClick(): Boolean = super.performClick()
 
     override fun setRefreshing(refreshing: Boolean) {
         super.setRefreshing(refreshing)

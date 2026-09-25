@@ -29,8 +29,8 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
 
 open class NotificationConfigurator(activity: ThemedActivity) : ActionDialog(activity) {
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_notifications, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_notifications, parent, false)
 
         root.findViewById<View>(R.id.proceed).setOnClickListener {
             setOnDismissListener(null)

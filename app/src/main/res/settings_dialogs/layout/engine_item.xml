@@ -27,6 +27,7 @@
     app:carbon_cornerRadius="5dp">
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/icon"
         android:layout_width="30dp"
         android:layout_height="30dp"

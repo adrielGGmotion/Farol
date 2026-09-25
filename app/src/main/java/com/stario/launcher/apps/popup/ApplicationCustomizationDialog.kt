@@ -73,8 +73,8 @@ open class ApplicationCustomizationDialog(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_customize, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_customize, parent, false)
 
         val icons = root.findViewById<RecyclerView>(R.id.icons)
         icons.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)

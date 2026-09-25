@@ -27,6 +27,8 @@ import com.stario.launcher.Stario
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.utils.Utils
 import java.io.InputStreamReader
+import androidx.core.view.isEmpty
+import androidx.core.content.edit
 
 open class GridTemplateManager(context: Stario, identifier: String, @RawRes templateId: Int) {
     private val templateCache: MutableMap<String, GridTemplate> = HashMap()
@@ -70,7 +72,7 @@ open class GridTemplateManager(context: Stario, identifier: String, @RawRes temp
     }
 
     open fun saveUserLayout(cols: Int, rows: Int, map: Map<String, DynamicGridLayout.ItemLayoutData>) {
-        prefs.edit().putString("state_${cols}x${rows}", Utils.getGsonInstance().toJson(map)).apply()
+        prefs.edit {putString("state_${cols}x${rows}", Utils.getGsonInstance().toJson(map))}
     }
 
     open class GridTemplate {

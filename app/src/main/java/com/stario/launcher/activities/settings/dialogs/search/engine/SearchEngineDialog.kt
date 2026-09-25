@@ -29,8 +29,8 @@ import com.stario.launcher.ui.dialogs.ActionDialog
 import com.stario.launcher.ui.recyclers.DividerItemDecorator
 
 open class SearchEngineDialog(activity: ThemedActivity) : ActionDialog(activity) {
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_engine, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_engine, parent, false)
         val recycler = root.findViewById<RecyclerView>(R.id.recycler)
 
         recycler.setLayoutManager(LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false))

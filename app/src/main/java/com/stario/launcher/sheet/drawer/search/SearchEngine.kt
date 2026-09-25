@@ -24,6 +24,7 @@ import com.stario.launcher.R
 import com.stario.launcher.Stario
 import com.stario.launcher.preferences.Entry
 import com.stario.launcher.sheet.drawer.search.recyclers.adapters.WebAdapter
+import androidx.core.content.edit
 
 enum class SearchEngine(private val label: String, private val url: String, private val query: String, private val drawable: Int) {
     GOOGLE("Google", "google.com", "/search?q=", R.drawable.ic_google),
@@ -56,7 +57,7 @@ enum class SearchEngine(private val label: String, private val url: String, priv
 
         @JvmStatic
         fun setEngine(stario: Stario, engine: SearchEngine) {
-            stario.getSharedPreferences(Entry.SEARCH).edit().putString(SEARCH_ENGINE, engine.url).apply()
+            stario.getSharedPreferences(Entry.SEARCH).edit {putString(SEARCH_ENGINE, engine.url)}
         }
     }
 }

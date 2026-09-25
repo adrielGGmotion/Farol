@@ -15,15 +15,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
+
 package com.stario.launcher.activities.settings.dialogs.icons
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -37,35 +36,15 @@ import com.stario.launcher.ui.dialogs.ActionDialog
 import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.icons.PathCornerTreatmentAlgorithm
 import com.stario.launcher.ui.recyclers.DividerItemDecorator
+import androidx.core.content.edit
 
 open class IconsDialog(activity: ThemedActivity) : ActionDialog(activity) {
-    /**
-     * Broadcast Action: Icon corner radius changed by the user.
-     * <ul>
-     * <li> {@link #EXTRA_CORNER_RADIUS} containing the new radius.
-     * </ul>
-     */
-    companion object {
-        const val INTENT_CHANGE_CORNER_RADIUS = "com.stario.IconsDialog.CHANGE_CORNER_RADIUS"
-        const val EXTRA_CORNER_RADIUS = "com.stario.IconsDialog.CORNER_RADIUS"
-
-        /**
-         * Broadcast Action: Icon clip path algorithm changed by the user.
-         * <ul>
-         * <li> {@link #EXTRA_PATH_ALGORITHM} containing the new algorithm.
-         * </ul>
-         */
-        const val INTENT_CHANGE_PATH_ALGORITHM = "com.stario.IconsDialog.CHANGE_PATH_ALGORITHM"
-        const val EXTRA_PATH_ALGORITHM = "com.stario.IconsDialog.PATH_ALGORITHM"
-    }
-
-    private val localBroadcastManager: LocalBroadcastManager = LocalBroadcastManager.getInstance(activity)
     private val preferences: SharedPreferences = activity.getApplicationContext().getSharedPreferences(Entry.ICONS)
     private var adapter: IconsRecyclerAdapter? = null
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_icons, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_icons, parent, false)
 
         val slider = root.findViewById<Slider>(R.id.slider)
         val algorithm = root.findViewById<MaterialButtonToggleGroup>(R.id.algorithm)
@@ -105,14 +84,9 @@ open class IconsDialog(activity: ThemedActivity) : ActionDialog(activity) {
                 .toInt() / 100f
         )
         slider.addOnChangeListener { _, value, _ ->
-            val intent = Intent(INTENT_CHANGE_CORNER_RADIUS)
-            intent.putExtra(EXTRA_CORNER_RADIUS, value)
-
-            preferences.edit()
-                .putFloat(AdaptiveIconView.CORNER_RADIUS_ENTRY, value)
-                .apply()
-
-            localBroadcastManager.sendBroadcastSync(intent)
+            preferences.edit {
+                    putFloat(AdaptiveIconView.CORNER_RADIUS_ENTRY, value)
+                }
         }
 
         val currentPathCornerTreatmentAlgorithm = PathCornerTreatmentAlgorithm.fromIdentifier(
@@ -129,29 +103,16 @@ open class IconsDialog(activity: ThemedActivity) : ActionDialog(activity) {
         }
 
         algorithm.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            val intent = Intent(INTENT_CHANGE_PATH_ALGORITHM)
-
-            if (checkedId == R.id.squircle && isChecked) {
-                intent.putExtra(EXTRA_PATH_ALGORITHM, PathCornerTreatmentAlgorithm.SQUIRCLE)
-
-                preferences.edit()
-                    .putInt(
-                        PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY,
+            preferences.edit {
+                putInt(
+                    PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY,
+                    if (checkedId == R.id.squircle && isChecked) {
                         PathCornerTreatmentAlgorithm.SQUIRCLE.ordinal
-                    )
-                    .apply()
-            } else {
-                intent.putExtra(EXTRA_PATH_ALGORITHM, PathCornerTreatmentAlgorithm.REGULAR)
-
-                preferences.edit()
-                    .putInt(
-                        PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY,
+                    } else {
                         PathCornerTreatmentAlgorithm.REGULAR.ordinal
-                    )
-                    .apply()
+                    }
+                )
             }
-
-            localBroadcastManager.sendBroadcastSync(intent)
         }
 
         recycler.addItemDecoration(DividerItemDecorator(getContext(), MaterialDividerItemDecoration.VERTICAL))
@@ -161,6 +122,7 @@ open class IconsDialog(activity: ThemedActivity) : ActionDialog(activity) {
         return root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun show() {
         super.show()
         adapter?.notifyDataSetChanged()

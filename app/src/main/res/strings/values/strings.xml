@@ -19,6 +19,12 @@
     <!-- Non translatable -->
     <string name="app_name" translatable="false">Stario</string>
     <string name="affinity" translatable="false">com.stario</string>
+    <string name="external_link_arrow" translatable="false">↗</string>
+    <string name="size_s" translatable="false">S</string>
+    <string name="size_m" translatable="false">M</string>
+    <string name="size_l" translatable="false">L</string>
+    <string name="size_xl" translatable="false">XL</string>
+    <string name="north_abbreviation" translatable="false">N</string>
 
     <!-- General -->
     <string name="unavailable">Unavailable</string>
@@ -122,6 +128,7 @@
     <string name="regular">Regular</string>
     <string name="squircle">Squircle</string>
     <string name="components">components</string>
+    <string name="components_count">%1$s components</string>
     <string name="calculating">Calculating…</string>
 
     <!-- Hidden apps pop-up -->
@@ -129,6 +136,7 @@
 
     <!-- License pop-up -->
     <string name="license">License</string>
+    <string name="license_name">%1$s License</string>
     <string name="main_dependencies">Main dependencies</string>
     <string name="all_dependencies">All dependencies</string>
 
@@ -194,6 +202,7 @@
 
     <!-- Search -->
     <string name="search_on">Search on</string>
+    <string name="search_on_app">Search on %1$s</string>
     <string name="searching">Searching…</string>
     <string name="search_hidden_apps">Search hidden apps</string>
     <string name="unauthorized">Kagi servers reported unauthorized access. Is your API key valid?</string>

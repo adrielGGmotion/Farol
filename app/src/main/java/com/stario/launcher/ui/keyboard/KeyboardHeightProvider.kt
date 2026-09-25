@@ -36,6 +36,7 @@ import android.widget.PopupWindow
 import com.stario.launcher.ui.Measurements
 import com.stario.launcher.utils.Utils
 import java.util.concurrent.CopyOnWriteArrayList
+import androidx.core.graphics.drawable.toDrawable
 
 open class KeyboardHeightProvider(activity: Activity) : PopupWindow(activity) {
     private val activity: Activity = activity
@@ -49,7 +50,7 @@ open class KeyboardHeightProvider(activity: Activity) : PopupWindow(activity) {
         popupView.setLayoutParams(
             LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         )
-        popupView.setBackground(ColorDrawable(0))
+        popupView.setBackground(0.toDrawable())
 
         listener = ViewTreeObserver.OnGlobalLayoutListener {
             notifyKeyboardHeightChanged(getKeyboardHeight())
@@ -61,6 +62,7 @@ open class KeyboardHeightProvider(activity: Activity) : PopupWindow(activity) {
 
         setContentView(popupView)
 
+        @Suppress("DEPRECATION")
         setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_RESIZE or LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
         setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED)
 
@@ -70,7 +72,8 @@ open class KeyboardHeightProvider(activity: Activity) : PopupWindow(activity) {
 
     open fun start() {
         if (!isShowing && parentView.windowToken != null) {
-            setBackgroundDrawable(ColorDrawable(0))
+            @Suppress("DEPRECATION")
+            setBackgroundDrawable(0.toDrawable())
             showAtLocation(parentView, Gravity.NO_GRAVITY, 0, 0)
 
             parentView.viewTreeObserver.addOnGlobalLayoutListener(listener)
@@ -130,7 +133,9 @@ open class KeyboardHeightProvider(activity: Activity) : PopupWindow(activity) {
             return 0
         } else {
             val screenSize = Point()
+            @Suppress("DEPRECATION")
             val display: Display = activity.windowManager.defaultDisplay
+            @Suppress("DEPRECATION")
             display.getSize(screenSize)
 
             val displayCutout: DisplayCutout? = display.cutout

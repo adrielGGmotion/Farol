@@ -27,8 +27,8 @@ import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.dialogs.ActionDialog
 
 open class LicensesDialog(activity: ThemedActivity) : ActionDialog(activity) {
-    override fun inflateContent(inflater: LayoutInflater): View {
-        val root = inflater.inflate(R.layout.pop_up_licenses, null)
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_licenses, parent, false)
         val licenses = root.findViewById<RecyclerView>(R.id.licenses)
 
         licenses.setLayoutManager(LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false))

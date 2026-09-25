@@ -35,6 +35,8 @@ import com.stario.launcher.sheet.drawer.search.Searchable
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.recyclers.async.InflationType
 import java.util.Locale
+import androidx.core.view.isVisible
+import androidx.core.view.size
 
 open class AppAdapter(activity: ThemedActivity) : RecyclerApplicationAdapter(activity, null, InflationType.SYNCED), Searchable {
     private val preferences: SharedPreferences = activity.applicationContext.getSharedPreferences(Entry.SEARCH)
@@ -89,7 +91,7 @@ open class AppAdapter(activity: ThemedActivity) : RecyclerApplicationAdapter(act
 
     override fun submit(): Boolean {
         val recycler = recyclerView ?: return false
-        if (recycler.layoutManager != null && recycler.visibility == View.VISIBLE) {
+        if (recycler.layoutManager != null && recycler.isVisible) {
             val view = recycler.layoutManager?.findViewByPosition(0)
             if (view != null) {
                 view.callOnClick()
@@ -105,16 +107,16 @@ open class AppAdapter(activity: ThemedActivity) : RecyclerApplicationAdapter(act
         else if (itemCount > 0 && recycler.visibility != View.VISIBLE) recycler.visibility = View.VISIBLE
     }
 
-    override fun onBind(viewHolder: ApplicationViewHolder, index: Int) {
-        super.onBind(viewHolder, index)
-        val label = getApplication(index).getLabel()
+    override fun onBind(holder: ApplicationViewHolder, position: Int) {
+        super.onBind(holder, position)
+        val label = getApplication(position).getLabel()
         val query = currentQuery!!
         val substringStart = label.lowercase(Locale.getDefault()).indexOf(query)
         if (substringStart >= 0) {
             val builder = SpannableStringBuilder(label)
             builder.setSpan(StyleSpan(Typeface.BOLD), substringStart, substringStart + query.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            viewHolder.setLabel(builder)
+            holder.setLabel(builder)
         }
     }
 

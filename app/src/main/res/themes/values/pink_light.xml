@@ -79,13 +79,6 @@
         <item name="android:forceDarkAllowed">false</item>
     </style>
 
-    <style name="Theme.Light.Pink.Opaque" parent="Theme.Light.Pink">
-        <item name="android:windowShowWallpaper">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:forceDarkAllowed">false</item>
-    </style>
 
     <style name="Theme.Light.Pink.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="colorPrimary">#8B0082</item>

@@ -181,19 +181,17 @@ open class BriefingDialog : SheetDialogFragment {
             )
 
             val feed: Feed = list.get(position)
-            if (feed != null) {
-                menu.add(
-                    PopupMenu.Item(
-                        resources.getString(R.string.rename_feed),
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.ic_edit,
-                            activity.getTheme()
-                        ),
-                        View.OnClickListener { FeedConfigurator(activity, feed).show() }
-                    )
+            menu.add(
+                PopupMenu.Item(
+                    resources.getString(R.string.rename_feed),
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_edit,
+                        activity.getTheme()
+                    ),
+                    View.OnClickListener { FeedConfigurator(activity, feed).show() }
                 )
-            }
+            )
 
             menu.show(activity, tab, PopupMenu.PIVOT_CENTER_HORIZONTAL)
         }

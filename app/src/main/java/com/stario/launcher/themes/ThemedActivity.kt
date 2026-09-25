@@ -59,6 +59,9 @@ import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.utils.Utils
 import java.util.Arrays
 import java.util.HashMap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.size
+import androidx.core.content.edit
 
 abstract class ThemedActivity : AppCompatActivity() {
     private val activityResultListeners = HashMap<Int, OnActivityResult?>()
@@ -79,9 +82,9 @@ abstract class ThemedActivity : AppCompatActivity() {
         //default theme if it doesn't exist
         if (!themePreferences.contains(THEME)) {
             if (Utils.isMinimumSDK(Build.VERSION_CODES.R)) {
-                themePreferences.edit().putString(THEME, THEME_DYNAMIC.toString()).apply()
+                themePreferences.edit {putString(THEME, THEME_DYNAMIC.toString())}
             } else {
-                themePreferences.edit().putString(THEME, THEME_BLUE.toString()).apply()
+                themePreferences.edit {putString(THEME, THEME_BLUE.toString())}
             }
         }
 
@@ -107,11 +110,11 @@ abstract class ThemedActivity : AppCompatActivity() {
 
             if (isOpaque()) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
-                windowBackground = ColorDrawable(Color.TRANSPARENT)
+                windowBackground = Color.TRANSPARENT.toDrawable()
             } else {
                 window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
 
-                windowBackground = ColorDrawable(backgroundColor)
+                windowBackground = backgroundColor.toDrawable()
                 windowBackground.setAlpha(0)
             }
 
@@ -341,7 +344,7 @@ abstract class ThemedActivity : AppCompatActivity() {
 
     private fun assignActualBackgroundColor(window: Window) {
         roundedCornerBackground.setCornerRadius(Measurements.dpToPx(0f).toFloat())
-        windowBackground = ColorDrawable(backgroundColor)
+        windowBackground = backgroundColor.toDrawable()
 
         // If the window background, when set, is completely opaque (alpha 255),
         // The window will treat every alpha value for the wallpaper as black

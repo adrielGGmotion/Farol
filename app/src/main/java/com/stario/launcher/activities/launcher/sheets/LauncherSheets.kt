@@ -21,10 +21,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.stario.launcher.activities.launcher.Launcher
 import com.stario.launcher.sheet.SheetDialog
 import com.stario.launcher.sheet.SheetDialogFragment
+import androidx.core.view.isNotEmpty
 
 class LauncherSheets {
     companion object {
@@ -44,7 +44,8 @@ class LauncherSheets {
                 addAction(ACTION_MOVE_SHEET)
                 addAction(ACTION_REMOVE_SHEET)
             }
-            LocalBroadcastManager.getInstance(launcher).registerReceiver(object : BroadcastReceiver() {
+            @Suppress("DEPRECATION")
+            androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(launcher).registerReceiver(object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     val classes = getClasses(intent) ?: return
                     when (intent.action) {

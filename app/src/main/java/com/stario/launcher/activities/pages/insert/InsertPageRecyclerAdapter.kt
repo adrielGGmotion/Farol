@@ -30,6 +30,7 @@ import com.stario.launcher.sheet.SheetDialogFragment
 import com.stario.launcher.sheet.SheetType
 import com.stario.launcher.themes.ThemedActivity
 import java.lang.reflect.InvocationTargetException
+import androidx.core.view.size
 
 class InsertPageRecyclerAdapter(
     private val activity: ThemedActivity,
@@ -38,9 +39,11 @@ class InsertPageRecyclerAdapter(
     private val items = ArrayList<Pair<SheetType, Class<out SheetDialogFragment>>>()
 
     fun setItems(items: List<Pair<SheetType, Class<out SheetDialogFragment>>>) {
+        val oldSize = this.items.size
         this.items.clear()
+        if (oldSize > 0) notifyItemRangeRemoved(0, oldSize)
         this.items.addAll(items)
-        notifyDataSetChanged()
+        if (items.isNotEmpty()) notifyItemRangeInserted(0, items.size)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

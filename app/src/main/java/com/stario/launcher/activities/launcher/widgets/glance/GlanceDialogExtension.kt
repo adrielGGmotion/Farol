@@ -32,6 +32,7 @@ import android.view.animation.PathInterpolator
 import androidx.annotation.FloatRange
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.DialogFragment
+import com.stario.launcher.ui.utils.UiUtils
 import com.stario.launcher.preferences.Vibrations
 import com.stario.launcher.themes.ThemedActivity
 import com.stario.launcher.ui.Measurements
@@ -327,13 +328,7 @@ abstract class GlanceDialogExtension protected constructor() : DialogFragment(),
 
     fun updateSheetSystemUI(lightMode: Boolean) {
         val window = localDialog?.window ?: return
-        val decor = window.decorView
-
-        if (lightMode) {
-            decor.systemUiVisibility = decor.systemUiVisibility and (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR).inv()
-        } else {
-            decor.systemUiVisibility = decor.systemUiVisibility or (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
-        }
+        UiUtils.setLightSystemBars(window, !lightMode)
     }
 
     fun addTransitionListener(listener: TransitionListener?) {

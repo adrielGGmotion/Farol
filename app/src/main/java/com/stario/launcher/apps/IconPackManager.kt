@@ -50,6 +50,9 @@ import java.util.Collections
 import java.util.HashMap
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
+import androidx.core.view.isNotEmpty
+import androidx.core.view.size
+import androidx.core.content.edit
 
 class IconPackManager private constructor(stario: Stario, listener: OnChangeListener?) {
     private val iconPacks = ArrayList<IconPack>()
@@ -68,20 +71,20 @@ class IconPackManager private constructor(stario: Stario, listener: OnChangeList
             PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY,
             PathCornerTreatmentAlgorithm.DEFAULT_PATH_ALGORITHM_ENTRY
         )
-        val editor = preferences.edit()
+        preferences.edit {
 
-        editor.clear()
-            .putString(ICON_PACK_ENTRY, pack?.application?.info?.packageName)
+            clear()
+                .putString(ICON_PACK_ENTRY, pack?.application?.info?.packageName)
 
-        if (cornerRadius != AdaptiveIconView.DEFAULT_CORNER_RADIUS) {
-            editor.putFloat(AdaptiveIconView.CORNER_RADIUS_ENTRY, cornerRadius)
+            if (cornerRadius != AdaptiveIconView.DEFAULT_CORNER_RADIUS) {
+                putFloat(AdaptiveIconView.CORNER_RADIUS_ENTRY, cornerRadius)
+            }
+
+            if (pathAlgorithm != PathCornerTreatmentAlgorithm.DEFAULT_PATH_ALGORITHM_ENTRY) {
+                putInt(PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY, pathAlgorithm)
+            }
+
         }
-
-        if (pathAlgorithm != PathCornerTreatmentAlgorithm.DEFAULT_PATH_ALGORITHM_ENTRY) {
-            editor.putInt(PathCornerTreatmentAlgorithm.PATH_ALGORITHM_ENTRY, pathAlgorithm)
-        }
-
-        editor.apply()
         activeIconPack = pack
 
         listener?.onChange()
@@ -95,13 +98,13 @@ class IconPackManager private constructor(stario: Stario, listener: OnChangeList
                 json += ",$JSON_ICON_DRAWABLE_NAME:\"$drawableName\""
             }
 
-            preferences.edit()
-                .putString(packageName, "$json}")
-                .apply()
+            preferences.edit {
+                    putString(packageName, "$json}")
+                }
         } else {
-            preferences.edit()
-                .putString(packageName, BuildConfig.APPLICATION_ID)
-                .apply()
+            preferences.edit {
+                    putString(packageName, BuildConfig.APPLICATION_ID)
+                }
         }
 
         updateIcon(packageName)
@@ -522,8 +525,8 @@ class IconPackManager private constructor(stario: Stario, listener: OnChangeList
             return future
         }
 
-        override fun equals(object_: Any?): Boolean {
-            return object_ is IconPack && application == object_.application
+        override fun equals(other: Any?): Boolean {
+            return other is IconPack && application == other.application
         }
 
         override fun hashCode(): Int = application.hashCode()

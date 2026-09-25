@@ -17,6 +17,7 @@
   -->
 
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:contentDescription="@null"
     android:layout_width="50dp"
     android:layout_height="50dp"
     android:padding="10dp"

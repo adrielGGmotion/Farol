@@ -37,6 +37,7 @@ import com.stario.launcher.ui.recyclers.autogrid.AutoGridLayoutManager
 import com.stario.launcher.ui.utils.LayoutSizeObserver
 import com.stario.launcher.utils.Utils
 import com.stario.launcher.utils.objects.ObservableObject
+import androidx.core.view.size
 
 open class List : ListDrawerPage {
     companion object { private const val USER_HANDLE_KEY = "com.stario.UserHandle" }
@@ -97,9 +98,12 @@ open class List : ListDrawerPage {
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         if (savedInstanceState?.containsKey(USER_HANDLE_KEY) == true) {
-            handle = if (Utils.isMinimumSDK(Build.VERSION_CODES.TIRAMISU))
+            handle = if (Utils.isMinimumSDK(Build.VERSION_CODES.TIRAMISU)) {
                 savedInstanceState.getParcelable(USER_HANDLE_KEY, UserHandle::class.java)
-            else savedInstanceState.getParcelable(USER_HANDLE_KEY)
+            } else {
+                @Suppress("DEPRECATION")
+                savedInstanceState.getParcelable(USER_HANDLE_KEY)
+            }
         }
         val applicationManager = ProfileManager.getInstance().getProfile(handle)
         val adapter: AsyncRecyclerAdapter<*> = ListAdapter(activity, applicationManager)

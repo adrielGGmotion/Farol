@@ -37,6 +37,7 @@ import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.ui.utils.animation.FragmentTransition
 import com.stario.launcher.ui.utils.animation.SharedElementTransition
 import java.util.function.Supplier
+import androidx.core.view.size
 
 open class FolderListAdapter(private val activity: ThemedActivity, private val folderList: FolderList) :
     AsyncRecyclerAdapter<FolderListAdapter.ViewHolder>(activity) {
@@ -63,6 +64,7 @@ open class FolderListAdapter(private val activity: ThemedActivity, private val f
             if (preparedRemovalIndex < 0) preparedRemovalIndex = categoryManager.indexOf(category)
         }
 
+        @android.annotation.SuppressLint("NotifyDataSetChanged")
         override fun onRemoved(category: Category) {
             if (preparedRemovalIndex >= 0) {
                 UiUtils.post { notifyItemRemoved(preparedRemovalIndex) }

@@ -20,6 +20,7 @@ package com.stario.launcher.ui.utils.animation
 import android.app.Activity
 import android.app.WallpaperManager
 import android.os.Handler
+import android.os.Looper
 import android.os.IBinder
 import android.util.Log
 import android.view.Window
@@ -30,7 +31,7 @@ open class WallpaperAnimator {
     companion object {
         private const val TAG = "WallpaperAnimation"
 
-        private val handler = Handler()
+        private val handler = Handler(Looper.getMainLooper())
 
         private const val ANIMATION_FRAME_STEP = 0.005f
 

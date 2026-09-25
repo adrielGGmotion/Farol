@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.R
+import androidx.core.view.size
 
 open class LicensesRecyclerAdapter(context: Context) : RecyclerView.Adapter<LicensesRecyclerAdapter.ViewHolder>() {
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -37,12 +38,11 @@ open class LicensesRecyclerAdapter(context: Context) : RecyclerView.Adapter<Lice
         internal fun setLicense(licenseData: Array<String>) {
             name.setText(licenseData[0])
             user.setText(licenseData[1])
-            license.setText(licenseData[2] + " " + itemView.getResources().getString(R.string.license))
+            license.text = itemView.resources.getString(R.string.license_name, licenseData[2])
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         viewHolder.setLicense(licenses[position])
     }
 

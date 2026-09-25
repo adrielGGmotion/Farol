@@ -26,7 +26,7 @@ import com.stario.launcher.exceptions.NoExistingInstanceException
 
 open class Vibrations private constructor(stario: Stario) {
     private val settings: SharedPreferences = stario.getSharedPreferences(Entry.STARIO)
-    private val vibrator: Vibrator? = stario.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?
+    private val vibrator: Vibrator? = stario.getSystemService(Vibrator::class.java)
 
     open fun vibrate() {
         if (settings.getBoolean(PREFERENCE_ENTRY, true)) {

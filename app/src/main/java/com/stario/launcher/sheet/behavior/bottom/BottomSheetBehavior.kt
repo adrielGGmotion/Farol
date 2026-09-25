@@ -32,6 +32,7 @@ import com.stario.launcher.ui.Measurements
 import com.stario.launcher.ui.recyclers.overscroll.OverScrollEffect
 import com.stario.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
 import kotlin.math.abs
+import androidx.core.view.isVisible
 
 open class BottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?) : SheetBehavior<V>(context, attrs) {
     private var rememberInterceptResult: Boolean? = null
@@ -205,7 +206,7 @@ open class BottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?)
                     }
                 }
 
-                if (scroll != null && scroll.visibility == View.VISIBLE && scroll.canScrollVertically(-1)) {
+                if (scroll != null && scroll.isVisible && scroll.canScrollVertically(-1)) {
                     return false
                 }
             }
@@ -228,8 +229,8 @@ open class BottomSheetBehavior<V : View>(context: Context, attrs: AttributeSet?)
             val targetState: Int
 
             if (yvel == 0f || Measurements.dpToPx(
-                    ViewConfiguration.getMinimumFlingVelocity() +
-                        (ViewConfiguration.getMaximumFlingVelocity() - ViewConfiguration.getMinimumFlingVelocity()) / 10f
+                    ViewConfiguration.get(releasedChild.context).scaledMinimumFlingVelocity +
+                        (ViewConfiguration.get(releasedChild.context).scaledMaximumFlingVelocity - ViewConfiguration.get(releasedChild.context).scaledMinimumFlingVelocity) / 10f
                 ).toFloat() > abs(yvel)
             ) {
                 val currentTop = releasedChild.top

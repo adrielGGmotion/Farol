@@ -17,6 +17,7 @@
 
 <com.stario.launcher.ui.common.glance.GlanceConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/glance"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,7 +25,9 @@
     android:background="?attr/colorSurfaceContainer"
     android:padding="10dp"
     app:strokeColor="?attr/colorSurfaceContainerHigh"
-    app:strokeWidth="1dp">
+    app:strokeWidth="1dp"
+    tools:context=".activities.launcher.Launcher"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:id="@+id/extensions"

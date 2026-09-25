@@ -45,6 +45,7 @@ import com.stario.launcher.ui.icons.AdaptiveIconView
 import com.stario.launcher.ui.utils.animation.Animation
 import com.stario.launcher.utils.Utils
 import java.util.ArrayList
+import androidx.core.view.size
 
 open class WidgetListAdapter(
     private val activity: ThemedActivity,
@@ -64,7 +65,9 @@ open class WidgetListAdapter(
         val packageManager = activity.packageManager
         val widgets = AppWidgetManager.getInstance(activity).getInstalledProviders()
 
+        val oldSize = entries.size
         entries.clear()
+        if (oldSize > 0) notifyItemRangeRemoved(0, oldSize)
 
         val mainProfile: ProfileApplicationManager? = ProfileManager.getInstance().getProfile(null)
         if (mainProfile != null) {
@@ -112,7 +115,7 @@ open class WidgetListAdapter(
             }
         }
 
-        notifyDataSetChanged()
+        if (entries.isNotEmpty()) notifyItemRangeInserted(0, entries.size)
     }
 
     private fun reset() {
@@ -213,8 +216,8 @@ open class WidgetListAdapter(
             widgets.add(info)
         }
 
-        override fun compareTo(entry: WidgetGroupEntry): Int {
-            return if (label == null) 0 else label!!.compareTo(entry.label!!)
+        override fun compareTo(other: WidgetGroupEntry): Int {
+            return if (label == null) 0 else label!!.compareTo(other.label!!)
         }
     }
 }

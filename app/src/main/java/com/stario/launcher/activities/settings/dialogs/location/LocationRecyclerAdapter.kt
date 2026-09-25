@@ -32,7 +32,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.stario.launcher.R
 import com.stario.launcher.activities.launcher.widgets.glance.extensions.weather.GeocoderFallback
@@ -43,6 +42,8 @@ import com.stario.launcher.ui.utils.UiUtils
 import com.stario.launcher.utils.Utils
 import java.util.ArrayList
 import java.util.Locale
+import androidx.core.view.size
+import androidx.core.content.edit
 
 open class LocationRecyclerAdapter(
     private val activity: ThemedActivity,
@@ -52,8 +53,6 @@ open class LocationRecyclerAdapter(
     private val preferences: SharedPreferences = activity.getApplicationContext().getSharedPreferences(Entry.WEATHER)
     private val defaultAddresses: List<Address> = loadDefaultAddresses()
     private val addresses: ArrayList<Address> = ArrayList(defaultAddresses)
-    private val broadcastManager: LocalBroadcastManager = LocalBroadcastManager.getInstance(activity)
-
     private var query: String? = null
 
     private fun loadDefaultAddresses(): ArrayList<Address> {
@@ -159,14 +158,13 @@ open class LocationRecyclerAdapter(
             viewHolder.itemView.setOnClickListener { view ->
                 activity.requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION)) { granted ->
                     if (granted[0] == PackageManager.PERMISSION_GRANTED) {
-                        preferences.edit()
-                            .remove(Weather.LATITUDE_KEY)
-                            .remove(Weather.LONGITUDE_KEY)
-                            .remove(Weather.LOCATION_NAME)
-                            .putBoolean(Weather.PRECISE_LOCATION, true)
-                            .apply()
+                        preferences.edit {
+                                remove(Weather.LATITUDE_KEY)
+                                .remove(Weather.LONGITUDE_KEY)
+                                .remove(Weather.LOCATION_NAME)
+                                .putBoolean(Weather.PRECISE_LOCATION, true)
+                            }
 
-                        broadcastManager.sendBroadcastSync(Intent(Weather.ACTION_REQUEST_UPDATE))
                         clickListener?.onClick(view)
                     } else {
                         try {
@@ -189,14 +187,13 @@ open class LocationRecyclerAdapter(
             viewHolder.location.setVisibility(View.GONE)
 
             viewHolder.itemView.setOnClickListener { view ->
-                preferences.edit()
-                    .remove(Weather.LATITUDE_KEY)
-                    .remove(Weather.LONGITUDE_KEY)
-                    .remove(Weather.LOCATION_NAME)
-                    .putBoolean(Weather.PRECISE_LOCATION, false)
-                    .apply()
+                preferences.edit {
+                        remove(Weather.LATITUDE_KEY)
+                        .remove(Weather.LONGITUDE_KEY)
+                        .remove(Weather.LOCATION_NAME)
+                        .putBoolean(Weather.PRECISE_LOCATION, false)
+                    }
 
-                broadcastManager.sendBroadcastSync(Intent(Weather.ACTION_REQUEST_UPDATE))
                 clickListener?.onClick(view)
             }
         } else {
@@ -230,27 +227,26 @@ open class LocationRecyclerAdapter(
             viewHolder.location.setVisibility(View.VISIBLE)
 
             viewHolder.itemView.setOnClickListener { view ->
-                val editor = preferences.edit()
-                    .putLong(Weather.LATITUDE_KEY, java.lang.Double.doubleToLongBits(address.getLatitude()))
-                    .putLong(Weather.LONGITUDE_KEY, java.lang.Double.doubleToLongBits(address.getLongitude()))
+                preferences.edit {
+                    putLong(Weather.LATITUDE_KEY, java.lang.Double.doubleToLongBits(address.getLatitude()))
+                    putLong(Weather.LONGITUDE_KEY, java.lang.Double.doubleToLongBits(address.getLongitude()))
 
-                var city = address.getSubLocality()
-                if (city != null && !city.isBlank()) {
-                    editor.putString(Weather.LOCATION_NAME, city)
-                } else {
-                    city = address.getLocality()
-
+                    var city = address.getSubLocality()
                     if (city != null && !city.isBlank()) {
-                        editor.putString(Weather.LOCATION_NAME, city)
+                        putString(Weather.LOCATION_NAME, city)
                     } else {
-                        editor.putString(Weather.LOCATION_NAME, null)
+                        city = address.getLocality()
+
+                        if (city != null && !city.isBlank()) {
+                            putString(Weather.LOCATION_NAME, city)
+                        } else {
+                            putString(Weather.LOCATION_NAME, null)
+                        }
                     }
+
+                    putBoolean(Weather.PRECISE_LOCATION, false)
                 }
 
-                editor.putBoolean(Weather.PRECISE_LOCATION, false)
-                editor.apply()
-
-                broadcastManager.sendBroadcastSync(Intent(Weather.ACTION_REQUEST_UPDATE))
                 clickListener?.onClick(view)
             }
         }

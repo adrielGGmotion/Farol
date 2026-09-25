@@ -114,6 +114,7 @@
                     app:carbon_cornerRadius="20dp">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_pin" />
@@ -217,6 +218,7 @@
                         app:carbon_cornerRadius="5dp">
 
                         <ImageView
+                            android:contentDescription="@null"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_opacity" />
@@ -332,6 +334,7 @@
                         app:carbon_cornerRadius="5dp">
 
                         <ImageView
+                            android:contentDescription="@null"
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_location" />

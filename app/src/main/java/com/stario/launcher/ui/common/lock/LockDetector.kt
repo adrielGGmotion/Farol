@@ -54,17 +54,20 @@ open class LockDetector(context: Context, attrs: AttributeSet?) : DynamicGridLay
         isHapticFeedbackEnabled = false
     }
 
-    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         shouldIntercept = false
-        if (detector?.onTouchEvent(event) == true) {
+        if (detector?.onTouchEvent(ev) == true) {
             shouldIntercept = true
             requestDisallowInterceptTouchEvent(true)
             return true
         }
-        return super.onInterceptTouchEvent(event)
+        return super.onInterceptTouchEvent(ev)
     }
 
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean = shouldIntercept || super.onTouchEvent(event)
+
+    override fun performClick(): Boolean = super.performClick()
 
     inner class DoubleTapDetector(private val activity: Activity) {
         private val preferences: SharedPreferences = (activity.applicationContext as Stario).getSettings()
@@ -101,7 +104,9 @@ open class LockDetector(context: Context, attrs: AttributeSet?) : DynamicGridLay
 
         private fun sleep(context: Context) {
             val manager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+            @Suppress("DEPRECATION")
             val event = AccessibilityEvent.obtain()
+            @Suppress("DEPRECATION")
             event.eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
             event.className = javaClass.name
             event.action = AccessibilityService.LOCK

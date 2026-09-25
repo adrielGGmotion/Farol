@@ -30,6 +30,7 @@ import com.stario.launcher.R
 import com.stario.launcher.ui.Measurements
 import carbon.widget.ConstraintLayout
 import kotlin.math.min
+import androidx.core.graphics.withClip
 
 @SuppressLint("AppCompatCustomView")
 @Suppress("CONFLICTING_INHERITED_JVM_DECLARATIONS")
@@ -82,11 +83,10 @@ open class GlanceConstraintLayout : ConstraintLayout {
 
     override fun draw(canvas: Canvas) {
         buildClipPath()
-        val save = canvas.save()
-        canvas.clipPath(clipPath)
-        super.draw(canvas)
-        if (borderStrokeWidth > 0f) canvas.drawPath(clipPath, strokePaint)
-        canvas.restoreToCount(save)
+        canvas.withClip(clipPath) {
+            super.draw(canvas)
+            if (borderStrokeWidth > 0f) canvas.drawPath(clipPath, strokePaint)
+        }
     }
 
     open fun setRadiusPercentage(@FloatRange(from = 0.0, to = 1.0) radius: Float) {

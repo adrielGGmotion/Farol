@@ -29,6 +29,7 @@ import com.stario.launcher.apps.ProfileApplicationManager
 import com.stario.launcher.apps.ProfileManager
 import com.stario.launcher.utils.Utils
 import java.lang.ref.WeakReference
+import androidx.core.view.size
 
 open class HideApplicationsPagerAdapter(
     manager: FragmentManager,

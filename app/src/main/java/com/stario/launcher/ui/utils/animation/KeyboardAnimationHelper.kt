@@ -28,6 +28,7 @@ import com.stario.launcher.ui.keyboard.KeyboardHeightProvider
 import com.stario.launcher.ui.utils.UiUtils
 import java.util.LinkedList
 import java.util.Queue
+import androidx.core.view.size
 
 @RequiresApi(Build.VERSION_CODES.R)
 open class KeyboardAnimationHelper {
