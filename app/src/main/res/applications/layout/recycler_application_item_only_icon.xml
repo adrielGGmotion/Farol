@@ -31,7 +31,7 @@
         android:layout_margin="10dp"
         android:clipChildren="false">
 
-        <com.stario.launcher.ui.icons.AdaptiveIconView
+        <com.farol.launcher.ui.icons.AdaptiveIconView
             android:id="@+id/icon"
             android:layout_width="0px"
             android:layout_height="0px"

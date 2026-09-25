@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.stario.launcher.ui.common.FadingEdgeLayout
+        <com.farol.launcher.ui.common.FadingEdgeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:edge="top|bottom|left|right"
@@ -37,13 +37,13 @@
             app:size_right="100dp"
             app:size_top="100dp">
 
-            <com.stario.launcher.ui.common.GradientView
+            <com.farol.launcher.ui.common.GradientView
                 android:id="@+id/gradient"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0" />
 
-        </com.stario.launcher.ui.common.FadingEdgeLayout>
+        </com.farol.launcher.ui.common.FadingEdgeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/pages_container"

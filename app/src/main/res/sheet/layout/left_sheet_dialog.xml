@@ -16,7 +16,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.sheet.SheetCoordinator xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.sheet.SheetCoordinator xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
@@ -30,6 +30,6 @@
         android:layout_gravity="center_vertical|left"
         android:alpha="0"
         android:fitsSystemWindows="false"
-        app:layout_behavior="com.stario.launcher.sheet.behavior.left.LeftSheetBehavior" />
+        app:layout_behavior="com.farol.launcher.sheet.behavior.left.LeftSheetBehavior" />
 
-</com.stario.launcher.sheet.SheetCoordinator>
+</com.farol.launcher.sheet.SheetCoordinator>

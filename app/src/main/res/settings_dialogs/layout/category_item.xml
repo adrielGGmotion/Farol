@@ -32,7 +32,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stario.launcher.ui.common.FadingEdgeLayout
+        <com.farol.launcher.ui.common.FadingEdgeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -40,13 +40,13 @@
             app:size_left="400dp">
 
             <!-- Avoid pixel gaps -->
-            <com.stario.launcher.ui.recyclers.UserTouchDisabledRecyclerView
+            <com.farol.launcher.ui.recyclers.UserTouchDisabledRecyclerView
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="1px" />
 
-        </com.stario.launcher.ui.common.FadingEdgeLayout>
+        </com.farol.launcher.ui.common.FadingEdgeLayout>
 
     </RelativeLayout>
 

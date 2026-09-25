@@ -10,11 +10,11 @@ def hasSigningConfig = ['keystorePath', 'keystorePassword', 'keyAlias', 'keyPass
         .every { project.hasProperty(it) }
 
 android {
-    namespace 'com.stario.launcher'
+    namespace 'com.farol.launcher'
     compileSdk 37
 
     defaultConfig {
-        applicationId 'com.stario.launcher'
+        applicationId 'com.farol.launcher'
         minSdkVersion 29
         targetSdkVersion 36
         versionCode 97

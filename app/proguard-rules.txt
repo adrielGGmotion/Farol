@@ -2,10 +2,10 @@
 -keep class android.animation.LayoutTransition { *; }
 -keep class org.chickenhook.restrictionbypass.** { *; }
 -keep class com.ctc.wstx.stax.** { *; }
--keep class com.stario.launcher.sheet.SheetDialogFragment { *; }
--keep class com.stario.launcher.sheet.drawer.dialog.ApplicationsDialog { *; }
--keep class com.stario.launcher.sheet.widgets.dialog.WidgetsDialog { *; }
--keep class com.stario.launcher.sheet.briefing.dialog.BriefingDialog { *; }
+-keep class com.farol.launcher.sheet.SheetDialogFragment { *; }
+-keep class com.farol.launcher.sheet.drawer.dialog.ApplicationsDialog { *; }
+-keep class com.farol.launcher.sheet.widgets.dialog.WidgetsDialog { *; }
+-keep class com.farol.launcher.sheet.briefing.dialog.BriefingDialog { *; }
 
 -keepattributes Signature
 

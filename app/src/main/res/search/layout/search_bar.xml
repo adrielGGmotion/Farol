@@ -16,7 +16,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.sheet.drawer.search.KeyPreImeListeningEditText xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.sheet.drawer.search.KeyPreImeListeningEditText xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search"
     android:layout_width="match_parent"

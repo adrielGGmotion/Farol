@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2025 Răzvan Albu
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
+ */
+
+package com.farol.launcher.activities.settings.dialogs
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.farol.launcher.BuildConfig
+import com.farol.launcher.R
+import com.farol.launcher.services.AccessibilityService
+import com.farol.launcher.themes.ThemedActivity
+import com.farol.launcher.ui.dialogs.ActionDialog
+
+open class AccessibilityConfigurator(activity: ThemedActivity) : ActionDialog(activity) {
+    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
+        val root = inflater.inflate(R.layout.pop_up_accesibility, parent, false)
+
+        root.findViewById<View>(R.id.proceed).setOnClickListener {
+            setOnDismissListener(null)
+            showAccessibilitySettingsActivity()
+        }
+        root.findViewById<View>(R.id.cancel).setOnClickListener { dismiss() }
+
+        return root
+    }
+
+    private fun showAccessibilitySettingsActivity() {
+        val bundle = Bundle()
+        val showArgs = BuildConfig.APPLICATION_ID + "/" + AccessibilityService::class.java.name
+        bundle.putString(":settings:fragment_args_key", showArgs)
+
+        val intent = Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+
+        intent.putExtra(":settings:fragment_args_key", showArgs)
+        intent.putExtra(":settings:show_fragment_args", bundle)
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        activity.startActivity(intent)
+    }
+
+    override fun blurBehind(): Boolean = true
+
+    override fun getDesiredInitialState(): Int = BottomSheetBehavior.STATE_EXPANDED
+}

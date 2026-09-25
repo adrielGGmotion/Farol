@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.stario.launcher.hidden'
+    namespace 'com.farol.launcher.hidden'
     compileSdk 37
 
     defaultConfig {

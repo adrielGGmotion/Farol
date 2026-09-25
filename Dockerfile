@@ -25,7 +25,7 @@ RUN mkdir -p $ANDROID_SDK_ROOT/cmdline-tools && \
 RUN yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses && \
     sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools"
 
-WORKDIR /usr/local/stario
+WORKDIR /usr/local/farol
 
 # Clone the repo
 COPY . .

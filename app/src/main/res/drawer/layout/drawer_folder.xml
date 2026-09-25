@@ -24,7 +24,7 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <com.stario.launcher.ui.recyclers.autogrid.AutoGridRecyclerView
+    <com.farol.launcher.ui.recyclers.autogrid.AutoGridRecyclerView
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:gravity="center"
         app:layout_constraintTop_toTopOf="@id/drawer">
 
-        <com.stario.launcher.ui.common.text.WaveUnderlineTextView
+        <com.farol.launcher.ui.common.text.WaveUnderlineTextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

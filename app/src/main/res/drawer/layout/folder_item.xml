@@ -32,7 +32,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.stario.launcher.ui.icons.AdaptiveIconView
+        <com.farol.launcher.ui.icons.AdaptiveIconView
             android:id="@+id/icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

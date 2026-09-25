@@ -17,8 +17,8 @@
 
 <resources>
     <!-- Non translatable -->
-    <string name="app_name" translatable="false">Stario</string>
-    <string name="affinity" translatable="false">com.stario</string>
+    <string name="app_name" translatable="false">Farol</string>
+    <string name="affinity" translatable="false">com.farol</string>
     <string name="external_link_arrow" translatable="false">↗</string>
     <string name="size_s" translatable="false">S</string>
     <string name="size_m" translatable="false">M</string>
@@ -98,14 +98,14 @@
 
     <!-- Notifications pop-up -->
     <string name="read_notifications">Read notifications</string>
-    <string name="notifications_access">Stario needs access to notifications for this feature to work.</string>
+    <string name="notifications_access">Farol needs access to notifications for this feature to work.</string>
 
     <!-- Location pop-up -->
     <string name="location_reasoning">Allow location access from system settings.</string>
 
     <!-- Accessibility pop-up -->
     <string name="use_accessibility">Use accessibility</string>
-    <string name="accessibility_notice">Stario needs access to accessibility services for this feature to work.</string>
+    <string name="accessibility_notice">Farol needs access to accessibility services for this feature to work.</string>
 
     <!-- Theme pop-up -->
     <string name="dynamic">Dynamic</string>
@@ -207,7 +207,7 @@
     <string name="search_hidden_apps">Search hidden apps</string>
     <string name="unauthorized">Kagi servers reported unauthorized access. Is your API key valid?</string>
     <string name="to_search">to search with Kagi</string>
-    <string name="kagi_dependency">Stario relies on data supplied by Kagi to provide search results.</string>
+    <string name="kagi_dependency">Farol relies on data supplied by Kagi to provide search results.</string>
     <string name="kagi_api_key">Kagi API key</string>
     <string name="api_key">API key</string>
 

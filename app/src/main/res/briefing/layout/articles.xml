@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -58,7 +58,7 @@
 
     </LinearLayout>
 
-    <com.stario.launcher.ui.common.text.PulsingTextView
+    <com.farol.launcher.ui.common.text.PulsingTextView
         android:id="@+id/fetching"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -69,13 +69,13 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="20sp" />
 
-    <com.stario.launcher.ui.common.scrollers.CustomSwipeRefreshLayout
+    <com.farol.launcher.ui.common.scrollers.CustomSwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:visibility="invisible"
         android:layout_height="match_parent">
 
-        <com.stario.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
+        <com.farol.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -83,6 +83,6 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
 
-    </com.stario.launcher.ui.common.scrollers.CustomSwipeRefreshLayout>
+    </com.farol.launcher.ui.common.scrollers.CustomSwipeRefreshLayout>
 
-</com.stario.launcher.ui.common.FadingEdgeLayout>
+</com.farol.launcher.ui.common.FadingEdgeLayout>

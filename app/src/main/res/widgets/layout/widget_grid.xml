@@ -21,7 +21,7 @@
     android:layout_height="match_parent"
     android:forceDarkAllowed="false">
 
-    <com.stario.launcher.ui.common.FadingEdgeLayout
+    <com.farol.launcher.ui.common.FadingEdgeLayout
         android:id="@+id/fader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +29,7 @@
         android:clipToPadding="false"
         app:edge="top|bottom">
 
-        <com.stario.launcher.ui.widgets.WidgetScroller
+        <com.farol.launcher.ui.widgets.WidgetScroller
             android:id="@+id/scroller"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -107,7 +107,7 @@
 
                 </RelativeLayout>
 
-                <com.stario.launcher.ui.widgets.WidgetGrid
+                <com.farol.launcher.ui.widgets.WidgetGrid
                     android:id="@+id/grid"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,8 +116,8 @@
 
             </LinearLayout>
 
-        </com.stario.launcher.ui.widgets.WidgetScroller>
+        </com.farol.launcher.ui.widgets.WidgetScroller>
 
-    </com.stario.launcher.ui.common.FadingEdgeLayout>
+    </com.farol.launcher.ui.common.FadingEdgeLayout>
 
 </RelativeLayout>

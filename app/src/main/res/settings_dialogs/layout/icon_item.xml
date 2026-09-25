@@ -27,7 +27,7 @@
     android:padding="16dp"
     app:carbon_cornerRadius="5dp">
 
-    <com.stario.launcher.ui.icons.AdaptiveIconView
+    <com.farol.launcher.ui.icons.AdaptiveIconView
         android:id="@+id/icon"
         android:layout_width="50dp"
         android:layout_height="50dp" />

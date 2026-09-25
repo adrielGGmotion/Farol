@@ -16,7 +16,7 @@
   -->
 
 
-<com.stario.launcher.ui.icons.AdaptiveIconView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.ui.icons.AdaptiveIconView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/icon"
     android:layout_margin="2dp"

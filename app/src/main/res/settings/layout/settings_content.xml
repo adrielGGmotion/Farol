@@ -590,7 +590,7 @@
             android:background="@drawable/ripple"
             app:carbon_cornerRadius="5dp">
 
-            <com.stario.launcher.ui.common.GradientView
+            <com.farol.launcher.ui.common.GradientView
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -607,7 +607,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_stario"
+                    android:src="@drawable/ic_farol"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

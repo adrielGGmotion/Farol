@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:forceDarkAllowed="false">
 
-    <com.stario.launcher.ui.common.pager.CustomDurationViewPager
+    <com.farol.launcher.ui.common.pager.CustomDurationViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="500dp"
@@ -45,7 +45,7 @@
             android:orientation="vertical">
 
             <!-- Avoid pixel gaps -->
-            <com.stario.launcher.ui.common.FadingEdgeLayout
+            <com.farol.launcher.ui.common.FadingEdgeLayout
                 android:id="@+id/contrast_fader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 app:size_left="30dp"
                 app:size_right="30dp">
 
-                <com.stario.launcher.ui.common.tabs.CenterTabLayout
+                <com.farol.launcher.ui.common.tabs.CenterTabLayout
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="44sp"
@@ -84,7 +84,7 @@
                     app:stl_titleOffset="0dp"
                     app:stl_underlineThickness="0dp" />
 
-            </com.stario.launcher.ui.common.FadingEdgeLayout>
+            </com.farol.launcher.ui.common.FadingEdgeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

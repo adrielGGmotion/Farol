@@ -26,7 +26,7 @@
     android:paddingRight="10dp"
     android:paddingBottom="5dp">
 
-    <com.stario.launcher.ui.recyclers.ClickableRecyclerView
+    <com.farol.launcher.ui.recyclers.ClickableRecyclerView
         android:id="@+id/items"
         android:layout_width="match_parent"
         android:layout_height="0dp"

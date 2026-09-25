@@ -39,7 +39,7 @@
         android:clipChildren="false"
         android:visibility="gone">
 
-        <com.stario.launcher.ui.common.FadingEdgeLayout
+        <com.farol.launcher.ui.common.FadingEdgeLayout
             android:layout_width="600dp"
             android:layout_height="250dp"
             app:edge="bottom"
@@ -77,7 +77,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_max="200dp" />
 
-        </com.stario.launcher.ui.common.FadingEdgeLayout>
+        </com.farol.launcher.ui.common.FadingEdgeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,7 +102,7 @@
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp" />
 
-        <com.stario.launcher.ui.common.text.ClickableSpanTextView
+        <com.farol.launcher.ui.common.text.ClickableSpanTextView
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

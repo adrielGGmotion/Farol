@@ -23,7 +23,7 @@
     android:layout_height="wrap_content"
     app:carbon_maxHeight="400dp">
 
-    <com.stario.launcher.ui.common.FadingEdgeLayout
+    <com.farol.launcher.ui.common.FadingEdgeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
@@ -41,6 +41,6 @@
             android:paddingBottom="10dp"
             android:overScrollMode="never" />
 
-    </com.stario.launcher.ui.common.FadingEdgeLayout>
+    </com.farol.launcher.ui.common.FadingEdgeLayout>
 
 </carbon.widget.RelativeLayout>

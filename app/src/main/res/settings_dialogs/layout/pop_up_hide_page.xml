@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,7 +25,7 @@
     app:size_top="20dp">
 
     <!-- Avoid pixel gaps -->
-    <com.stario.launcher.ui.recyclers.autogrid.AutoGridRecyclerView
+    <com.farol.launcher.ui.recyclers.autogrid.AutoGridRecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,6 +37,6 @@
         android:paddingRight="20dp"
         android:tag="nested">
 
-    </com.stario.launcher.ui.recyclers.autogrid.AutoGridRecyclerView>
+    </com.farol.launcher.ui.recyclers.autogrid.AutoGridRecyclerView>
 
-</com.stario.launcher.ui.common.FadingEdgeLayout>
+</com.farol.launcher.ui.common.FadingEdgeLayout>

@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Details (please complete the following information):**
  - Device: [e.g. Pixel 6a]
  - OS: [e.g. Android 16 Build BD3A.250808.001]
- - Version [e.g. Stario v2.11]
+ - Version [e.g. Farol v2.11]
 
 **Additional context**
 Add any other context about the problem here.

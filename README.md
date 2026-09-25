@@ -1,13 +1,15 @@
-# Stario
+# Farol
 
-<img src="docs/representative.png" alt="Stario representative">
+Farol is a fork of [Stario](https://github.com/albu-razvan/Stario). Links to upstream releases and community resources below refer to Stario, not Farol.
+
+<img src="docs/representative.png" alt="Farol representative">
 
 [![Build](https://img.shields.io/github/actions/workflow/status/albu-razvan/Stario/build.yml?label=Build)](https://github.com/albu-razvan/Stario/actions/workflows/build.yml)
 [<img src="https://shields.rbtlog.dev/simple/com.stario.launcher" alt="RB shield">](https://shields.rbtlog.dev/com.stario.launcher)
 [![Latest release](https://img.shields.io/github/downloads/albu-razvan/Stario/total?label=Download&logo=android&logoColor=white)](https://github.com/albu-razvan/Stario/releases/latest)
 [![Discord](https://img.shields.io/discord/1110537583726964820?label=Discord&logo=discord&logoColor=white)](https://discord.gg/WuVapMt9gY)
 
-## Deprecation Notice
+## Upstream Stario Deprecation Notice
 
 > [!WARNING]
 > Stario began as a personal project inspired by Android’s flexibility and openness.
@@ -22,10 +24,10 @@
 
 ## Overview
 
-Inspired by the minimalist phone concept, Stario aims to keep functionality and productivity at
+Inspired by the minimalist phone concept, Farol aims to keep functionality and productivity at
 their peak in a simple and elegant format.
 
-This repository contains the complete codebase for Stario, a full rewrite of the previous
+This repository contains the complete codebase for Farol, based on Stario, a full rewrite of the previous
 Stario Launcher. This version offers significant improvements in both performance and usability.
 
 > **Note:** This repository replaces all previous Play Store versions of the app. If you’d like to 
@@ -60,7 +62,7 @@ Stario Launcher. This version offers significant improvements in both performanc
 - **Page Sorting**  
   Easily reorder your home screen pages to suit your workflow.
 
-## Download
+## Upstream Downloads
 
 - Get the latest release of Stario from the [GitHub Releases page](https://github.com/albu-razvan/Stario/releases/latest).
 - Find Stario at [IzzyOnDroid](https://apt.izzysoft.de/packages/com.stario.launcher).
@@ -76,11 +78,11 @@ Stario Launcher. This version offers significant improvements in both performanc
 You can quickly set up the development environment using the provided Dockerfile:
 
 ```bash
-docker build --platform linux/amd64 -t stario-dev .
+docker build --platform linux/amd64 -t farol-dev .
 
 docker run --platform linux/amd64 --rm -it \
-  -v </path/to/output>:/usr/local/stario/build \
-  stario-dev
+  -v </path/to/output>:/usr/local/farol/build \
+  farol-dev
 ```
 
 > Tip: Use `--rm` to automatically remove the container after use.
@@ -101,15 +103,15 @@ Alternatively, to also build a signed copy (APK and AAB), pass a keystore to the
 
 ```bash
 docker run --platform linux/amd64 --rm -it \
-  -v </path/to/output>:/usr/local/stario/build \
-  -v </path/to/keystore>:/usr/local/stario/keystore \
-  stario-dev
+  -v </path/to/output>:/usr/local/farol/build \
+  -v </path/to/keystore>:/usr/local/farol/keystore \
+  farol-dev
 
 # Optionally, checkout to the tagged commit
 git checkout v2.9
   
 ./build.sh \
-  -K /usr/local/stario/keystore/keystore.jks \
+  -K /usr/local/farol/keystore/keystore.jks \
   -P keystore_password \
   -a key_alias \
   -p key_password
@@ -128,7 +130,7 @@ apksigcopier copy signed-from-source.apk unsigned-built-locally.apk out.apk
 Then compare the two APKs:
 
 ```bash
-apksigcopier compare stario-from-source.apk stario-built-locally.apk
+apksigcopier compare farol-from-source.apk farol-built-locally.apk
 ```
 
 > NOTE: `apksigcopier compare` requires [apksigner](https://developer.android.com/tools/apksigner).

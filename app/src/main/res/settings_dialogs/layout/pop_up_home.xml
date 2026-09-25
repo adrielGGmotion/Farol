@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.stario.launcher.ui.common.FadingEdgeLayout
+    <com.farol.launcher.ui.common.FadingEdgeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:edge="top|bottom"
@@ -474,6 +474,6 @@
 
         </androidx.core.widget.NestedScrollView>
 
-    </com.stario.launcher.ui.common.FadingEdgeLayout>
+    </com.farol.launcher.ui.common.FadingEdgeLayout>
 
 </LinearLayout>

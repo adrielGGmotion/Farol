@@ -37,7 +37,7 @@
         android:textSize="18sp"
         android:visibility="gone" />
 
-    <com.stario.launcher.ui.keyboard.extract.ExtractEditText
+    <com.farol.launcher.ui.keyboard.extract.ExtractEditText
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="60dp"

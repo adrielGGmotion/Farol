@@ -22,7 +22,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.stario.launcher.ui.common.FadingEdgeLayout
+    <com.farol.launcher.ui.common.FadingEdgeLayout
         android:id="@+id/fader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,12 +30,12 @@
         app:size_bottom="100dp"
         app:size_top="20dp">
 
-        <com.stario.launcher.ui.common.pager.CustomDurationViewPager
+        <com.farol.launcher.ui.common.pager.CustomDurationViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-    </com.stario.launcher.ui.common.FadingEdgeLayout>
+    </com.farol.launcher.ui.common.FadingEdgeLayout>
 
     <RelativeLayout
         android:layout_width="500dp"

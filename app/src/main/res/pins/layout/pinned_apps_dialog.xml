@@ -31,7 +31,7 @@
         android:scaleY="0.75"
         tools:ignore="UselessParent">
 
-        <com.stario.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
+        <com.farol.launcher.ui.recyclers.overscroll.OverScrollRecyclerView
             android:id="@+id/recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"

@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.ui.common.FadingEdgeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -77,7 +77,7 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.stario.launcher.ui.common.FadingEdgeLayout
+        <com.farol.launcher.ui.common.FadingEdgeLayout
             android:id="@+id/fader"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -97,8 +97,8 @@
 
             </androidx.core.widget.NestedScrollView>
 
-        </com.stario.launcher.ui.common.FadingEdgeLayout>
+        </com.farol.launcher.ui.common.FadingEdgeLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</com.stario.launcher.ui.common.FadingEdgeLayout>
+</com.farol.launcher.ui.common.FadingEdgeLayout>

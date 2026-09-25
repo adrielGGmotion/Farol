@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>
   -->
 
-<com.stario.launcher.ui.common.glance.GlanceConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.farol.launcher.ui.common.glance.GlanceConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/glance"
@@ -41,4 +41,4 @@
 
     </LinearLayout>
 
-</com.stario.launcher.ui.common.glance.GlanceConstraintLayout>
+</com.farol.launcher.ui.common.glance.GlanceConstraintLayout>

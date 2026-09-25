@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-APP_NAME="Stario"
+APP_NAME="Farol"
 SHOULD_SIGN=false
 GRADLE_SIGNING_PROPS=()
 
