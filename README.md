@@ -1,39 +1,18 @@
 # Farol
 
-Farol is a fork of [Stario](https://github.com/albu-razvan/Stario). Links to upstream releases and community resources below refer to Stario, not Farol.
+Farol is a minimalist Android launcher focused on functionality, productivity, and personalization.
+It is an independently developed fork of [Stario](https://github.com/albu-razvan/Stario).
 
-<img src="docs/representative.png" alt="Farol representative">
+## Project Status
 
-[![Build](https://img.shields.io/github/actions/workflow/status/albu-razvan/Stario/build.yml?label=Build)](https://github.com/albu-razvan/Stario/actions/workflows/build.yml)
-[<img src="https://shields.rbtlog.dev/simple/com.stario.launcher" alt="RB shield">](https://shields.rbtlog.dev/com.stario.launcher)
-[![Latest release](https://img.shields.io/github/downloads/albu-razvan/Stario/total?label=Download&logo=android&logoColor=white)](https://github.com/albu-razvan/Stario/releases/latest)
-[![Discord](https://img.shields.io/discord/1110537583726964820?label=Discord&logo=discord&logoColor=white)](https://discord.gg/WuVapMt9gY)
+Farol is under active development. Release information and updated promotional images will be
+added when it is ready for release.
 
-## Upstream Stario Deprecation Notice
+## Fresh Setup
 
-> [!WARNING]
-> Stario began as a personal project inspired by Android’s flexibility and openness.
->
-> Unfortunately, the Android ecosystem has changed significantly in recent years. New platform restrictions, OEM limitations, tighter system integrations, and evolving Play ecosystem policies have made it increasingly difficult for independent developers to provide fully integrated experience across devices.
->
-> The September 2026 changes (read more at [Keep Android Open](https://keepandroidopen.org/)) are, to me, a clear signal of the direction Android is heading. While these changes may not impact Stario directly, they’ve collectively removed much of the motivation I had to continue pushing the project forward.
->
-> The project will remain open source for anyone interested in continuing development, or preserving the spirit of Android customization that inspired projects like this one in the first place.
->
-> Thank you to everyone who contributed, tested builds, submitted issues, translated the app, or used Stario over the years.
-
-## Overview
-
-Inspired by the minimalist phone concept, Farol aims to keep functionality and productivity at
-their peak in a simple and elegant format.
-
-This repository contains the complete codebase for Farol, based on Stario, a full rewrite of the previous
-Stario Launcher. This version offers significant improvements in both performance and usability.
-
-> **Note:** This repository replaces all previous Play Store versions of the app. If you’d like to 
-> use an older release, you can download it from the [archive ↗](./archive/Stario-v1.41.apk). Please 
-> note that **Stario v1.X is no longer supported**, and no further updates or maintenance will be 
-> provided.
+Farol installs as a separate app from Stario; it does not replace or update it. Stario settings
+are not imported. Set up your layout and preferences again, select Farol as your default home
+app, and grant any optional permissions you need. Your Stario installation remains untouched.
 
 ## Features
 
@@ -62,11 +41,6 @@ Stario Launcher. This version offers significant improvements in both performanc
 - **Page Sorting**  
   Easily reorder your home screen pages to suit your workflow.
 
-## Upstream Downloads
-
-- Get the latest release of Stario from the [GitHub Releases page](https://github.com/albu-razvan/Stario/releases/latest).
-- Find Stario at [IzzyOnDroid](https://apt.izzysoft.de/packages/com.stario.launcher).
-
 ## Compatibility
 
 - Requires **Android SDK 29+** (Android 10.0 or later)
@@ -93,9 +67,6 @@ Should you wish to build the application yourself, run the build
 script from within the development environment:
 
 ```bash
-# Optionally, checkout to the tagged commit
-git checkout v2.9
-
 ./build.sh
 ```
 
@@ -107,9 +78,6 @@ docker run --platform linux/amd64 --rm -it \
   -v </path/to/keystore>:/usr/local/farol/keystore \
   farol-dev
 
-# Optionally, checkout to the tagged commit
-git checkout v2.9
-  
 ./build.sh \
   -K /usr/local/farol/keystore/keystore.jks \
   -P keystore_password \
@@ -135,7 +103,17 @@ apksigcopier compare farol-from-source.apk farol-built-locally.apk
 
 > NOTE: `apksigcopier compare` requires [apksigner](https://developer.android.com/tools/apksigner).
 
-## Join the Community
+## Contributing and Contact
 
-Got questions or want to connect with other users and contributors? Join
-the [Stario Discord Server](https://discord.gg/WuVapMt9gY).
+Report bugs and suggest features through this repository's Issues tab.
+Translations will be managed through Weblate; contribution details will be added when available.
+
+Farol is maintained by [Adriel](https://adriel.men). You can also reach him on
+[Telegram](https://t.me/adrielggmotion).
+
+## Credits and License
+
+Farol builds on [Stario](https://github.com/albu-razvan/Stario), created by Răzvan Albu,
+and the work of its contributors. Upstream copyright and license notices are preserved.
+
+Licensed under the [GNU GPL v3.0 or later](LICENSE.md).
