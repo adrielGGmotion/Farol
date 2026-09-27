@@ -17,9 +17,10 @@
 
 package com.farol.launcher.activities.settings
 
-import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.app.ActivityOptions
 import android.app.role.RoleManager
 import android.content.BroadcastReceiver
@@ -31,6 +32,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
@@ -38,14 +40,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.CompoundButton
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.widget.NestedScrollView
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import androidx.transition.TransitionSet
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.shape.ShapeAppearanceModel
+import com.google.android.material.transition.MaterialContainerTransform
+import com.bumptech.glide.Glide
 import com.farol.launcher.BuildConfig
 import com.farol.launcher.R
 import com.farol.launcher.Farol
@@ -89,8 +104,17 @@ open class Settings : ThemedActivity() {
     private lateinit var collapsingToolbarLayout: CollapsingToolbarLayout
     private lateinit var scroller: NestedScrollView
     private lateinit var appBar: AppBarLayout
-    private lateinit var titleLandscape: View
+    private lateinit var titleLandscape: TextView
+    private lateinit var overviewLandscape: View
+    private lateinit var titlePortrait: TextView
+    private lateinit var toolbar: MaterialToolbar
+    private lateinit var categoryBackCallback: OnBackPressedCallback
     private var content: ViewGroup? = null
+    private var selectedCategory = -1
+    private var titleCollapseFraction = 0f
+    private val categoryIds = intArrayOf(R.id.category_home, R.id.category_drawer, R.id.category_search, R.id.category_general, R.id.category_about)
+    private val categoryGroups = intArrayOf(R.id.group_home, R.id.group_drawer, R.id.group_search, R.id.group_general, R.id.group_about)
+    private val categoryTitles = intArrayOf(R.string.home_appearance, R.string.drawer, R.string.search, R.string.general_settings, R.string.about_farol)
 
     // Dynamic views
     private lateinit var lowSpecSwitch: MaterialSwitch
@@ -112,6 +136,7 @@ open class Settings : ThemedActivity() {
 
         init()
         initViews()
+        setupCategories()
         setupWindowInsets()
         setupLifecycleObservers()
 
@@ -121,8 +146,13 @@ open class Settings : ThemedActivity() {
         initMiscSection()
         initFooterLinks()
 
-        handleOrientation()
+        showCategory(savedInstanceState?.getInt(CATEGORY_STATE, -1) ?: -1, animate = false)
         getRoot()!!.post { startPostponedEnterTransition() }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(CATEGORY_STATE, selectedCategory)
+        super.onSaveInstanceState(outState)
     }
 
     protected override fun onDestroy() {
@@ -131,16 +161,8 @@ open class Settings : ThemedActivity() {
     }
 
     override fun onConfigurationChanged(configuration: Configuration) {
-        // Prevent layout transition glitches during rotation
-        content?.setLayoutTransition(null)
-
         super.onConfigurationChanged(configuration)
-
         handleOrientation()
-        val currentContent = content
-        if (currentContent != null) {
-            currentContent.post { currentContent.setLayoutTransition(LayoutTransition()) }
-        }
     }
 
     private fun init() {
@@ -168,12 +190,14 @@ open class Settings : ThemedActivity() {
         lowSpecSwitch = findViewById(R.id.low_spec)
         searchEngineName = findViewById(R.id.engine_name)
         titleLandscape = findViewById(R.id.title_landscape)
+        overviewLandscape = findViewById(R.id.overview_landscape)
+        toolbar = findViewById(R.id.toolbar)
         searchEngineContainer = findViewById(R.id.search_engine)
         lowSpecContainer = findViewById(R.id.low_spec_container)
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar)
 
         appBar = findViewById(R.id.app_bar)
-        val titlePortrait = findViewById<TextView>(R.id.title_portrait)
+        titlePortrait = findViewById(R.id.title_portrait)
         LayoutSizeObserver.attach(titlePortrait, LayoutSizeObserver.HEIGHT, object : LayoutSizeObserver.OnChange {
             override fun onChange(view: View, watchFlags: Int) {
                 titlePortrait.setPivotY(titlePortrait.getHeight() / 2f)
@@ -181,14 +205,132 @@ open class Settings : ThemedActivity() {
         })
         appBar.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             // The text should scale from 30sp to 20sp
-            var factor = -verticalOffset.toFloat() / appBarLayout.getTotalScrollRange()
-            factor = 1f - 0.333f * factor
+            val collapseFraction = -verticalOffset.toFloat() / appBarLayout.getTotalScrollRange()
+            val factor = 1f - 0.333f * collapseFraction
 
             if (!factor.isNaN()) {
+                titleCollapseFraction = collapseFraction.coerceIn(0f, 1f)
                 titlePortrait.setScaleX(factor)
                 titlePortrait.setScaleY(factor)
+                updateTitlePortraitMargin()
             }
         }
+    }
+
+    private fun setupCategories() {
+        val summaries = intArrayOf(R.string.home_category_summary, R.string.drawer_category_summary, R.string.search_category_summary, R.string.general_category_summary, R.string.about_category_summary)
+        val icons = intArrayOf(R.drawable.ic_home, R.drawable.ic_hidden, R.drawable.ic_search_engine, R.drawable.ic_settings, R.drawable.ic_farol)
+        categoryBackCallback = onBackPressedDispatcher.addCallback(this, false) { showCategory(-1) }
+        toolbar.setNavigationOnClickListener { showCategory(-1) }
+        titleLandscape.setOnClickListener { showCategory(-1) }
+        titleLandscape.compoundDrawablePadding = Measurements.dpToPx(12f)
+        titleLandscape.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_back, 0, 0, 0)
+        categoryIds.forEachIndexed { index, id ->
+            val card = findViewById<View>(id)
+            when (index) {
+                0 -> card.setBackgroundResource(R.drawable.grouped_category_top)
+                categoryIds.lastIndex -> card.setBackgroundResource(R.drawable.grouped_category_bottom)
+            }
+            card.findViewById<ImageView>(R.id.category_icon).setImageResource(icons[index])
+            card.findViewById<TextView>(R.id.category_title).setText(categoryTitles[index])
+            card.findViewById<TextView>(R.id.category_summary).setText(summaries[index])
+            card.contentDescription = "${getString(categoryTitles[index])}. ${getString(summaries[index])}"
+            card.setOnClickListener { showCategory(index) }
+        }
+        categoryGroups.take(4).forEach { id ->
+            val group = findViewById<ViewGroup>(id)
+            for (position in 0 until group.childCount) {
+                val background = when (position) {
+                    0 -> R.drawable.grouped_category_top
+                    group.childCount - 1 -> R.drawable.grouped_category_bottom
+                    else -> R.drawable.grouped_category_middle
+                }
+                group.getChildAt(position).setBackgroundResource(background)
+            }
+        }
+    }
+
+    private fun showCategory(index: Int, animate: Boolean = true) {
+        val detail = index in categoryGroups.indices
+        val previous = selectedCategory
+        val pages = findViewById<ViewGroup>(R.id.settings_pages)
+        if (animate && previous != index && (previous == -1 || !detail) &&
+            pages.isLaidOut && scroller.scrollY == 0 && motionEnabled()
+        ) {
+            TransitionManager.endTransitions(pages)
+            val category = if (detail) index else previous
+            val overviewCard = findViewById<View>(categoryIds[category])
+            val detailCard = findViewById<ViewGroup>(categoryGroups[category]).getChildAt(0)
+            val outer = Measurements.dpToPx(26f).toFloat()
+            val inner = Measurements.dpToPx(8f).toFloat()
+            fun shape(top: Float, bottom: Float) = ShapeAppearanceModel.builder()
+                .setTopLeftCornerSize(top).setTopRightCornerSize(top)
+                .setBottomLeftCornerSize(bottom).setBottomRightCornerSize(bottom).build()
+            val overviewShape = shape(if (category == 0) outer else inner, if (category == categoryIds.lastIndex) outer else inner)
+            val detailShape = if (category == categoryIds.lastIndex) shape(Measurements.dpToPx(32f).toFloat(), Measurements.dpToPx(32f).toFloat()) else shape(outer, inner)
+            val transform = MaterialContainerTransform(this, detail).apply {
+                startView = if (detail) overviewCard else detailCard
+                endView = if (detail) detailCard else overviewCard
+                startShapeAppearanceModel = if (detail) overviewShape else detailShape
+                endShapeAppearanceModel = if (detail) detailShape else overviewShape
+                containerColor = MaterialColors.getColor(pages, com.google.android.material.R.attr.colorSurfaceContainerHighest)
+                scrimColor = Color.TRANSPARENT
+                fadeMode = MaterialContainerTransform.FADE_MODE_CROSS
+                fadeProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
+                shapeMaskProgressThresholds = MaterialContainerTransform.ProgressThresholds(0f, 1f)
+                transitionDirection = if (detail) MaterialContainerTransform.TRANSITION_DIRECTION_ENTER else MaterialContainerTransform.TRANSITION_DIRECTION_RETURN
+                drawingViewId = R.id.scroller
+                duration = 380L
+                addTarget(pages)
+            }
+            val fade = Fade().apply {
+                duration = 200L
+                addTarget(R.id.overview)
+                addTarget(R.id.content)
+            }
+            TransitionManager.beginDelayedTransition(pages, TransitionSet().apply {
+                addTransition(transform)
+                addTransition(fade)
+            })
+        }
+        selectedCategory = if (detail) index else -1
+        content?.visibility = if (detail) View.VISIBLE else View.GONE
+        findViewById<View>(R.id.overview).visibility = if (detail) View.GONE else View.VISIBLE
+        categoryGroups.forEachIndexed { position, id ->
+            findViewById<View>(id).visibility = if (detail && position == index) View.VISIBLE else View.GONE
+        }
+        val title = if (detail) categoryTitles[index] else R.string.settings
+        titlePortrait.setText(title)
+        titleLandscape.setText(title)
+        titleLandscape.contentDescription = if (detail) getString(R.string.category_back_description, getString(title)) else null
+        titleLandscape.isClickable = detail
+        titleLandscape.isFocusable = detail
+        updateTitlePortraitMargin()
+        toolbar.navigationIcon = if (detail) AppCompatResources.getDrawable(this, R.drawable.ic_back) else null
+        toolbar.navigationContentDescription = if (detail) getString(R.string.return_button) else null
+        categoryBackCallback.isEnabled = detail
+        handleOrientation()
+        if (index == categoryGroups.lastIndex || previous == categoryGroups.lastIndex) {
+            appBar.setExpanded(index != categoryGroups.lastIndex, false)
+        }
+        if (animate) findViewById<View>(R.id.container).announceForAccessibility(getString(title))
+        scroller.post {
+            scroller.scrollTo(0, 0)
+            if (selectedCategory == categoryGroups.lastIndex && index != previous) {
+                findViewById<FarolBeaconView>(R.id.about_beacon).illuminate(animate && motionEnabled())
+            }
+        }
+    }
+
+    private fun motionEnabled() = ValueAnimator.areAnimatorsEnabled() &&
+        !powerManager.isPowerSaveMode &&
+        !settingsPrefs.getBoolean(DialogBackgroundDimmingController.LOW_SPEC_KEY, false)
+
+    private fun updateTitlePortraitMargin() {
+        val titleParams = titlePortrait.layoutParams as ViewGroup.MarginLayoutParams
+        val start = if (selectedCategory == -1) 30f else 30f + 42f * titleCollapseFraction
+        titleParams.marginStart = Measurements.dpToPx(start)
+        titlePortrait.layoutParams = titleParams
     }
 
     private fun setupWindowInsets() {
@@ -223,6 +365,7 @@ open class Settings : ThemedActivity() {
             override fun onReceive(context: Context, intent: Intent) {
                 isBatterySaverOn = powerManager.isPowerSaveMode
                 updateLowSpecState()
+                if (isBatterySaverOn) findViewById<FarolBeaconView>(R.id.about_beacon).settle()
             }
         }
         batterySaverReceiver = receiver
@@ -438,10 +581,17 @@ open class Settings : ThemedActivity() {
     }
 
     private fun initFooterLinks() {
-        //noinspection SetTextI18n
-        findViewById<TextView>(R.id.version).setText(BuildConfig.VERSION_NAME + " • Răzvan Albu")
+        findViewById<FarolBeaconView>(R.id.about_beacon).setOnClickListener {
+            (it as FarolBeaconView).illuminate(motionEnabled())
+        }
+        findViewById<TextView>(R.id.version).text = getString(R.string.farol_version, BuildConfig.VERSION_NAME)
+        Glide.with(this)
+            .load("https://avatars.githubusercontent.com/u/200536612?v=4&s=192")
+            .placeholder(R.drawable.ic_farol)
+            .error(R.drawable.ic_farol)
+            .into(findViewById(R.id.creator_avatar))
 
-        findViewById<View>(R.id.about).setOnClickListener {
+        findViewById<View>(R.id.app_info_action).setOnClickListener {
             val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
             intent.setData(("package:" + getPackageName()).toUri())
             startActivity(intent)
@@ -464,9 +614,12 @@ open class Settings : ThemedActivity() {
             }
         })
 
-        setupUrlButton(R.id.github, "https://github.com/albu-razvan/Farol")
-        setupUrlButton(R.id.website, "https://www.razvanalbu.com")
-        setupUrlButton(R.id.discord, "https://discord.gg/WuVapMt9gY")
+        setupUrlButton(R.id.github, "https://github.com/adrielGGmotion/Farol")
+        setupUrlButton(R.id.creator_profile, "https://github.com/adrielGGmotion")
+        setupUrlButton(R.id.creator_github, "https://github.com/adrielGGmotion")
+        setupUrlButton(R.id.creator_telegram, "https://t.me/adrielggmotion")
+        setupUrlButton(R.id.creator_instagram, "https://instagram.com/adrielggmotion")
+        setupUrlButton(R.id.creator_website, "https://adriel.men")
     }
 
     // Helpers
@@ -495,8 +648,14 @@ open class Settings : ThemedActivity() {
 
     private fun setupUrlButton(viewId: Int, url: String) {
         findViewById<View>(viewId).setOnClickListener { view ->
-            view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.bounce_small))
-            startActivity(Intent(Intent.ACTION_DEFAULT, url.toUri()))
+            if (motionEnabled()) view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.bounce_small))
+            try {
+                startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+            } catch (error: ActivityNotFoundException) {
+                Toast.makeText(this, R.string.cannot_open_link, Toast.LENGTH_SHORT).show()
+            } catch (error: SecurityException) {
+                Toast.makeText(this, R.string.cannot_open_link, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -575,7 +734,8 @@ open class Settings : ThemedActivity() {
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL)
 
             collapsingToolbarLayout.setTitleEnabled(false)
-            titleLandscape.setVisibility(View.VISIBLE)
+            titleLandscape.setVisibility(if (content?.visibility == View.VISIBLE) View.VISIBLE else View.GONE)
+            overviewLandscape.setVisibility(if (content?.visibility == View.VISIBLE) View.GONE else View.VISIBLE)
         } else {
             params.height = Measurements.dpToPx(Measurements.HEADER_SIZE_DP.toFloat())
             params.setScrollFlags(
@@ -586,6 +746,7 @@ open class Settings : ThemedActivity() {
 
             collapsingToolbarLayout.setTitleEnabled(true)
             titleLandscape.setVisibility(View.GONE)
+            overviewLandscape.setVisibility(View.GONE)
         }
 
         collapsingToolbarLayout.setLayoutParams(params)
@@ -611,4 +772,8 @@ open class Settings : ThemedActivity() {
     protected override fun isOpaque(): Boolean = true
 
     protected override fun isAffectedByBackGesture(): Boolean = true
+
+    private companion object {
+        const val CATEGORY_STATE = "category"
+    }
 }

@@ -54,6 +54,7 @@ open class LicensesRecyclerAdapter(context: Context) : RecyclerView.Adapter<Lice
 
     private companion object {
         val licenses = arrayOf(
+            arrayOf("Stario", "Răzvan Albu", "GPL 3.0+"),
             arrayOf("Android", "The Android Open Source Project", "Apache 2.0"),
             arrayOf("Android Fading Edge Layout", "Yang Bo", "Apache 2.0"),
             arrayOf("Android Jetpack", "The Android Open Source Project", "Apache 2.0"),

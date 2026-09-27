@@ -52,6 +52,33 @@
 
     <!-- Settings -->
     <string name="preferences">Preferences</string>
+    <string name="home_appearance">Home &amp; appearance</string>
+    <string name="general_settings">General</string>
+    <string name="about_farol">About Farol</string>
+    <string name="home_category_summary">Start screen, Page manager, Theme</string>
+    <string name="drawer_category_summary">Hidden apps, Icon packs</string>
+    <string name="search_category_summary">Engine, Results, Hidden apps</string>
+    <string name="general_category_summary">Low spec, Vibrations, Restart, Default launcher</string>
+    <string name="about_category_summary">Creator, Source code, App info, Licenses</string>
+    <string name="farol_creator_name">Adriel</string>
+    <string name="farol_creator_handle">\@adrielGGmotion</string>
+    <string name="farol_creator_role">Creator of Farol</string>
+    <string name="farol_creator_profile">Adriel, @adrielGGmotion, creator of Farol. View on GitHub</string>
+    <string name="creator_github_description">Adriel on GitHub</string>
+    <string name="creator_telegram_description">Adriel on Telegram</string>
+    <string name="creator_instagram_description">Adriel on Instagram</string>
+    <string name="creator_website">adriel.men</string>
+    <string name="creator_website_description">adriel.men website</string>
+    <string name="replay_beacon_light">Replay beacon light</string>
+    <string name="farol_headline">A quieter kind of home.</string>
+    <string name="farol_description">Your apps, widgets and notes, together.</string>
+    <string name="farol_source">Farol on GitHub</string>
+    <string name="telegram">Telegram</string>
+    <string name="instagram">Instagram</string>
+    <string name="github">GitHub</string>
+    <string name="cannot_open_link">No app can open this link</string>
+    <string name="farol_version">Version %1$s</string>
+    <string name="category_back_description">%1$s, back to settings</string>
     <string name="notification_dots">Notification dots</string>
     <string name="vibrations">Vibrations</string>
     <string name="theme">Theme</string>

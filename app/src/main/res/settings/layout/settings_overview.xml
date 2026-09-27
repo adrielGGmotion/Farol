@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<carbon.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/overview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingTop="15dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="20dp"
+    app:carbon_maxWidth="500dp">
+
+    <TextView
+        android:id="@+id/overview_landscape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/dm_sans_medium"
+        android:letterSpacing="-0.03"
+        android:padding="10dp"
+        android:text="@string/settings"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="30sp" />
+
+    <include android:id="@+id/category_home" layout="@layout/settings_category_card" />
+    <include android:id="@+id/category_drawer" layout="@layout/settings_category_card" />
+    <include android:id="@+id/category_search" layout="@layout/settings_category_card" />
+    <include android:id="@+id/category_general" layout="@layout/settings_category_card" />
+    <include android:id="@+id/category_about" layout="@layout/settings_category_card" />
+
+</carbon.widget.LinearLayout>

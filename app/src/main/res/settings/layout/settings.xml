@@ -93,7 +93,15 @@
                 android:overScrollMode="never"
                 android:scrollbars="none">
 
-                <include layout="@layout/settings_content" />
+                <FrameLayout
+                    android:id="@+id/settings_pages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/settings_overview" />
+                    <include layout="@layout/settings_content" />
+
+                </FrameLayout>
 
             </androidx.core.widget.NestedScrollView>
 

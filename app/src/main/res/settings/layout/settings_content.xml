@@ -21,7 +21,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:animateLayoutChanges="true"
     android:orientation="vertical"
     android:paddingLeft="20dp"
     android:paddingTop="15dp"
@@ -33,63 +32,54 @@
         android:id="@+id/title_landscape"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/ripple"
         android:fontFamily="@font/dm_sans_medium"
+        android:minHeight="56dp"
         android:letterSpacing="-0.03"
         android:padding="10dp"
         android:text="@string/settings"
         android:textColor="?attr/colorOnSurface"
         android:textSize="30sp" />
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/group_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:text="@string/preferences"
-        android:textColor="?attr/colorSecondary"
-        android:textSize="16sp" />
-
-    <carbon.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/transparent_divider_small"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:divider="@drawable/grouped_settings_divider"
         android:orientation="vertical"
-        android:showDividers="middle"
-        android:transitionGroup="true"
-        app:carbon_cornerRadius="20dp">
+        android:showDividers="middle">
 
-        <carbon.widget.TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/home"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_home"
+            app:drawableStartCompat="@drawable/ic_home"
             android:drawablePadding="10dp"
             android:fontFamily="@font/dm_sans_medium"
             android:letterSpacing="-0.03"
             android:padding="15dp"
             android:text="@string/home"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            android:textSize="20sp" />
 
-        <carbon.widget.TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/pages"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_pages"
+            app:drawableStartCompat="@drawable/ic_pages"
             android:drawablePadding="10dp"
             android:fontFamily="@font/dm_sans_medium"
             android:letterSpacing="-0.03"
             android:padding="15dp"
             android:text="@string/pages"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            android:textSize="20sp" />
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/theme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,8 +89,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -138,31 +127,21 @@
 
             </LinearLayout>
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-    </carbon.widget.LinearLayout>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/group_drawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:paddingTop="40dp"
-        android:text="@string/drawer"
-        android:textColor="?attr/colorSecondary"
-        android:textSize="16sp" />
-
-    <carbon.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/transparent_divider_small"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:divider="@drawable/grouped_settings_divider"
         android:orientation="vertical"
-        android:showDividers="middle"
-        android:transitionGroup="true"
-        app:carbon_cornerRadius="20dp">
+        android:showDividers="middle">
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/hidden_apps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -172,8 +151,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -211,9 +189,9 @@
 
             </LinearLayout>
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/icons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,8 +201,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -262,31 +239,21 @@
 
             </LinearLayout>
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-    </carbon.widget.LinearLayout>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/group_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:paddingTop="40dp"
-        android:text="@string/search"
-        android:textColor="?attr/colorSecondary"
-        android:textSize="16sp" />
-
-    <carbon.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/transparent_divider_small"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:divider="@drawable/grouped_settings_divider"
         android:orientation="vertical"
-        android:showDividers="middle"
-        android:transitionGroup="true"
-        app:carbon_cornerRadius="20dp">
+        android:showDividers="middle">
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/search_engine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -296,8 +263,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -335,9 +301,9 @@
 
             </LinearLayout>
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/search_results_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -347,8 +313,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -396,15 +361,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-        <carbon.widget.RelativeLayout
+        <RelativeLayout
             android:id="@+id/search_hidden_apps_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:padding="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:padding="7dp">
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/search_hidden_apps"
@@ -421,31 +385,21 @@
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="20sp" />
 
-        </carbon.widget.RelativeLayout>
+        </RelativeLayout>
 
-    </carbon.widget.LinearLayout>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/group_general"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:paddingTop="40dp"
-        android:text="@string/miscellaneous"
-        android:textColor="?attr/colorSecondary"
-        android:textSize="16sp" />
-
-    <carbon.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/transparent_divider_small"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:divider="@drawable/grouped_settings_divider"
         android:orientation="vertical"
-        android:showDividers="middle"
-        android:transitionGroup="true"
-        app:carbon_cornerRadius="20dp">
+        android:showDividers="middle">
 
-        <carbon.widget.LinearLayout
+        <LinearLayout
             android:id="@+id/low_spec_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -455,8 +409,7 @@
             android:paddingStart="15dp"
             android:paddingTop="7dp"
             android:paddingEnd="15dp"
-            android:paddingBottom="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:paddingBottom="7dp">
 
             <ImageView
                 android:contentDescription="@null"
@@ -505,15 +458,14 @@
                 android:layout_height="wrap_content"
                 android:clickable="false" />
 
-        </carbon.widget.LinearLayout>
+        </LinearLayout>
 
-        <carbon.widget.RelativeLayout
+        <RelativeLayout
             android:id="@+id/vibrations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:padding="7dp"
-            app:carbon_cornerRadius="5dp">
+            android:padding="7dp">
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/vibrations"
@@ -530,182 +482,299 @@
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="20sp" />
 
-        </carbon.widget.RelativeLayout>
+        </RelativeLayout>
 
-        <carbon.widget.TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/restart"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_restart"
+            app:drawableStartCompat="@drawable/ic_restart"
             android:drawablePadding="10dp"
             android:fontFamily="@font/dm_sans_medium"
             android:letterSpacing="-0.03"
             android:padding="15dp"
             android:text="@string/restart"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            android:textSize="20sp" />
 
-        <carbon.widget.TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/def_launcher"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_launch"
+            app:drawableStartCompat="@drawable/ic_launch"
             android:drawablePadding="10dp"
             android:fontFamily="@font/dm_sans_medium"
             android:letterSpacing="-0.03"
             android:padding="15dp"
             android:text="@string/system_launcher"
             android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            android:textSize="20sp" />
 
-    </carbon.widget.LinearLayout>
+    </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/group_about"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:paddingTop="40dp"
-        android:text="@string/about"
-        android:textColor="?attr/colorSecondary"
-        android:textSize="16sp" />
+        android:orientation="vertical">
 
-    <carbon.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@drawable/transparent_divider_small"
-        android:orientation="vertical"
-        android:showDividers="middle"
-        android:transitionGroup="true"
-        app:carbon_cornerRadius="20dp">
-
-        <carbon.widget.ConstraintLayout
+        <carbon.widget.LinearLayout
+            android:id="@+id/about_hero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
-            app:carbon_cornerRadius="5dp">
+            android:background="?attr/colorPrimaryContainer"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="24dp"
+            app:carbon_cornerRadius="32dp">
 
-            <com.farol.launcher.ui.common.GradientView
+            <com.farol.launcher.activities.settings.FarolBeaconView
+                android:id="@+id/about_beacon"
                 android:layout_width="match_parent"
-                android:layout_height="0px"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_height="172dp"
+                android:layout_marginStart="-24dp"
+                android:layout_marginEnd="-24dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/replay_beacon_light"
+                android:focusable="true"
+                android:tooltipText="@string/replay_beacon_light" />
 
-            <carbon.widget.LinearLayout
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/dm_sans_medium"
+                android:letterSpacing="-0.04"
+                android:text="@string/app_name"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="48sp" />
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_regular"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/dm_sans_medium"
+                android:letterSpacing="-0.02"
+                android:text="@string/farol_headline"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/dm_sans_regular"
+                android:text="@string/farol_description"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textSize="16sp" />
+        </carbon.widget.LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHighest"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutlineVariant"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <ImageView
-                    android:contentDescription="@null"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_farol"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/dm_sans_regular"
-                    android:gravity="center"
-                    android:letterSpacing="-0.03"
-                    android:text="@string/app_name"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="30sp" />
-
-                <TextView
-                    android:id="@+id/version"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/dm_sans_regular"
-                    android:gravity="center"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="16sp" />
-
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/creator_profile"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="4dp">
+                    android:clickable="true"
+                    android:contentDescription="@string/farol_creator_profile"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <carbon.widget.ImageView
-                        android:id="@+id/website"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="6dp"
-                        android:background="?attr/colorSurfaceContainer"
-                        android:padding="7dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_website"
-                        app:carbon_cornerRadius="15dp" />
+                    <com.farol.launcher.activities.settings.CookieAvatarView
+                        android:id="@+id/creator_avatar"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_farol" />
 
-                    <carbon.widget.ImageView
-                        android:id="@+id/github"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="6dp"
-                        android:background="?attr/colorSurfaceContainer"
-                        android:padding="11dp"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/ic_github"
-                        app:carbon_cornerRadius="15dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <carbon.widget.ImageView
-                        android:id="@+id/discord"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="6dp"
-                        android:background="?attr/colorSurfaceContainer"
-                        android:padding="11dp"
-                        android:src="@drawable/ic_discord"
-                        app:carbon_cornerRadius="15dp" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/dm_sans_medium"
+                            android:importantForAccessibility="no"
+                            android:letterSpacing="-0.04"
+                            android:text="@string/farol_creator_name"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp" />
 
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/dm_sans_regular"
+                            android:importantForAccessibility="no"
+                            android:text="@string/farol_creator_handle"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/dm_sans_regular"
+                            android:importantForAccessibility="no"
+                            android:text="@string/farol_creator_role"
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
-            </carbon.widget.LinearLayout>
+                <com.google.android.flexbox.FlexboxLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:alignItems="center"
+                    app:flexWrap="wrap"
+                    app:justifyContent="space_between">
 
-        </carbon.widget.ConstraintLayout>
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/creator_website"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:contentDescription="@string/creator_website_description"
+                        android:focusable="true"
+                        android:fontFamily="@font/dm_sans_medium"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/creator_website"
+                        android:textColor="?attr/colorPrimary"
+                        android:textSize="16sp"
+                        android:tooltipText="@string/creator_website" />
 
-        <carbon.widget.TextView
-            android:id="@+id/about"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/creator_github"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/creator_github_description"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_github"
+                            android:tooltipText="@string/github" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/creator_telegram"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/creator_telegram_description"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_telegram"
+                            android:tooltipText="@string/telegram" />
+
+                        <androidx.appcompat.widget.AppCompatImageButton
+                            android:id="@+id/creator_instagram"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="4dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="@string/creator_instagram_description"
+                            android:padding="12dp"
+                            android:src="@drawable/ic_instagram"
+                            android:tooltipText="@string/instagram" />
+                    </LinearLayout>
+                </com.google.android.flexbox.FlexboxLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_about"
-            android:drawablePadding="10dp"
-            android:fontFamily="@font/dm_sans_medium"
-            android:letterSpacing="-0.03"
-            android:padding="15dp"
-            android:text="@string/about"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            android:layout_marginTop="12dp"
+            android:divider="@drawable/grouped_settings_divider"
+            android:orientation="vertical"
+            android:showDividers="middle">
 
-        <carbon.widget.TextView
-            android:id="@+id/licenses"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ripple"
-            android:drawableStart="@drawable/ic_license"
-            android:drawablePadding="10dp"
-            android:fontFamily="@font/dm_sans_medium"
-            android:letterSpacing="-0.03"
-            android:padding="15dp"
-            android:text="@string/licenses"
-            android:textColor="?attr/colorOnSurface"
-            android:textSize="20sp"
-            app:carbon_cornerRadius="5dp" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/github"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/about_footer_top"
+                app:drawableStartCompat="@drawable/ic_github"
+                android:drawablePadding="14dp"
+                android:focusable="true"
+                android:fontFamily="@font/dm_sans_medium"
+                android:minHeight="52dp"
+                android:padding="14dp"
+                android:text="@string/farol_source"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
 
-    </carbon.widget.LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/app_info_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/grouped_category_middle"
+                app:drawableStartCompat="@drawable/ic_about"
+                android:drawablePadding="14dp"
+                android:focusable="true"
+                android:fontFamily="@font/dm_sans_medium"
+                android:minHeight="52dp"
+                android:padding="14dp"
+                android:text="@string/app_info"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/licenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/about_footer_bottom"
+                app:drawableStartCompat="@drawable/ic_license"
+                android:drawablePadding="14dp"
+                android:focusable="true"
+                android:fontFamily="@font/dm_sans_medium"
+                android:minHeight="52dp"
+                android:padding="14dp"
+                android:text="@string/licenses"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
 
 </carbon.widget.LinearLayout>
