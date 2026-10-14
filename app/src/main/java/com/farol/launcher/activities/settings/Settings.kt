@@ -60,12 +60,12 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialSharedAxis
 import com.bumptech.glide.Glide
 import com.farol.launcher.BuildConfig
 import com.farol.launcher.R
 import com.farol.launcher.Farol
 import com.farol.launcher.activities.pages.PageManager
-import com.farol.launcher.activities.settings.dialogs.HomeScreenDialog
 import com.farol.launcher.activities.settings.dialogs.hide.HideApplicationsDialog
 import com.farol.launcher.activities.settings.dialogs.icons.IconsDialog
 import com.farol.launcher.activities.settings.dialogs.license.LicensesDialog
@@ -110,11 +110,12 @@ open class Settings : ThemedActivity() {
     private lateinit var toolbar: MaterialToolbar
     private lateinit var categoryBackCallback: OnBackPressedCallback
     private var content: ViewGroup? = null
+    private lateinit var homeScreenSettings: HomeScreenSettings
     private var selectedCategory = -1
     private var titleCollapseFraction = 0f
     private val categoryIds = intArrayOf(R.id.category_home, R.id.category_drawer, R.id.category_search, R.id.category_general, R.id.category_about)
-    private val categoryGroups = intArrayOf(R.id.group_home, R.id.group_drawer, R.id.group_search, R.id.group_general, R.id.group_about)
-    private val categoryTitles = intArrayOf(R.string.home_appearance, R.string.drawer, R.string.search, R.string.general_settings, R.string.about_farol)
+    private val categoryGroups = intArrayOf(R.id.group_home, R.id.group_drawer, R.id.group_search, R.id.group_general, R.id.group_about, R.id.start_screen_settings)
+    private val categoryTitles = intArrayOf(R.string.home_appearance, R.string.drawer, R.string.search, R.string.general_settings, R.string.about_farol, R.string.home)
 
     // Dynamic views
     private lateinit var lowSpecSwitch: MaterialSwitch
@@ -140,6 +141,9 @@ open class Settings : ThemedActivity() {
         setupWindowInsets()
         setupLifecycleObservers()
 
+        homeScreenSettings = HomeScreenSettings(this).also {
+            it.bind(findViewById(R.id.start_screen_settings))
+        }
         initGeneralSection()
         initDisplaySection()
         initSearchSection()
@@ -220,9 +224,9 @@ open class Settings : ThemedActivity() {
     private fun setupCategories() {
         val summaries = intArrayOf(R.string.home_category_summary, R.string.drawer_category_summary, R.string.search_category_summary, R.string.general_category_summary, R.string.about_category_summary)
         val icons = intArrayOf(R.drawable.ic_home, R.drawable.ic_hidden, R.drawable.ic_search_engine, R.drawable.ic_settings, R.drawable.ic_farol)
-        categoryBackCallback = onBackPressedDispatcher.addCallback(this, false) { showCategory(-1) }
-        toolbar.setNavigationOnClickListener { showCategory(-1) }
-        titleLandscape.setOnClickListener { showCategory(-1) }
+        categoryBackCallback = onBackPressedDispatcher.addCallback(this, false) { navigateBack() }
+        toolbar.setNavigationOnClickListener { navigateBack() }
+        titleLandscape.setOnClickListener { navigateBack() }
         titleLandscape.compoundDrawablePadding = Measurements.dpToPx(12f)
         titleLandscape.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_back, 0, 0, 0)
         categoryIds.forEachIndexed { index, id ->
@@ -250,11 +254,21 @@ open class Settings : ThemedActivity() {
         }
     }
 
+    private fun navigateBack() {
+        showCategory(if (selectedCategory == START_SCREEN_CATEGORY) 0 else -1)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (selectedCategory == START_SCREEN_CATEGORY) homeScreenSettings.refreshPermissions()
+    }
+
     private fun showCategory(index: Int, animate: Boolean = true) {
         val detail = index in categoryGroups.indices
         val previous = selectedCategory
         val pages = findViewById<ViewGroup>(R.id.settings_pages)
-        if (animate && previous != index && (previous == -1 || !detail) &&
+        if (animate && previous != START_SCREEN_CATEGORY && index != START_SCREEN_CATEGORY &&
+            previous != index && (previous == -1 || !detail) &&
             pages.isLaidOut && scroller.scrollY == 0 && motionEnabled()
         ) {
             TransitionManager.endTransitions(pages)
@@ -293,7 +307,25 @@ open class Settings : ThemedActivity() {
                 addTransition(fade)
             })
         }
+        if (animate && previous != index && previous in categoryGroups.indices && detail &&
+            (previous == START_SCREEN_CATEGORY || index == START_SCREEN_CATEGORY) &&
+            pages.isLaidOut && motionEnabled()
+        ) {
+            TransitionManager.endTransitions(pages)
+            val outgoing = findViewById<ViewGroup>(categoryGroups[previous])
+            val incoming = findViewById<ViewGroup>(categoryGroups[index])
+            outgoing.isTransitionGroup = true
+            incoming.isTransitionGroup = true
+            TransitionManager.beginDelayedTransition(pages,
+                MaterialSharedAxis(MaterialSharedAxis.X, index == START_SCREEN_CATEGORY).apply {
+                    duration = 300L
+                    addTarget(outgoing)
+                    addTarget(incoming)
+                }
+            )
+        }
         selectedCategory = if (detail) index else -1
+        if (selectedCategory == START_SCREEN_CATEGORY) homeScreenSettings.refreshPermissions()
         content?.visibility = if (detail) View.VISIBLE else View.GONE
         findViewById<View>(R.id.overview).visibility = if (detail) View.GONE else View.VISIBLE
         categoryGroups.forEachIndexed { position, id ->
@@ -310,13 +342,13 @@ open class Settings : ThemedActivity() {
         toolbar.navigationContentDescription = if (detail) getString(R.string.return_button) else null
         categoryBackCallback.isEnabled = detail
         handleOrientation()
-        if (index == categoryGroups.lastIndex || previous == categoryGroups.lastIndex) {
-            appBar.setExpanded(index != categoryGroups.lastIndex, false)
+        if (index == categoryIds.lastIndex || previous == categoryIds.lastIndex) {
+            appBar.setExpanded(index != categoryIds.lastIndex, false)
         }
         if (animate) findViewById<View>(R.id.container).announceForAccessibility(getString(title))
         scroller.post {
             scroller.scrollTo(0, 0)
-            if (selectedCategory == categoryGroups.lastIndex && index != previous) {
+            if (selectedCategory == categoryIds.lastIndex && index != previous) {
                 findViewById<FarolBeaconView>(R.id.about_beacon).illuminate(animate && motionEnabled())
             }
         }
@@ -375,21 +407,9 @@ open class Settings : ThemedActivity() {
 
     // Settings
     private fun initGeneralSection() {
-        // Home Screen
-        findViewById<View>(R.id.home).setOnClickListener(object : View.OnClickListener {
-            private var dialog: HomeScreenDialog? = null
-            private var showing = false
-
-            override fun onClick(view: View) {
-                val currentDialog = dialog ?: HomeScreenDialog(this@Settings).also { dialog = it }
-                currentDialog.setOnDismissListener { showing = false }
-
-                if (!showing) {
-                    currentDialog.show()
-                    showing = true
-                }
-            }
-        })
+        findViewById<View>(R.id.home).setOnClickListener {
+            showCategory(START_SCREEN_CATEGORY)
+        }
 
         // Page Manager
         findViewById<View>(R.id.pages).setOnClickListener {
@@ -774,6 +794,7 @@ open class Settings : ThemedActivity() {
     protected override fun isAffectedByBackGesture(): Boolean = true
 
     private companion object {
+        const val START_SCREEN_CATEGORY = 5
         const val CATEGORY_STATE = "category"
     }
 }

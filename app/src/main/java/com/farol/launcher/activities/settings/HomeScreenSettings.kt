@@ -15,20 +15,17 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package com.farol.launcher.activities.settings.dialogs
+package com.farol.launcher.activities.settings
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.TextView
-import androidx.core.widget.NestedScrollView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.slider.Slider
 import com.farol.launcher.R
@@ -39,6 +36,8 @@ import com.farol.launcher.activities.launcher.widgets.glance.extensions.media.Me
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.weather.Weather
 import com.farol.launcher.activities.launcher.widgets.home.HomeWidgets
 import com.farol.launcher.activities.launcher.widgets.pins.PinnedCategory
+import com.farol.launcher.activities.settings.dialogs.AccessibilityConfigurator
+import com.farol.launcher.activities.settings.dialogs.NotificationConfigurator
 import com.farol.launcher.activities.settings.dialogs.location.LocationDialog
 import com.farol.launcher.activities.settings.dialogs.pin.PinnedCategoryDialog
 import com.farol.launcher.apps.CategoryManager
@@ -46,23 +45,19 @@ import com.farol.launcher.preferences.Entry
 import com.farol.launcher.themes.ThemedActivity
 import com.farol.launcher.ui.common.StylizedClockView
 import com.farol.launcher.ui.common.lock.LockDetector
-import com.farol.launcher.ui.dialogs.ActionDialog
 import com.farol.launcher.utils.Utils
 import java.util.UUID
 import androidx.core.content.edit
 
-open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
-    private lateinit var scroller: NestedScrollView
+class HomeScreenSettings(private val activity: ThemedActivity) {
     private lateinit var root: ViewGroup
 
-    // Data
     private lateinit var pinsPrefs: SharedPreferences
     private lateinit var clockPrefs: SharedPreferences
     private lateinit var weatherPrefs: SharedPreferences
     private lateinit var settingsPrefs: SharedPreferences
     private lateinit var resources: Resources
 
-    // Dynamic views
     private lateinit var pinnedCategorySwitch: MaterialSwitch
     private lateinit var lockAnimSwitch: MaterialSwitch
     private lateinit var pinnedCategoryName: TextView
@@ -71,8 +66,8 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     private lateinit var lockAnimContainer: View
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun inflateContent(inflater: LayoutInflater, parent: android.view.ViewGroup): View {
-        root = inflater.inflate(R.layout.pop_up_home, parent, false) as ViewGroup
+    fun bind(view: ViewGroup) {
+        root = view
 
         resources = activity.getResources()
         val farol: Farol = activity.getApplicationContext()
@@ -87,19 +82,15 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         lockAnimContainer = root.findViewById(R.id.lock_animation_container)
         lockAnimSwitch = root.findViewById(R.id.lock_animation)
         mediaSwitch = root.findViewById(R.id.media)
-        scroller = root.findViewById(R.id.scroller)
         lockSwitch = root.findViewById(R.id.lock)
 
         initGeneralSection()
         initClockSection()
         initWeatherSection()
         initGestureSection()
-
-        return root
     }
 
     private fun initGeneralSection() {
-        // Media Player Switch
         setupSwitch(
             mediaSwitch,
             root.findViewById(R.id.media_container),
@@ -114,7 +105,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             }
         }
 
-        // Search
         setupSwitch(
             root.findViewById<MaterialSwitch>(R.id.search),
             root.findViewById(R.id.search_container),
@@ -125,7 +115,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
                 }
         }
 
-        // Widgets: let every widget be resized, whatever the provider declares
         setupSwitch(
             root.findViewById<MaterialSwitch>(R.id.force_resize),
             root.findViewById(R.id.force_resize_container),
@@ -136,7 +125,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
                 }
         }
 
-        // Pinned Category
         val pinnedCategoryContainer = root.findViewById<View>(R.id.pinned_category_container)
 
         updatePinnedCategoryName()
@@ -217,7 +205,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     }
 
     private fun initWeatherSection() {
-        // Weather
         setupSwitch(
             root.findViewById<MaterialSwitch>(R.id.weather),
             root.findViewById(R.id.weather_container),
@@ -229,7 +216,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
 
         }
 
-        // Location
         val locationName = root.findViewById<TextView>(R.id.location_name)
         locationName.setText(getLocationString())
 
@@ -267,7 +253,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     }
 
     private fun initGestureSection() {
-        // Double Tap Lock Switch
         setupSwitch(
             lockSwitch,
             root.findViewById(R.id.lock_container),
@@ -284,7 +269,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
             updateLockAnimationState(checked)
         }
 
-        // Legacy Lock Animation
         setupSwitch(
             lockAnimSwitch,
             root.findViewById(R.id.lock_animation_container),
@@ -297,13 +281,9 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         updateLockAnimationState(settingsPrefs.getBoolean(LockDetector.PREFERENCE_ENTRY, false))
     }
 
-    override fun show() {
-        super.show()
-
+    fun refreshPermissions() {
         checkNotificationPermission()
         checkAccessibilityPermission()
-
-        scroller.scrollTo(0, 0)
     }
 
     private fun checkNotificationPermission() {
@@ -332,6 +312,7 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
     }
 
     private fun updateLockAnimationState(enabled: Boolean) {
+        lockAnimSwitch.isEnabled = enabled
         lockAnimContainer.setAlpha(if (enabled) 1f else 0.6f)
 
         if (enabled) {
@@ -372,7 +353,6 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         return location
     }
 
-    // Permission Dialogs
     private fun showNotificationPermissionDialog() {
         val dialog = NotificationConfigurator(activity)
         dialog.setOnDismissListener { checkNotificationPermission() }
@@ -400,7 +380,4 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         }
     }
 
-    override fun blurBehind(): Boolean = true
-
-    override fun getDesiredInitialState(): Int = BottomSheetBehavior.STATE_HALF_EXPANDED
 }

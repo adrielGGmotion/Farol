@@ -55,7 +55,7 @@
     <string name="home_appearance">Home &amp; appearance</string>
     <string name="general_settings">General</string>
     <string name="about_farol">About Farol</string>
-    <string name="home_category_summary">Start screen, Page manager, Theme</string>
+    <string name="home_category_summary">Start screen (clock, pinned apps), Page manager, Theme</string>
     <string name="drawer_category_summary">Hidden apps, Icon packs</string>
     <string name="search_category_summary">Engine, Results, Hidden apps</string>
     <string name="general_category_summary">Low spec, Vibrations, Restart, Default launcher</string>
@@ -288,4 +288,7 @@
 
     <!-- Accessibility service -->
     <string name="accessibility_service_description">The service has the soul purpose of enabling lock screen gesture on the home screen. It does not collect or share data with any third party.</string>
+    <string name="home_visibility">Visibility</string>
+    <string name="home_widgets">Widgets</string>
+    <string name="home_gestures">Gestures</string>
 </resources>

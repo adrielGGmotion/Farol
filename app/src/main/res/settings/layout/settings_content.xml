@@ -41,6 +41,8 @@
         android:textColor="?attr/colorOnSurface"
         android:textSize="30sp" />
 
+    <include layout="@layout/settings_start_screen" />
+
     <LinearLayout
         android:id="@+id/group_home"
         android:layout_width="match_parent"

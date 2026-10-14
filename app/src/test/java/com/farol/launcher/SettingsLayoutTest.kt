@@ -9,6 +9,32 @@ import org.w3c.dom.Element
 
 class SettingsLayoutTest {
     @Test
+    fun startScreenIsAFullPageWithVisibilityFirstAndAccessibleControls() {
+        val parser = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        val root = parser.parse(File("src/main/res/settings/layout/settings_start_screen.xml")).documentElement
+        assertEquals("@+id/start_screen_settings", root.getAttribute("android:id"))
+        val nodes = root.getElementsByTagName("*")
+        val elements = (0 until nodes.length).map { nodes.item(it) as Element }
+        assertTrue(elements.none { it.tagName.contains("ScrollView") })
+        val headings = elements.filter { it.getAttribute("android:accessibilityHeading") == "true" }
+        assertEquals(listOf("home_visibility", "clock", "weather", "home_widgets", "home_gestures"),
+            headings.map { it.getAttribute("android:text").removePrefix("@string/") })
+        val switches = elements.filter { it.tagName.endsWith("MaterialSwitch") }
+        assertEquals(listOf("clock", "pinned_category", "search", "media"),
+            switches.take(4).map { it.getAttribute("android:id").removePrefix("@+id/") })
+        assertEquals(10, switches.size)
+        switches.forEach {
+            assertEquals("48dp", it.getAttribute("android:minHeight"))
+            assertTrue(it.getAttribute("android:clickable") != "false")
+            assertTrue(it.hasAttribute("android:text") || it.hasAttribute("android:contentDescription"))
+        }
+        val slider = elements.single { it.tagName.endsWith("Slider") }
+        assertEquals("@string/background", slider.getAttribute("android:contentDescription"))
+        val content = File("src/main/res/settings/layout/settings_content.xml").readText()
+        assertTrue(content.contains("@layout/settings_start_screen"))
+    }
+
+    @Test
     fun everySettingBelongsToOneCategoryAndHomeOnlyListsCategories() {
         val folder = File("src/main/res/settings/layout")
         fun elements(name: String): List<Element> {

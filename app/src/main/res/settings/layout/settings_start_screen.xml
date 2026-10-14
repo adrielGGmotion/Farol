@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2026 Răzvan Albu
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program. If not, see <http://www.gnu.org/licenses/>
+  -->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/start_screen_settings"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:fontFamily="@font/dm_sans_medium"
+        android:text="@string/home_visibility"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="16sp"
+        android:accessibilityHeading="true" />
+    <RelativeLayout
+        android:id="@+id/clock_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_top"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/clock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_watch"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/clock"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/pinned_category_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_middle"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <ImageView
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_pin" />
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="0px" />
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_medium"
+                android:letterSpacing="-0.03"
+                android:text="@string/pinned_category"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/pinned_category_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_regular"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="16sp" />
+        </LinearLayout>
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="0px" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/pinned_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:contentDescription="@string/pinned_category" />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_middle"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_search_results"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/search_shortcut"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/media_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_bottom"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_media"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/media_player"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:fontFamily="@font/dm_sans_medium"
+        android:text="@string/clock"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="16sp"
+        android:accessibilityHeading="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_top"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp"
+        android:padding="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:text="@string/background"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:drawableStart="@drawable/ic_opacity"
+            android:drawablePadding="10dp" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/background_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            app:labelBehavior="gone"
+            app:tickVisible="false"
+            android:contentDescription="@string/background" />
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/imperial_clock_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_bottom"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/imperial_clock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_ruler"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/imperial_units"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:fontFamily="@font/dm_sans_medium"
+        android:text="@string/weather"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="16sp"
+        android:accessibilityHeading="true" />
+    <RelativeLayout
+        android:id="@+id/weather_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_top"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_weather"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/weather_forecast"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_middle"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="7dp"
+        android:transitionGroup="true"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <ImageView
+            android:contentDescription="@null"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_location" />
+        <Space
+            android:layout_width="10dp"
+            android:layout_height="0px" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_medium"
+                android:letterSpacing="-0.03"
+                android:paddingTop="10dp"
+                android:text="@string/weather_location"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/location_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_regular"
+                android:paddingBottom="10dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/imperial_weather_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_bottom"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/imperial_weather"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_ruler"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/imperial_units"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:fontFamily="@font/dm_sans_medium"
+        android:text="@string/home_widgets"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="16sp"
+        android:accessibilityHeading="true" />
+    <RelativeLayout
+        android:id="@+id/force_resize_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_bottom"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/force_resize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_ruler"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/force_resizable_widgets"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="12dp"
+        android:fontFamily="@font/dm_sans_medium"
+        android:text="@string/home_gestures"
+        android:textColor="?attr/colorSecondary"
+        android:textSize="16sp"
+        android:accessibilityHeading="true" />
+    <RelativeLayout
+        android:id="@+id/lock_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_top"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/lock_gesture"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/lock_animation_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_bottom"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/lock_animation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_animation"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/legacy_lock_animation"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
+</LinearLayout>
