@@ -37,6 +37,7 @@ import com.farol.launcher.activities.launcher.widgets.ClockWidget
 import com.farol.launcher.activities.launcher.widgets.SearchWidget
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.media.Media
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.weather.Weather
+import com.farol.launcher.activities.launcher.widgets.home.HomeWidgets
 import com.farol.launcher.activities.launcher.widgets.pins.PinnedCategory
 import com.farol.launcher.activities.settings.dialogs.location.LocationDialog
 import com.farol.launcher.activities.settings.dialogs.pin.PinnedCategoryDialog
@@ -121,6 +122,17 @@ open class HomeScreenDialog(activity: ThemedActivity) : ActionDialog(activity) {
         ) { _, checked ->
             settingsPrefs.edit {
                     putBoolean(SearchWidget.SEARCH_WIDGET_KEY, checked)
+                }
+        }
+
+        // Widgets: let every widget be resized, whatever the provider declares
+        setupSwitch(
+            root.findViewById<MaterialSwitch>(R.id.force_resize),
+            root.findViewById(R.id.force_resize_container),
+            settingsPrefs.getBoolean(HomeWidgets.FORCE_RESIZE_KEY, true)
+        ) { _, checked ->
+            settingsPrefs.edit {
+                    putBoolean(HomeWidgets.FORCE_RESIZE_KEY, checked)
                 }
         }
 

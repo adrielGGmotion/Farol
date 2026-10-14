@@ -50,7 +50,8 @@ import androidx.core.view.size
 open class WidgetListAdapter(
     private val activity: ThemedActivity,
     private val recycler: RecyclerView,
-    private val requestListener: WidgetConfigurator.Request
+    private val requestListener: WidgetConfigurator.Request,
+    private val showSizes: Boolean
 ) : RecyclerView.Adapter<WidgetListAdapter.ViewHolder>() {
     private val entries = WidgetEntries()
     private var targetHolder: ViewHolder? = null
@@ -161,7 +162,7 @@ open class WidgetListAdapter(
         holder.itemView.setOnClickListener {
             Vibrations.getInstance().vibrate()
 
-            holder.adapter = WidgetItemAdapter(activity, data, requestListener)
+            holder.adapter = WidgetItemAdapter(activity, data, requestListener, showSizes)
             holder.widgets.setAdapter(holder.adapter)
 
             if (holder.widgets.visibility != View.VISIBLE) {

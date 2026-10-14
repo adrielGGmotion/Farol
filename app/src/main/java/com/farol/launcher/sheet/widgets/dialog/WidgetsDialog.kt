@@ -331,7 +331,7 @@ open class WidgetsDialog : SheetDialogFragment {
             menu.add(
                 PopupMenu.Item(
                     resources.getString(R.string.create_a_widget),
-                    AppCompatResources.getDrawable(activity, R.drawable.ic_add),
+                    AppCompatResources.getDrawable(activity, R.drawable.ic_widgets),
                     View.OnClickListener { showWidgetPicker() }
                 )
             )

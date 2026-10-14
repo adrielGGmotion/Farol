@@ -19,6 +19,7 @@ package com.farol.launcher.ui.common.grid
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
@@ -28,6 +29,7 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
@@ -37,10 +39,11 @@ import com.farol.launcher.ui.Measurements
 import com.farol.launcher.ui.utils.animation.Animation
 import java.util.LinkedList
 import java.util.Queue
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.hypot
 import kotlin.math.pow
 import kotlin.math.sqrt
-import androidx.core.view.isEmpty
-import androidx.core.view.isNotEmpty
 
 open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup(context, attrs) {
     private val templateManager: GridTemplateManager
@@ -69,6 +72,18 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
     private var lastReorderCol = -1
     private var lastReorderRow = -1
     private var runningAnimations = 0
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    // While a resize steps between cell sizes, the item eases from its drawn size to the new one.
+    private var sizeAnimator: ValueAnimator? = null
+    private var sizeItem: DraggableGridItem? = null
+    private var sizeFromW = 0f
+    private var sizeFromH = 0f
+    private var sizeToW = 0f
+    private var sizeToH = 0f
+    private var sizeFraction = 1f
+
+    /** Called when a tap lands on empty space while rearranging, i.e. the user is done editing. */
+    var onEmptyTap: (() -> Unit)? = null
 
     init {
         val key: String?
@@ -107,6 +122,7 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
 
     fun getCellWidth(): Int = cellWidth
     fun getCellHeight(): Int = cellHeight
+    fun isGridMeasured(): Boolean = cellWidth > 0 && cellHeight > 0
 
     /**
      * @noinspection ReplaceNullCheck
@@ -115,24 +131,12 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
         val id = view.itemId!!
         val saved = templateManager.getLayoutForSize(colCount, rowCount)[id]
         val data = saved ?: defaultTemplateData ?: ItemLayoutData(id, 0, 0, 1, 1)
-        if (defaultTemplateData != null) {
-            data.minColSpan = if (defaultTemplateData.minColSpan > 0) defaultTemplateData.minColSpan else 1
-            data.minWidth = if (defaultTemplateData.minWidth > 0) defaultTemplateData.minWidth else -1
-            data.maxColSpan = if (defaultTemplateData.maxColSpan > 0) defaultTemplateData.maxColSpan else -1
-            data.maxWidth = if (defaultTemplateData.maxWidth > 0) defaultTemplateData.maxWidth else -1
-            data.minRowSpan = if (defaultTemplateData.minRowSpan > 0) defaultTemplateData.minRowSpan else 1
-            data.minHeight = if (defaultTemplateData.minHeight > 0) defaultTemplateData.minHeight else -1
-            data.maxRowSpan = if (defaultTemplateData.maxRowSpan > 0) defaultTemplateData.maxRowSpan else -1
-            data.maxHeight = if (defaultTemplateData.maxHeight > 0) defaultTemplateData.maxHeight else -1
-        }
-        view.minColSpan = if (data.minColSpan > 0) data.minColSpan else 1
-        view.minWidth = if (data.minWidth > 0) data.minWidth else -1
-        view.maxColSpan = if (data.maxColSpan > 0) data.maxColSpan else -1
-        view.maxWidth = if (data.maxWidth > 0) data.maxWidth else -1
-        view.minRowSpan = if (data.minRowSpan > 0) data.minRowSpan else 1
-        view.minHeight = if (data.minHeight > 0) data.minHeight else -1
-        view.maxRowSpan = if (data.maxRowSpan > 0) data.maxRowSpan else -1
-        view.maxHeight = if (data.maxHeight > 0) data.maxHeight else -1
+        if (defaultTemplateData != null) applyItemLimits(data, defaultTemplateData)
+        applyItemLimits(view, data)
+        data.colSpan = clampColumnSpan(view, 0, data.colSpan)
+        data.rowSpan = clampRowSpan(view, 0, data.rowSpan)
+        data.col = maxOf(0, minOf(data.col, colCount - data.colSpan))
+        data.row = maxOf(0, minOf(data.row, rowCount - data.rowSpan))
         view.setResizingActive(isRearrangeable)
         val layoutParams = LayoutParams(data.col, data.row, data.colSpan, data.rowSpan)
         view.layoutParams = layoutParams
@@ -170,6 +174,52 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
             return
         }
         Toast.makeText(context, warningMessage, Toast.LENGTH_SHORT).show()
+    }
+
+    fun updateItemLayoutData(item: DraggableGridItem, data: ItemLayoutData): Boolean {
+        if (item.parent !== this) return false
+        applyItemLimits(item, data)
+        val params = item.layoutParams as LayoutParams
+        val colSpan = clampColumnSpan(item, 0, params.colSpan)
+        val rowSpan = clampRowSpan(item, 0, params.rowSpan)
+        val col = maxOf(0, minOf(params.col, colCount - colSpan))
+        val row = maxOf(0, minOf(params.row, rowCount - rowSpan))
+        if (params.col == col && params.row == row && params.colSpan == colSpan && params.rowSpan == rowSpan) {
+            return false
+        }
+        val currentState = buildCurrentState()
+        val nextState = simulateMove(currentState, item, col, row, colSpan, rowSpan)
+            ?: findClosestFreeSpotInState(currentState, colSpan, rowSpan, col, row, item)?.let {
+                simulateMove(currentState, item, it.left, it.top, colSpan, rowSpan)
+            }
+        if (nextState == null) {
+            Toast.makeText(context, warningMessage, Toast.LENGTH_SHORT).show()
+            return false
+        }
+        commitState(nextState)
+        return true
+    }
+
+    private fun applyItemLimits(target: ItemLayoutData, source: ItemLayoutData) {
+        target.minColSpan = if (source.minColSpan > 0) source.minColSpan else 1
+        target.minWidth = if (source.minWidth > 0) source.minWidth else -1
+        target.maxColSpan = if (source.maxColSpan > 0) source.maxColSpan else -1
+        target.maxWidth = if (source.maxWidth > 0) source.maxWidth else -1
+        target.minRowSpan = if (source.minRowSpan > 0) source.minRowSpan else 1
+        target.minHeight = if (source.minHeight > 0) source.minHeight else -1
+        target.maxRowSpan = if (source.maxRowSpan > 0) source.maxRowSpan else -1
+        target.maxHeight = if (source.maxHeight > 0) source.maxHeight else -1
+    }
+
+    private fun applyItemLimits(view: DraggableGridItem, data: ItemLayoutData) {
+        view.minColSpan = if (data.minColSpan > 0) data.minColSpan else 1
+        view.minWidth = if (data.minWidth > 0) data.minWidth else -1
+        view.maxColSpan = if (data.maxColSpan > 0) data.maxColSpan else -1
+        view.maxWidth = if (data.maxWidth > 0) data.maxWidth else -1
+        view.minRowSpan = if (data.minRowSpan > 0) data.minRowSpan else 1
+        view.minHeight = if (data.minHeight > 0) data.minHeight else -1
+        view.maxRowSpan = if (data.maxRowSpan > 0) data.maxRowSpan else -1
+        view.maxHeight = if (data.maxHeight > 0) data.maxHeight else -1
     }
 
     private fun findClosestFreeSpotInState(state: GridState, spanX: Int, spanY: Int,
@@ -280,8 +330,9 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
         return false
     }
 
-    open fun removeItem(view: DraggableGridItem?) {
+    open fun removeItem(view: DraggableGridItem?, forget: Boolean = false) {
         if (view == null) return
+        val id = view.itemId
         removeView(view)
         preAnimVisualPos.remove(view)
         if (activeItem === view) {
@@ -289,6 +340,8 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
             resetHoverState()
         }
         if (currentHoverTarget === view) currentHoverTarget = null
+        if (sizeItem === view) clearSizeAnimation()
+        if (forget && id != null) templateManager.removeUserLayoutItem(id)
         saveLayoutState()
     }
 
@@ -322,8 +375,12 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
             val params = child.layoutParams as LayoutParams
             if (params.col + params.colSpan > colCount) params.col = maxOf(0, colCount - params.colSpan)
             if (params.row + params.rowSpan > rowCount) params.row = maxOf(0, rowCount - params.rowSpan)
-            val childWidth = params.colSpan * cellWidth
-            val childHeight = params.rowSpan * cellHeight
+            var childWidth = params.colSpan * cellWidth
+            var childHeight = params.rowSpan * cellHeight
+            if (child === sizeItem) {
+                childWidth = (sizeFromW + (sizeToW - sizeFromW) * sizeFraction).toInt()
+                childHeight = (sizeFromH + (sizeToH - sizeFromH) * sizeFraction).toInt()
+            }
             child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.EXACTLY))
         }
@@ -347,17 +404,23 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
             val item = child as DraggableGridItem
             val data = newConfig[item.itemId!!]
             if (data != null) {
-                val column = maxOf(0, minOf(data.col, colCount - data.colSpan))
-                val row = maxOf(0, minOf(data.row, rowCount - data.rowSpan))
-                val targetRect = Rect(column, row, column + data.colSpan, row + data.rowSpan)
+                // Geometry belongs to the template; limits belong to the current component/provider.
+                val colSpan = clampColumnSpan(item, 0, data.colSpan)
+                val rowSpan = clampRowSpan(item, 0, data.rowSpan)
+                val clampedColumn = maxOf(0, minOf(data.col, colCount - colSpan))
+                val clampedRow = maxOf(0, minOf(data.row, rowCount - rowSpan))
+                val targetRect = Rect(clampedColumn, clampedRow, clampedColumn + colSpan, clampedRow + rowSpan)
                 if (!newState.isOccupied(targetRect, null)) newState.placements[child] = targetRect
                 else unconfiguredItems.add(child)
             }
         }
         for (child in unconfiguredItems) {
+            val item = child as DraggableGridItem
             val params = child.layoutParams as LayoutParams
-            val oldCol = params.col
-            val oldRow = params.row
+            val oldCol = maxOf(0, minOf(params.col, colCount - 1))
+            val oldRow = maxOf(0, minOf(params.row, rowCount - 1))
+            params.colSpan = clampColumnSpan(item, 0, params.colSpan)
+            params.rowSpan = clampRowSpan(item, 0, params.rowSpan)
             val freeSpot = findClosestFreeSpotInState(newState, params.colSpan, params.rowSpan, oldCol, oldRow, null)
             if (freeSpot != null) {
                 newState.placements[child] = freeSpot
@@ -432,24 +495,64 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
     fun getColumnCount(): Int = colCount
     fun getRowCount(): Int = rowCount
 
+    /**
+     * Pass col 0 to fit the span to the whole grid and let the position shift to make room, or the item's
+     * real column to cap growth at the grid edge (resizing).
+     */
+    private fun clampColumnSpan(item: DraggableGridItem, col: Int, requested: Int): Int {
+        val maxGridSpan = maxOf(1, colCount - col)
+        var minSpan = maxOf(1, item.minColSpan)
+        if (item.minWidth > 0 && cellWidth > 0) {
+            minSpan = maxOf(minSpan, ceil(item.minWidth.toDouble() / cellWidth).toInt())
+        }
+        var maxSpan = if (item.maxColSpan > 0) minOf(maxGridSpan, item.maxColSpan) else maxGridSpan
+        if (item.maxWidth > 0 && cellWidth > 0) {
+            maxSpan = minOf(maxSpan, maxOf(1, floor(item.maxWidth.toDouble() / cellWidth).toInt()))
+        }
+        minSpan = minOf(minSpan, maxSpan)
+        return maxOf(minSpan, minOf(requested, maxSpan))
+    }
+
+    private fun clampRowSpan(item: DraggableGridItem, row: Int, requested: Int): Int {
+        val maxGridSpan = maxOf(1, rowCount - row)
+        var minSpan = maxOf(1, item.minRowSpan)
+        if (item.minHeight > 0 && cellHeight > 0) {
+            minSpan = maxOf(minSpan, ceil(item.minHeight.toDouble() / cellHeight).toInt())
+        }
+        var maxSpan = if (item.maxRowSpan > 0) minOf(maxGridSpan, item.maxRowSpan) else maxGridSpan
+        if (item.maxHeight > 0 && cellHeight > 0) {
+            maxSpan = minOf(maxSpan, maxOf(1, floor(item.maxHeight.toDouble() / cellHeight).toInt()))
+        }
+        minSpan = minOf(minSpan, maxSpan)
+        return maxOf(minSpan, minOf(requested, maxSpan))
+    }
+
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean = isRearrangeable || super.onInterceptTouchEvent(ev)
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isRearrangeable) return super.onTouchEvent(event)
+        return handleRearrangeTouch(event, allowResize = true)
+    }
+
+    fun onHeldTouchEvent(event: MotionEvent) {
+        if (isRearrangeable) handleRearrangeTouch(event, allowResize = false)
+    }
+
+    private fun handleRearrangeTouch(event: MotionEvent, allowResize: Boolean): Boolean {
         val x = event.x
         val y = event.y
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 val item = getChildAtPos(x, y)
                 activeItem = item
+                initialTouchX = x
+                initialTouchY = y
                 if (item != null) {
                     captureLayoutState()
                     lastTouchX = x
                     lastTouchY = y
-                    initialTouchX = x
-                    initialTouchY = y
-                    isResizing = item.isResizeHandleTouched(x - item.left, y - item.top)
+                    isResizing = allowResize && item.isResizeHandleTouched(x - item.left, y - item.top)
                     val params = item.layoutParams as LayoutParams
                     originalParams = LayoutParams(params.col, params.row, params.colSpan, params.rowSpan)
                     lastReorderCol = originalParams.col
@@ -479,6 +582,11 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (activeItem == null && event.action == MotionEvent.ACTION_UP &&
+                    hypot(x - initialTouchX, y - initialTouchY) <= touchSlop
+                ) {
+                    onEmptyTap?.invoke()
+                }
                 if (activeItem != null) {
                     reorderRunnable?.let {
                         handler.removeCallbacks(it)
@@ -500,41 +608,60 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
 
     private fun handleResize(currX: Float, currY: Float) {
         val item = activeItem ?: return
-        val totalDx = currX - initialTouchX
-        val totalDy = currY - initialTouchY
-        val baseW = (originalParams.colSpan * cellWidth).toFloat()
-        val baseH = (originalParams.rowSpan * cellHeight).toFloat()
-        val rawVisualW = baseW + totalDx
-        val rawVisualH = baseH + totalDy
-        var minAllowedW = (item.minColSpan * cellWidth).toFloat()
-        if (item.minWidth > 0) minAllowedW = maxOf(minAllowedW, item.minWidth.toFloat())
-        var maxAllowedW = (width - paddingLeft - paddingRight).toFloat()
-        if (item.maxColSpan > 0) maxAllowedW = minOf(maxAllowedW, (item.maxColSpan * cellWidth).toFloat())
-        if (item.maxWidth > 0) maxAllowedW = minOf(maxAllowedW, item.maxWidth.toFloat())
-        var minAllowedH = (item.minRowSpan * cellHeight).toFloat()
-        if (item.minHeight > 0) minAllowedH = maxOf(minAllowedH, item.minHeight.toFloat())
-        var maxAllowedH = (height - paddingTop - paddingBottom).toFloat()
-        if (item.maxRowSpan > 0) maxAllowedH = minOf(maxAllowedH, (item.maxRowSpan * cellHeight).toFloat())
-        if (item.maxHeight > 0) maxAllowedH = minOf(maxAllowedH, item.maxHeight.toFloat())
-        val clampedVisualW = maxOf(minAllowedW, minOf(rawVisualW, maxAllowedW))
-        val clampedVisualH = maxOf(minAllowedH, minOf(rawVisualH, maxAllowedH))
-        item.setVisualResizeBounds(clampedVisualW, clampedVisualH)
-        var spanX = calculateGridSpan(clampedVisualW, cellWidth)
-        val spanY = maxOf(item.minRowSpan, if (item.maxRowSpan > 0) minOf(
-            calculateGridSpan(clampedVisualH, cellHeight), item.maxRowSpan) else calculateGridSpan(clampedVisualH, cellHeight))
-        spanX = maxOf(item.minColSpan, if (item.maxColSpan > 0) minOf(spanX, item.maxColSpan) else spanX)
-        if (originalParams.col + spanX > colCount) spanX = colCount - originalParams.col
-        val potentialRect = Rect(originalParams.col, originalParams.row,
-            originalParams.col + spanX, originalParams.row + spanY)
-        val collisions = getCollisions(potentialRect, item)
-        if (collisions.isEmpty()) {
-            val params = item.layoutParams as LayoutParams
-            if (params.colSpan != spanX || params.rowSpan != spanY) {
-                params.colSpan = spanX
-                params.rowSpan = spanY
-                item.layoutParams = params
-            }
+        val col = originalParams.col
+        val row = originalParams.row
+        // The frame follows the finger anywhere the widget can legally go; the content catches up cell by cell.
+        val visualW = (originalParams.colSpan * cellWidth + (currX - initialTouchX)).coerceIn(
+            (clampColumnSpan(item, col, 1) * cellWidth).toFloat(),
+            (clampColumnSpan(item, col, colCount) * cellWidth).toFloat()
+        )
+        val visualH = (originalParams.rowSpan * cellHeight + (currY - initialTouchY)).coerceIn(
+            (clampRowSpan(item, row, 1) * cellHeight).toFloat(),
+            (clampRowSpan(item, row, rowCount) * cellHeight).toFloat()
+        )
+        item.setVisualResizeBounds(visualW, visualH)
+        val params = item.layoutParams as LayoutParams
+        val spanX = clampColumnSpan(item, col, calculateGridSpan(visualW, cellWidth))
+        val spanY = clampRowSpan(item, row, calculateGridSpan(visualH, cellHeight))
+        // Neighbours in the way are pushed aside when there is room for them; if not, grow along whichever axis fits.
+        for ((newX, newY) in listOf(spanX to spanY, spanX to params.rowSpan, params.colSpan to spanY)) {
+            if (newX == params.colSpan && newY == params.rowSpan) continue
+            val pushed = simulateMove(buildCurrentState(), item, col, row, newX, newY) ?: continue
+            commitState(pushed)
+            animateItemSize(item, newX * cellWidth, newY * cellHeight)
+            return
         }
+    }
+
+    private fun animateItemSize(item: DraggableGridItem, toW: Int, toH: Int) {
+        if (item === sizeItem) {
+            sizeFromW += (sizeToW - sizeFromW) * sizeFraction
+            sizeFromH += (sizeToH - sizeFromH) * sizeFraction
+        } else {
+            sizeFromW = item.width.toFloat()
+            sizeFromH = item.height.toFloat()
+        }
+        sizeItem = item
+        sizeToW = toW.toFloat()
+        sizeToH = toH.toFloat()
+        sizeFraction = 0f
+        sizeAnimator?.cancel()
+        sizeAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = Animation.SHORT.getDuration().toLong()
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                sizeFraction = it.animatedValue as Float
+                requestLayout()
+            }
+            start()
+        }
+    }
+
+    private fun clearSizeAnimation() {
+        sizeAnimator?.cancel()
+        sizeAnimator = null
+        sizeItem = null
+        sizeFraction = 1f
     }
 
     private fun finishResize() {
@@ -546,6 +673,7 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
         val targetW = (params.colSpan * cellWidth).toFloat()
         val targetH = (params.rowSpan * cellHeight).toFloat()
         itemToResize.animateVisualResize(targetW, targetH, Runnable {
+            clearSizeAnimation()
             itemToResize.setResizingActive(isRearrangeable)
             saveLayoutState()
             requestLayout()
@@ -708,7 +836,7 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
     }
 
     private fun calculateGridSpan(visualSize: Float, cellSize: Int): Int =
-        maxOf(1, Math.round(visualSize / cellSize))
+        if (cellSize > 0) maxOf(1, Math.round(visualSize / cellSize)) else 1
 
     private fun captureLayoutState() {
         preAnimVisualPos.clear()
@@ -728,22 +856,8 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
         return null
     }
 
-    private fun getCollisions(targetRect: Rect, ignoreView: View?): MutableList<View> {
-        val collisions: MutableList<View> = ArrayList()
-        for (index in 0 until childCount) {
-            val child = getChildAt(index)
-            if (child !== ignoreView) {
-                val params = child.layoutParams as LayoutParams
-                val existing = Rect(params.col, params.row,
-                    params.col + params.colSpan, params.row + params.rowSpan)
-                if (Rect.intersects(targetRect, existing)) collisions.add(child)
-            }
-        }
-        return collisions
-    }
-
     private fun saveLayoutState() {
-        val existing = templateManager.getLayoutForSize(colCount, rowCount)
+        val attached: MutableMap<String, ItemLayoutData> = HashMap()
         for (index in 0 until childCount) {
             val childItem = getChildAt(index) as DraggableGridItem
             val params = childItem.layoutParams as LayoutParams
@@ -757,9 +871,13 @@ open class DynamicGridLayout(context: Context, attrs: AttributeSet?) : ViewGroup
             data.minHeight = childItem.minHeight
             data.maxRowSpan = childItem.maxRowSpan
             data.maxHeight = childItem.maxHeight
-            existing[id] = data
+            attached[id] = data
         }
-        templateManager.saveUserLayout(colCount, rowCount, existing)
+        templateManager.saveUserLayout(
+            colCount,
+            rowCount,
+            GridTemplateManager.mergeLayout(templateManager.getLayoutForSize(colCount, rowCount), attached)
+        )
     }
 
     private fun simulateMove(initialState: GridState, activeItem: View?, targetCol: Int,

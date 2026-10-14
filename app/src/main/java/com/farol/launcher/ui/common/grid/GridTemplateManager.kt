@@ -27,7 +27,6 @@ import com.farol.launcher.Farol
 import com.farol.launcher.preferences.Entry
 import com.farol.launcher.utils.Utils
 import java.io.InputStreamReader
-import androidx.core.view.isEmpty
 import androidx.core.content.edit
 
 open class GridTemplateManager(context: Farol, identifier: String, @RawRes templateId: Int) {
@@ -63,16 +62,41 @@ open class GridTemplateManager(context: Farol, identifier: String, @RawRes templ
         templateCache[key]?.let { layout.putAll(it.getItemMap()) }
         val savedJson = prefs.getString("state_$key", null)
         if (savedJson != null) {
-            val type = object : TypeToken<MutableMap<String, DynamicGridLayout.ItemLayoutData>>() {}.type
-            val savedMap: MutableMap<String, DynamicGridLayout.ItemLayoutData> =
-                Utils.getGsonInstance().fromJson(savedJson, type)
-            layout.putAll(savedMap)
+            try {
+                val type = object : TypeToken<MutableMap<String, DynamicGridLayout.ItemLayoutData>>() {}.type
+                val savedMap: MutableMap<String, DynamicGridLayout.ItemLayoutData>? =
+                    Utils.getGsonInstance().fromJson(savedJson, type)
+                if (savedMap != null) layout.putAll(savedMap)
+            } catch (exception: Exception) {
+                Log.w(TAG, "Ignoring corrupt grid state $key", exception)
+            }
         }
         return layout
     }
 
     open fun saveUserLayout(cols: Int, rows: Int, map: Map<String, DynamicGridLayout.ItemLayoutData>) {
         prefs.edit {putString("state_${cols}x${rows}", Utils.getGsonInstance().toJson(map))}
+    }
+
+    open fun removeUserLayoutItem(itemId: String) {
+        val edit = prefs.edit()
+        var changed = false
+        for ((key, value) in prefs.all) {
+            if (!key.startsWith("state_") || value !is String) continue
+            try {
+                val type = object : TypeToken<MutableMap<String, DynamicGridLayout.ItemLayoutData>>() {}.type
+                val savedMap: MutableMap<String, DynamicGridLayout.ItemLayoutData>? =
+                    Utils.getGsonInstance().fromJson(value, type)
+                if (savedMap != null && savedMap.containsKey(itemId)) {
+                    edit.putString(key, Utils.getGsonInstance().toJson(forgetLayoutItem(savedMap, itemId)))
+                    changed = true
+                }
+            } catch (exception: Exception) {
+                edit.remove(key)
+                changed = true
+            }
+        }
+        if (changed) edit.apply()
     }
 
     open class GridTemplate {
@@ -105,5 +129,23 @@ open class GridTemplateManager(context: Farol, identifier: String, @RawRes templ
 
     companion object {
         private const val TAG = "GridTemplateManager"
+
+        fun mergeLayout(
+            existing: Map<String, DynamicGridLayout.ItemLayoutData>,
+            attached: Map<String, DynamicGridLayout.ItemLayoutData>
+        ): MutableMap<String, DynamicGridLayout.ItemLayoutData> {
+            val merged: MutableMap<String, DynamicGridLayout.ItemLayoutData> = HashMap(existing)
+            merged.putAll(attached)
+            return merged
+        }
+
+        fun forgetLayoutItem(
+            existing: Map<String, DynamicGridLayout.ItemLayoutData>,
+            itemId: String
+        ): MutableMap<String, DynamicGridLayout.ItemLayoutData> {
+            val next: MutableMap<String, DynamicGridLayout.ItemLayoutData> = HashMap(existing)
+            next.remove(itemId)
+            return next
+        }
     }
 }

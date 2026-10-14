@@ -43,7 +43,8 @@ import androidx.core.view.size
 open class WidgetItemAdapter(
     private val activity: ThemedActivity,
     private val entry: WidgetListAdapter.WidgetGroupEntry,
-    private val requestListener: WidgetConfigurator.Request
+    private val requestListener: WidgetConfigurator.Request,
+    private val showSizes: Boolean
 ) : RecyclerView.Adapter<WidgetItemAdapter.ViewHolder>() {
     private var targetHolder: ViewHolder? = null
 
@@ -76,10 +77,17 @@ open class WidgetItemAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val info = entry.widgets[position] ?: return
 
+        holder.preview.animate().cancel()
+        holder.preview.alpha = 1f
+        holder.preview.removeAllViews()
+        holder.options.visibility = View.INVISIBLE
         holder.label.setText(Casing.toTitleCase(info.loadLabel(activity.packageManager)))
 
         holder.itemView.setOnClickListener {
-            if (holder.options.visibility != View.VISIBLE) {
+            if (!showSizes) {
+                // SMALL asks for nothing beyond the provider's own default size.
+                requestListener.requestAddition(info, WidgetSize.SMALL)
+            } else if (holder.options.visibility != View.VISIBLE) {
                 holder.preview.animate().alpha(0.3f)
                     .setDuration(Animation.SHORT.getDuration().toLong())
 
@@ -171,30 +179,38 @@ open class WidgetItemAdapter(
                     params.height = params.matchConstraintMaxHeight
                 }
 
-                val host = RoundedWidgetHost(activity, params)
+                var previewFailed = false
+                val host = object : RoundedWidgetHost(activity, params) {
+                    override fun getErrorView(): View {
+                        previewFailed = true
+                        return super.getErrorView()
+                    }
+                }
                 host.setAppWidget(-1, previewInfo)
                 host.updateAppWidget(null)
 
-                host.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                    val child = host.getChildAt(0)
+                if (!previewFailed) {
+                    host.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+                        val child = host.getChildAt(0)
 
-                    if (child != null) {
-                        val scale = minOf(
-                            host.measuredWidth.toFloat() / child.measuredWidth,
-                            host.measuredHeight.toFloat() / child.measuredHeight
-                        )
+                        if (child != null) {
+                            val scale = minOf(
+                                host.measuredWidth.toFloat() / child.measuredWidth,
+                                host.measuredHeight.toFloat() / child.measuredHeight
+                            )
 
-                        if (!scale.isNaN()) {
-                            child.setScaleY(scale)
-                            child.setScaleX(scale)
+                            if (!scale.isNaN()) {
+                                child.setScaleY(scale)
+                                child.setScaleX(scale)
+                            }
                         }
+
+                        forwardGroupClicks(host, holder.itemView)
                     }
 
-                    forwardGroupClicks(host, holder.itemView)
+                    holder.preview.addView(host)
+                    return
                 }
-
-                holder.preview.addView(host)
-                return
             }
         }
 

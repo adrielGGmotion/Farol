@@ -43,6 +43,7 @@ import com.farol.launcher.activities.launcher.widgets.glance.GlanceDialogExtensi
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.calendar.Calendar
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.media.Media
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.weather.Weather
+import com.farol.launcher.activities.launcher.widgets.home.HomeWidgets
 import com.farol.launcher.activities.launcher.widgets.pins.PinnedCategory
 import com.farol.launcher.activities.settings.Settings
 import com.farol.launcher.preferences.Vibrations
@@ -71,6 +72,7 @@ open class Launcher : ThemedActivity() {
     private lateinit var main: ClosingAnimationView
     private lateinit var searchWidget: SearchWidget
     private lateinit var clockWidget: ClockWidget
+    private lateinit var homeWidgets: HomeWidgets
     private lateinit var homeWatcher: HomeWatcher
     private var showWhenLocked = false
     private lateinit var statusBarContrast: View
@@ -109,6 +111,7 @@ open class Launcher : ThemedActivity() {
 
         controller = findViewById(R.id.controller)
         container = findViewById(R.id.container)
+        container.onEmptyTap = { setRearrangeable(false) }
         main = findViewById(R.id.main)
         decorView = window.decorView
 
@@ -169,6 +172,17 @@ open class Launcher : ThemedActivity() {
         attachGlance(container)
         attachSearch(container)
         attachClock(container)
+        attachHomeWidgets(container, savedInstanceState)
+    }
+
+    private fun attachHomeWidgets(container: DynamicGridLayout, savedInstanceState: Bundle?) {
+        homeWidgets = HomeWidgets(this, container, ::setRearrangeable)
+        homeWidgets.attach(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (::homeWidgets.isInitialized) homeWidgets.saveInstanceState(outState)
+        super.onSaveInstanceState(outState)
     }
 
     private fun attachPinnedCategory(container: DynamicGridLayout) {
@@ -232,6 +246,14 @@ open class Launcher : ThemedActivity() {
                     }
                 }
                 backEventListener?.let { BackGestureEventBus.getInstance().addListener(it) }
+            }
+        })
+
+        menu.add(PopupMenu.Item(resources.getString(R.string.create_a_widget),
+            ResourcesCompat.getDrawable(resources, R.drawable.ic_widgets, activity.theme)) { view ->
+            view.post {
+                homeWidgets.showPicker()
+                menu.dismiss()
             }
         })
 
@@ -311,10 +333,12 @@ open class Launcher : ThemedActivity() {
         pinnedCategory.detach()
         searchWidget.detach()
         clockWidget.detach()
+        if (::homeWidgets.isInitialized) homeWidgets.detach()
         super.onDestroy()
     }
 
     override fun onResume() {
+        if (::homeWidgets.isInitialized) homeWidgets.reload()
         glance.update()
         updateWallpaperZoom(0f)
         val root = requireNotNull(getRoot())
@@ -348,10 +372,12 @@ open class Launcher : ThemedActivity() {
             container.setRearrangeable(value)
             controller.setControllerEnabled(!value)
         }
+        if (!value && ::homeWidgets.isInitialized) homeWidgets.dismissMenu()
     }
 
     override fun onStart() {
         super.onStart()
+        if (::homeWidgets.isInitialized) homeWidgets.startListening()
         homeWatcher.startWatch()
     }
 
@@ -359,6 +385,7 @@ open class Launcher : ThemedActivity() {
         setContrastVisibility(View.GONE)
         setRearrangeable(false)
         homeWatcher.stopWatch()
+        if (::homeWidgets.isInitialized) homeWidgets.stopListening()
         if (showWhenLocked) moveTaskToBack(true)
         super.onStop()
 

@@ -126,18 +126,11 @@ open class DraggableGridItem(context: Context) : FrameLayout(context) {
     }
 
     internal fun isResizeHandleTouched(x: Float, y: Float): Boolean {
-        if (!isResizingActive) return false
+        if (!isResizingActive || !canResize()) return false
         val handleSize = Measurements.dpToPx(HANDLE_SIZE_DP.toFloat())
         val width = if (isVisualResizeEnabled) visualWidth else width.toFloat()
         val height = if (isVisualResizeEnabled) visualHeight else height.toFloat()
-        val resizeW = canResizeWidth()
-        val resizeH = canResizeHeight()
-        if (resizeW && resizeH) return x > width - handleSize && y > height - handleSize
-        if (resizeW) return x > width - handleSize &&
-            y > height / 2f - handleSize / 2f && y < height / 2f + handleSize / 2f
-        if (resizeH) return y > height - handleSize &&
-            x > width / 2f - handleSize / 2f && x < width / 2f + handleSize / 2f
-        return false
+        return x > width - handleSize && y > height - handleSize
     }
 
     override fun onViewAdded(child: View) {
@@ -165,23 +158,11 @@ open class DraggableGridItem(context: Context) : FrameLayout(context) {
             val rect = RectF(strokeWidth / 2f, strokeWidth / 2f,
                 currentWidth - strokeWidth / 2f, currentHeight - strokeWidth / 2f)
             canvas.drawRoundRect(rect, cornerSize.toFloat(), cornerSize.toFloat(), borderPaint)
-            val resizeW = canResizeWidth()
-            val resizeH = canResizeHeight()
-            if (resizeW || resizeH) {
-                if (resizeW && resizeH) {
-                    val handleRect = RectF(currentWidth - 2 * cornerSize - strokeWidth / 2f,
-                        currentHeight - 2 * cornerSize - strokeWidth / 2f,
-                        currentWidth - strokeWidth / 2f, currentHeight - strokeWidth / 2f)
-                    canvas.drawArc(handleRect, 20f, 50f, false, handlePaint)
-                } else if (resizeW) {
-                    val left = currentWidth - strokeWidth / 2f
-                    canvas.drawLine(left, currentHeight / 2f - cornerSize / 2f,
-                        left, currentHeight / 2f + cornerSize / 2f, handlePaint)
-                } else {
-                    val top = currentHeight - strokeWidth / 2f
-                    canvas.drawLine(currentWidth / 2f - cornerSize / 2f, top,
-                        currentWidth / 2f + cornerSize / 2f, top, handlePaint)
-                }
+            if (canResize()) {
+                val handleRect = RectF(currentWidth - 2 * cornerSize - strokeWidth / 2f,
+                    currentHeight - 2 * cornerSize - strokeWidth / 2f,
+                    currentWidth - strokeWidth / 2f, currentHeight - strokeWidth / 2f)
+                canvas.drawArc(handleRect, 20f, 50f, false, handlePaint)
             }
         }
     }
@@ -227,6 +208,6 @@ open class DraggableGridItem(context: Context) : FrameLayout(context) {
         private const val ALPHA_TRANSITION_DURATION = 200L
         private const val IDLE_ALPHA = 0.4f
         private const val ACTIVE_ALPHA = 1.0f
-        private const val PADDING_DP = 5
+        internal const val PADDING_DP = 5
     }
 }

@@ -100,6 +100,35 @@
                     android:layout_width="0px"
                     android:layout_height="10dp" />
 
+                <carbon.widget.RelativeLayout
+                    android:id="@+id/force_resize_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ripple"
+                    android:padding="7dp"
+                    app:carbon_cornerRadius="20dp">
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/force_resize"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:drawableStart="@drawable/ic_ruler"
+                        android:drawablePadding="10dp"
+                        android:fontFamily="@font/dm_sans_medium"
+                        android:letterSpacing="-0.03"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:text="@string/force_resizable_widgets"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="20sp" />
+
+                </carbon.widget.RelativeLayout>
+
+                <Space
+                    android:layout_width="0px"
+                    android:layout_height="10dp" />
+
                 <carbon.widget.LinearLayout
                     android:id="@+id/pinned_category_container"
                     android:layout_width="match_parent"

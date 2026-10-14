@@ -34,7 +34,9 @@ import com.farol.launcher.ui.recyclers.DividerItemDecorator
 
 open class WidgetConfigurator(
     activity: ThemedActivity,
-    private val requestListener: Request
+    private val requestListener: Request,
+    // false: tapping a widget adds it at its default size (the home screen resizes by handle instead)
+    private val showSizes: Boolean = true
 ) : ActionDialog(activity) {
     private lateinit var scroller: NestedScrollView
     private lateinit var adapter: WidgetListAdapter
@@ -48,7 +50,7 @@ open class WidgetConfigurator(
         val recycler: RecyclerView = contentView.findViewById(R.id.container_widgets)
         val layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
-        adapter = WidgetListAdapter(activity, recycler, requestListener)
+        adapter = WidgetListAdapter(activity, recycler, requestListener, showSizes)
 
         recycler.setAdapter(adapter)
         recycler.setLayoutManager(layoutManager)

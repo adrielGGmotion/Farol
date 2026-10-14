@@ -92,6 +92,10 @@ android {
         baseline = file('lint-baseline.xml')
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -110,6 +114,14 @@ android {
                 println versionName
             }
         }
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.unitTest?.instrumentation?.excludes?.addAll(
+            'org/bouncycastle/**', 'META-INF/versions/**/org/bouncycastle/**'
+        )
     }
 }
 
@@ -187,4 +199,5 @@ dependencies {
 
     annotationProcessor 'androidx.annotation:annotation:1.11.0'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.robolectric:robolectric:4.17'
 }

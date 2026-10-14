@@ -69,9 +69,18 @@ open class LockDetector(context: Context, attrs: AttributeSet?) : DynamicGridLay
 
     override fun performClick(): Boolean = super.performClick()
 
+    override fun cancelLongPress() {
+        super.cancelLongPress()
+        detector?.cancel()
+    }
+
     inner class DoubleTapDetector(private val activity: Activity) {
         private val preferences: SharedPreferences = (activity.applicationContext as Farol).getSettings()
         private var lastEventTime = NOT_REGISTERED
+
+        fun cancel() {
+            lastEventTime = NOT_REGISTERED
+        }
 
         fun onTouchEvent(event: MotionEvent): Boolean {
             if (event.action != MotionEvent.ACTION_DOWN) return false

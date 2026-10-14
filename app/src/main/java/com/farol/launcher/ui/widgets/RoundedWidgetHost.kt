@@ -19,16 +19,28 @@ package com.farol.launcher.ui.widgets
 
 import android.appwidget.AppWidgetHostView
 import android.content.Context
+import android.content.ContextWrapper
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.farol.launcher.ui.utils.UiUtils
 
+// RemoteViews inflates with the host context's LayoutInflater. An AppCompat activity's inflater swaps
+// ImageView for AppCompatImageView, which RemoteViews rejects ("can't use method with RemoteViews"),
+// so widgets render "Couldn't add widget". The application inflater has no such factory.
+private fun withPlainInflater(context: Context): Context = object : ContextWrapper(context) {
+    private val inflater by lazy { LayoutInflater.from(applicationContext).cloneInContext(this) }
+
+    override fun getSystemService(name: String): Any? =
+        if (name == LAYOUT_INFLATER_SERVICE) inflater else super.getSystemService(name)
+}
+
 open class RoundedWidgetHost : AppWidgetHostView {
-    constructor(context: Context) : super(context) {
+    constructor(context: Context) : super(withPlainInflater(context)) {
         setClipChildren(true)
         setClipToOutline(true)
     }
 
-    constructor(context: Context, params: ViewGroup.LayoutParams) : super(context) {
+    constructor(context: Context, params: ViewGroup.LayoutParams) : super(withPlainInflater(context)) {
         setLayoutParams(params)
         setPadding(0, 0, 0, 0)
     }

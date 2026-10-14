@@ -459,11 +459,7 @@ abstract class ThemedActivity : AppCompatActivity() {
     protected override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        for (resultListener in activityResultListeners.values) {
-            if (resultListener != null) {
-                resultListener.onResult(resultCode, data)
-            }
-        }
+        activityResultListeners[requestCode]?.onResult(resultCode, data)
     }
 
     open fun addOnActivityResultListener(
