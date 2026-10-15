@@ -76,6 +76,8 @@ class PageManager : ThemedActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.page_manager)
+        findViewById<com.google.android.material.appbar.MaterialToolbar>(R.id.toolbar)
+            .setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         @Suppress("DEPRECATION")
         broadcastManager = androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this)

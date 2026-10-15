@@ -343,7 +343,7 @@
         android:id="@+id/force_resize_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/grouped_category_bottom"
+        android:background="@drawable/grouped_category_single"
         android:padding="7dp"
         android:layout_marginBottom="4dp"
         android:minHeight="56dp">

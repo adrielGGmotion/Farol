@@ -9,6 +9,45 @@ import org.w3c.dom.Element
 
 class SettingsLayoutTest {
     @Test
+    fun standaloneResizeCardHasFourRoundedCorners() {
+        val parser = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+        val nodes = parser.parse(File("src/main/res/settings/layout/settings_start_screen.xml"))
+            .getElementsByTagName("RelativeLayout")
+        val card = (0 until nodes.length).map { nodes.item(it) as Element }
+            .single { it.getAttribute("android:id") == "@+id/force_resize_container" }
+        assertEquals("@drawable/grouped_category_single", card.getAttribute("android:background"))
+        val corners = parser.parse(File("src/main/res/settings/drawable/grouped_category_single.xml"))
+            .getElementsByTagName("corners")
+        assertEquals(2, corners.length)
+        (0 until corners.length).forEach {
+            assertEquals("26dp", (corners.item(it) as Element).getAttribute("android:radius"))
+        }
+    }
+
+    @Test
+    fun pageManagerHasAccessibleBackNavigationAbovePages() {
+        val nodes = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .parse(File("src/main/res/page_manager/layout/page_manager.xml")).getElementsByTagName("*")
+        val elements = (0 until nodes.length).map { nodes.item(it) as Element }
+        val toolbar = elements.single { it.getAttribute("android:id") == "@+id/toolbar" }
+        assertEquals("@drawable/ic_back", toolbar.getAttribute("app:navigationIcon"))
+        assertEquals("@string/return_button", toolbar.getAttribute("app:navigationContentDescription"))
+        val pages = elements.single { it.getAttribute("android:id") == "@+id/pages_container" }
+        assertEquals("@id/toolbar", pages.getAttribute("app:layout_constraintTop_toBottomOf"))
+    }
+
+    @Test
+    fun hiddenAppProfilePillsAreCenteredAsAGroup() {
+        val nodes = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .parse(File("src/main/res/settings_dialogs/layout/pop_up_hide.xml")).getElementsByTagName("*")
+        val tabs = (0 until nodes.length).map { nodes.item(it) as Element }
+            .single { it.getAttribute("android:id") == "@+id/tabs" }
+        assertEquals("wrap_content", tabs.getAttribute("android:layout_width"))
+        assertEquals("center_horizontal", tabs.getAttribute("android:layout_gravity"))
+        assertEquals("false", tabs.getAttribute("app:stl_indicatorAlwaysInCenter"))
+    }
+
+    @Test
     fun startScreenIsAFullPageWithVisibilityFirstAndAccessibleControls() {
         val parser = DocumentBuilderFactory.newInstance().newDocumentBuilder()
         val root = parser.parse(File("src/main/res/settings/layout/settings_start_screen.xml")).documentElement
@@ -165,7 +204,7 @@ class SettingsLayoutTest {
                 assertEquals(label, text.getAttribute("android:text"))
                 assertEquals(size, text.getAttribute("android:textSize"))
             }
-        listOf("creator_github", "creator_telegram", "creator_instagram").forEach { id ->
+        listOf("creator_website", "creator_github", "creator_telegram", "creator_instagram").forEach { id ->
             val link = element(id)
             assertEquals("androidx.appcompat.widget.AppCompatImageButton", link.tagName)
             assertEquals("48dp", link.getAttribute("android:layout_width"))
@@ -174,13 +213,8 @@ class SettingsLayoutTest {
             assertTrue(link.getAttribute("android:tooltipText").isNotEmpty())
         }
         val website = element("creator_website")
-        assertEquals("androidx.appcompat.widget.AppCompatTextView", website.tagName)
-        assertEquals("@string/creator_website", website.getAttribute("android:text"))
+        assertEquals("@drawable/ic_website", website.getAttribute("android:src"))
         assertEquals("@string/creator_website_description", website.getAttribute("android:contentDescription"))
-        assertEquals("wrap_content", website.getAttribute("android:layout_width"))
-        assertEquals("wrap_content", website.getAttribute("android:layout_height"))
-        assertEquals("48dp", website.getAttribute("android:minHeight"))
-        assertEquals("?attr/colorPrimary", website.getAttribute("android:textColor"))
         val actions = website.parentNode as Element
         assertEquals("com.google.android.flexbox.FlexboxLayout", actions.tagName)
         assertEquals("match_parent", actions.getAttribute("android:layout_width"))
