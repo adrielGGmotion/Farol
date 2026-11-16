@@ -331,6 +331,7 @@ open class Launcher : ThemedActivity() {
             Log.e("Launcher", "onDestroy: Kill receiver was not registered.")
         }
         pinnedCategory.detach()
+        glance.detach()
         searchWidget.detach()
         clockWidget.detach()
         if (::homeWidgets.isInitialized) homeWidgets.detach()

@@ -59,9 +59,9 @@ class SettingsLayoutTest {
         assertEquals(listOf("home_visibility", "clock", "weather", "home_widgets", "home_gestures"),
             headings.map { it.getAttribute("android:text").removePrefix("@string/") })
         val switches = elements.filter { it.tagName.endsWith("MaterialSwitch") }
-        assertEquals(listOf("clock", "pinned_category", "search", "media"),
-            switches.take(4).map { it.getAttribute("android:id").removePrefix("@+id/") })
-        assertEquals(10, switches.size)
+        assertEquals(listOf("clock", "glance", "pinned_category", "search", "media"),
+            switches.take(5).map { it.getAttribute("android:id").removePrefix("@+id/") })
+        assertEquals(11, switches.size)
         switches.forEach {
             assertEquals("48dp", it.getAttribute("android:minHeight"))
             assertTrue(it.getAttribute("android:clickable") != "false")

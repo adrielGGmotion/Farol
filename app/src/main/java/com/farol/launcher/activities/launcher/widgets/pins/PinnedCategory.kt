@@ -31,10 +31,10 @@ import com.farol.launcher.themes.ThemedActivity
 import com.farol.launcher.ui.Measurements
 import com.farol.launcher.ui.common.grid.DraggableGridItem
 import com.farol.launcher.ui.common.grid.DynamicGridLayout
+import com.farol.launcher.ui.common.grid.GridItemVisibility
 import com.farol.launcher.ui.icons.AdaptiveIconView
 import com.farol.launcher.ui.recyclers.autogrid.AutoGridLayoutManager
 import com.farol.launcher.ui.utils.LayoutSizeObserver
-import com.farol.launcher.ui.utils.UiUtils
 
 open class PinnedCategory(private val activity: ThemedActivity) {
     private val categoryManager: CategoryManager = CategoryManager.getInstance()
@@ -42,33 +42,31 @@ open class PinnedCategory(private val activity: ThemedActivity) {
 
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private var recycler: RecyclerView? = null
-    private var layoutData: DynamicGridLayout.ItemLayoutData? = null
-    private var gridItem: DraggableGridItem? = null
-    private var isAttached = false
 
     fun attach(
         container: DynamicGridLayout,
         popUpShowListener: PinnedAppsAdapter.OnPopUpShowListener?,
         transitionListener: PinnedAppsGroupDialog.TransitionListener?
     ) {
-        if (gridItem != null) {
+        if (listener != null) {
             return
         }
 
-        gridItem = DraggableGridItem(activity)
-        gridItem?.itemId = CATEGORY_TAG
+        val item = DraggableGridItem(activity)
+        item.itemId = CATEGORY_TAG
 
-        layoutData = DynamicGridLayout.ItemLayoutData(CATEGORY_TAG, 0, 0, 4, 1)
-        layoutData?.minColSpan = 1
-        layoutData?.maxRowSpan = 1
+        val layoutData = DynamicGridLayout.ItemLayoutData(CATEGORY_TAG, 0, 0, 4, 1)
+        layoutData.minColSpan = 1
+        layoutData.maxRowSpan = 1
 
-        val root = activity.layoutInflater.inflate(R.layout.pinned_apps, gridItem, false) as RelativeLayout
+        val root = activity.layoutInflater.inflate(R.layout.pinned_apps, item, false) as RelativeLayout
         recycler = root.findViewById(R.id.recycler)
-        gridItem?.addView(root)
+        item.addView(root)
 
+        val visibility = GridItemVisibility(container, item, layoutData)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (PINNED_CATEGORY_VISIBLE == key) {
-                updateContainerState(container, sharedPreferences.getBoolean(PINNED_CATEGORY_VISIBLE, false))
+                visibility.update(sharedPreferences.getBoolean(PINNED_CATEGORY_VISIBLE, false))
             }
         }
         preferences.registerOnSharedPreferenceChangeListener(listener)
@@ -98,21 +96,7 @@ open class PinnedCategory(private val activity: ThemedActivity) {
             recycler?.adapter = adapter
         }
 
-        updateContainerState(container, preferences.getBoolean(PINNED_CATEGORY_VISIBLE, false))
-    }
-
-    private fun updateContainerState(container: DynamicGridLayout, shouldBeVisible: Boolean) {
-        UiUtils.post {
-            val item = gridItem
-            val data = layoutData
-            if (shouldBeVisible && !isAttached && item != null && data != null) {
-                container.addItem(item, data)
-                isAttached = true
-            } else if (!shouldBeVisible && isAttached) {
-                container.removeItem(item)
-                isAttached = false
-            }
-        }
+        visibility.update(preferences.getBoolean(PINNED_CATEGORY_VISIBLE, false))
     }
 
     fun detach() {

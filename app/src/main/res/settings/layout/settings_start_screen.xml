@@ -58,6 +58,29 @@
             android:textSize="20sp"
             android:minHeight="48dp" />
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/glance_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/grouped_category_middle"
+        android:padding="7dp"
+        android:layout_marginBottom="4dp"
+        android:minHeight="56dp">
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/glance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_widgets"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/dm_sans_medium"
+            android:letterSpacing="-0.03"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/glance_pill"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            android:minHeight="48dp" />
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/pinned_category_container"
         android:layout_width="match_parent"

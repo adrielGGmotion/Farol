@@ -105,6 +105,7 @@
     <string name="weather_location">Location</string>
     <string name="location_ip_based">IP Geolocation (Approximated)</string>
     <string name="precise_location">Current Location (Exact)</string>
+    <string name="glance_pill">Show glance</string>
     <string name="search_shortcut">Search shortcut</string>
     <string name="clock">Clock</string>
     <string name="background">Background</string>

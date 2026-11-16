@@ -20,6 +20,7 @@ package com.farol.launcher.activities.launcher.widgets.glance
 import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
 import android.app.Dialog
+import android.content.SharedPreferences
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
@@ -30,6 +31,7 @@ import com.farol.launcher.ui.Measurements
 import com.farol.launcher.ui.common.glance.GlanceConstraintLayout
 import com.farol.launcher.ui.common.grid.DraggableGridItem
 import com.farol.launcher.ui.common.grid.DynamicGridLayout
+import com.farol.launcher.ui.common.grid.GridItemVisibility
 import com.farol.launcher.ui.utils.animation.Animation
 import java.util.ArrayList
 
@@ -37,6 +39,8 @@ open class Glance(private val activity: ThemedActivity) {
     private val extensions = ArrayList<GlanceExtension>()
     private lateinit var extensionContainer: LinearLayout
     private var root: GlanceConstraintLayout? = null
+    private val preferences: SharedPreferences = activity.applicationContext.getSettings()
+    private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     fun attach(container: DynamicGridLayout) {
         val gridItem = DraggableGridItem(activity)
@@ -63,7 +67,19 @@ open class Glance(private val activity: ThemedActivity) {
         defaultLayoutData.maxColSpan = 4
         defaultLayoutData.maxRowSpan = 1
 
-        container.addItem(gridItem, defaultLayoutData)
+        val visibility = GridItemVisibility(container, gridItem, defaultLayoutData)
+        listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (GLANCE_VISIBLE_KEY == key) {
+                visibility.update(sharedPreferences.getBoolean(GLANCE_VISIBLE_KEY, true))
+            }
+        }
+        preferences.registerOnSharedPreferenceChangeListener(listener)
+
+        visibility.update(preferences.getBoolean(GLANCE_VISIBLE_KEY, true))
+    }
+
+    fun detach() {
+        listener?.let { preferences.unregisterOnSharedPreferenceChangeListener(it) }
     }
 
     @JvmOverloads
@@ -140,6 +156,7 @@ open class Glance(private val activity: ThemedActivity) {
     }
 
     companion object {
+        const val GLANCE_VISIBLE_KEY = "com.stario.HOMESCREEN_GLANCE_VISIBLE"
         private const val GLANCE_TAG = "GridGlance"
     }
 }

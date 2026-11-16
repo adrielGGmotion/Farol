@@ -30,29 +30,26 @@ import com.farol.launcher.sheet.drawer.dialog.ApplicationsDialog
 import com.farol.launcher.themes.ThemedActivity
 import com.farol.launcher.ui.common.grid.DraggableGridItem
 import com.farol.launcher.ui.common.grid.DynamicGridLayout
+import com.farol.launcher.ui.common.grid.GridItemVisibility
 import com.farol.launcher.ui.utils.LayoutSizeObserver
-import com.farol.launcher.ui.utils.UiUtils
 
 open class SearchWidget(private val activity: ThemedActivity) {
     private val preferences: SharedPreferences = activity.applicationContext.getSettings()
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
-    private var layoutData: DynamicGridLayout.ItemLayoutData? = null
-    private var gridItem: DraggableGridItem? = null
-    private var isAttached = false
 
     fun attach(container: DynamicGridLayout) {
-        if (gridItem != null) {
+        if (listener != null) {
             return
         }
 
-        gridItem = DraggableGridItem(activity)
-        gridItem?.itemId = SEARCH_TAG
+        val item = DraggableGridItem(activity)
+        item.itemId = SEARCH_TAG
 
-        layoutData = DynamicGridLayout.ItemLayoutData(SEARCH_TAG, 0, 0, 1, 1)
-        layoutData?.maxColSpan = 1
-        layoutData?.maxRowSpan = 1
+        val layoutData = DynamicGridLayout.ItemLayoutData(SEARCH_TAG, 0, 0, 1, 1)
+        layoutData.maxColSpan = 1
+        layoutData.maxRowSpan = 1
 
-        val root = activity.layoutInflater.inflate(R.layout.home_search, gridItem, false)
+        val root = activity.layoutInflater.inflate(R.layout.home_search, item, false)
 
         val background = root.findViewById<View>(R.id.background)
         LayoutSizeObserver.attach(
@@ -81,30 +78,17 @@ open class SearchWidget(private val activity: ThemedActivity) {
                 .sendBroadcastSync(Intent(ApplicationsDialog.INTENT_LAUNCH_SEARCH))
         })
 
-        gridItem?.addView(root)
+        item.addView(root)
 
+        val visibility = GridItemVisibility(container, item, layoutData)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (SEARCH_WIDGET_KEY == key) {
-                updateContainerState(container, sharedPreferences.getBoolean(SEARCH_WIDGET_KEY, true))
+                visibility.update(sharedPreferences.getBoolean(SEARCH_WIDGET_KEY, true))
             }
         }
         preferences.registerOnSharedPreferenceChangeListener(listener)
 
-        updateContainerState(container, preferences.getBoolean(SEARCH_WIDGET_KEY, true))
-    }
-
-    private fun updateContainerState(container: DynamicGridLayout, shouldBeVisible: Boolean) {
-        UiUtils.post {
-            val item = gridItem
-            val data = layoutData
-            if (shouldBeVisible && !isAttached && item != null && data != null) {
-                container.addItem(item, data)
-                isAttached = true
-            } else if (!shouldBeVisible && isAttached) {
-                container.removeItem(item)
-                isAttached = false
-            }
-        }
+        visibility.update(preferences.getBoolean(SEARCH_WIDGET_KEY, true))
     }
 
     fun detach() {

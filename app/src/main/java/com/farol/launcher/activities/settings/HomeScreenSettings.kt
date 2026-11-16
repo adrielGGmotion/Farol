@@ -32,6 +32,7 @@ import com.farol.launcher.R
 import com.farol.launcher.Farol
 import com.farol.launcher.activities.launcher.widgets.ClockWidget
 import com.farol.launcher.activities.launcher.widgets.SearchWidget
+import com.farol.launcher.activities.launcher.widgets.glance.Glance
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.media.Media
 import com.farol.launcher.activities.launcher.widgets.glance.extensions.weather.Weather
 import com.farol.launcher.activities.launcher.widgets.home.HomeWidgets
@@ -104,6 +105,19 @@ class HomeScreenSettings(private val activity: ThemedActivity) {
                 showNotificationPermissionDialog()
             }
         }
+
+        val glanceVisible = settingsPrefs.getBoolean(Glance.GLANCE_VISIBLE_KEY, true)
+        setupSwitch(
+            root.findViewById<MaterialSwitch>(R.id.glance),
+            root.findViewById(R.id.glance_container),
+            glanceVisible
+        ) { _, checked ->
+            settingsPrefs.edit {
+                    putBoolean(Glance.GLANCE_VISIBLE_KEY, checked)
+                }
+            setGlanceDependentsEnabled(checked)
+        }
+        setGlanceDependentsEnabled(glanceVisible)
 
         setupSwitch(
             root.findViewById<MaterialSwitch>(R.id.search),
@@ -363,6 +377,21 @@ class HomeScreenSettings(private val activity: ThemedActivity) {
         val dialog = AccessibilityConfigurator(activity)
         dialog.setOnDismissListener { checkAccessibilityPermission() }
         dialog.show()
+    }
+
+    // Media and weather live inside the glance pill, so their toggles are inert while it is hidden.
+    private fun setGlanceDependentsEnabled(enabled: Boolean) {
+        val ids = listOf(
+            R.id.media, R.id.media_container,
+            R.id.weather, R.id.weather_container,
+            R.id.location,
+            R.id.imperial_weather, R.id.imperial_weather_container
+        )
+        for (id in ids) {
+            val view = root.findViewById<View>(id)
+            view.isEnabled = enabled
+            view.alpha = if (enabled) 1f else 0.4f
+        }
     }
 
     private fun setupSwitch(
