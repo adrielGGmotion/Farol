@@ -122,7 +122,7 @@ class HomeScreenSettings(private val activity: ThemedActivity) {
         setupSwitch(
             root.findViewById<MaterialSwitch>(R.id.search),
             root.findViewById(R.id.search_container),
-            settingsPrefs.getBoolean(SearchWidget.SEARCH_WIDGET_KEY, true)
+            settingsPrefs.getBoolean(SearchWidget.SEARCH_WIDGET_KEY, SearchWidget.SEARCH_WIDGET_DEFAULT_VISIBLE)
         ) { _, checked ->
             settingsPrefs.edit {
                     putBoolean(SearchWidget.SEARCH_WIDGET_KEY, checked)

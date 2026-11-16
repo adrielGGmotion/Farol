@@ -83,12 +83,12 @@ open class SearchWidget(private val activity: ThemedActivity) {
         val visibility = GridItemVisibility(container, item, layoutData)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (SEARCH_WIDGET_KEY == key) {
-                visibility.update(sharedPreferences.getBoolean(SEARCH_WIDGET_KEY, true))
+                visibility.update(sharedPreferences.getBoolean(SEARCH_WIDGET_KEY, SEARCH_WIDGET_DEFAULT_VISIBLE))
             }
         }
         preferences.registerOnSharedPreferenceChangeListener(listener)
 
-        visibility.update(preferences.getBoolean(SEARCH_WIDGET_KEY, true))
+        visibility.update(preferences.getBoolean(SEARCH_WIDGET_KEY, SEARCH_WIDGET_DEFAULT_VISIBLE))
     }
 
     fun detach() {
@@ -97,6 +97,7 @@ open class SearchWidget(private val activity: ThemedActivity) {
 
     companion object {
         const val SEARCH_WIDGET_KEY = "com.stario.HOMESCREEN_SEARCH_WIDGET_VISIBLE"
+        const val SEARCH_WIDGET_DEFAULT_VISIBLE = false
         private const val SEARCH_TAG = "SearchWidget"
     }
 }
